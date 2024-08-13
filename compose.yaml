@@ -1,0 +1,12 @@
+services:
+  myapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: myapp:latest
+    ports:
+      - "8080:8080"  # Порт вашего приложения
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://94.241.140.130:3306/test_sortition  # Подключение к MySQL на хосте
+      SPRING_DATASOURCE_USERNAME: nikitin
+      SPRING_DATASOURCE_PASSWORD: 123456789
