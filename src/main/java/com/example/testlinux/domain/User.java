@@ -1,21 +1,19 @@
 package com.example.testlinux.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
-/*@Table(name = "usertest")*/
+@Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    //@Column(name="id")
+    //@GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private Integer id;
 
-    //@Column(name="name")
+    @Column(name="name")
     private String bigname;
-    //@Column(name="email")
+    @Column(name="email")
     private String bigemail;
 
     public Integer getId() {
