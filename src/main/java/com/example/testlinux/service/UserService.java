@@ -21,7 +21,7 @@ public class UserService {
         List<User> users = userRepository.findAllUsers();
         ArrayList<UserDto> usersDto = new ArrayList<>();
         for(User user : users){
-            System.out.println("Nn user.getName(); " + user.getName());
+            System.out.println("User.getName(); " + user.getName());
             usersDto.add(new UserDto(user.getName()));
         }
         return ResponseEntity.ok(usersDto);
