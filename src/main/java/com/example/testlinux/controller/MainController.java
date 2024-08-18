@@ -50,4 +50,10 @@ public class MainController {
         List<User> user = userRepository.getUser(sqlName);
         return user.get(0).getName();
     }
+
+    @RequestMapping(value = "/hellonikitin", method = RequestMethod.GET)
+    @ResponseBody
+    public String helloNikitin() {
+        return "Hello, Nikitin!";
+    }
 }
