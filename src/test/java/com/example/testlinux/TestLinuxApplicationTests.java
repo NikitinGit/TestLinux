@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 //@WebMvcTest(MainController.class)
-@SpringBootTest(classes = TestLinuxApplication.class)
+@SpringBootTest
 class TestLinuxApplicationTests {
     @Autowired
     private ControllerRest controllerRest;
@@ -40,9 +40,7 @@ class TestLinuxApplicationTests {
     void testAddNewUserWithExistingNameAndEmail() throws Exception {
         /*String existingName = "Nikitin3";
         String existingEmail = "Igor3@gmail.com";
-
         when(userRepository.userExists(existingName, existingEmail)).thenReturn(Optional.of(new User()));
-
         mockMvc.perform(MockMvcRequestBuilders.post("/demo/add")
                         .param("name", existingName)
                         .param("email", existingEmail)
@@ -51,9 +49,8 @@ class TestLinuxApplicationTests {
                 .andExpect(content().string("User already exists"));*/
     }
 
-
     @Test
-    public void testGetAllUsers() throws Exception {
+    public void testGetAllUsers(){
         controllerRest.getUsers();
     }
 

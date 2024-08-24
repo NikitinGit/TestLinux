@@ -12,31 +12,26 @@ public class User {
     private Integer id;
 
     @Column(name="name")
-    private String bigname;
+    private String name;
     @Column(name="email")
-    private String bigemail;
+    private String email;
 
-    public Integer getId() {
-        return id;
-    }
+    public User() {}
 
-    public void setId(Integer id) {
-        this.id = id;
+    public User(String name, String email) {
+       this.email = email;
+       this.name = name;
     }
 
     public String getName() {
-        return bigname;
+        return name;
     }
 
     public void setName(String name) {
-        this.bigname = name;
-    }
-
-    public String getEmail() {
-        return bigemail;
+        this.name = name;
     }
 
     public void setEmail(String email) {
-        this.bigemail = email;
+        this.email = email;
     }
 }

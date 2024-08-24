@@ -13,11 +13,6 @@ import java.util.List;
 @RequestMapping("/demo")
 public class ControllerRest {
     // TODO
-    // Implement RESTful API endpoints here
-    // Example:
-    // @GetMapping("/users")
-    // public List<User> getAllUsers() {
-    //  return new ArrayList<User>}
     private final UserService userService;
 
     public ControllerRest(UserService userService) {
@@ -26,6 +21,7 @@ public class ControllerRest {
 
     @GetMapping("/users")
     public ResponseEntity <List<UserDto>> getUsers() {
+        System.out.println("getUsers");
         return userService.getUsers();
     }
 

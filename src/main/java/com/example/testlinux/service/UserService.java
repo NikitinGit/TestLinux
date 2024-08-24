@@ -17,13 +17,24 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public String addUser(User user) {
+        userRepository.save(user);
+        return "User added successfully";
+    }
+
     public ResponseEntity <List <UserDto>> getUsers(){
         List<User> users = userRepository.findAllUsers();
         ArrayList<UserDto> usersDto = new ArrayList<>();
         for(User user : users){
-            System.out.println("User.getName(); " + user.getName());
+            System.out.println("UserService getUsers() User.getName(); " + user.getName());
             usersDto.add(new UserDto(user.getName()));
         }
+
         return ResponseEntity.ok(usersDto);
+    }
+
+    public int getSum(int n1, int n2) {
+        System.out.println("getSum");
+        return n1 + n2;
     }
 }

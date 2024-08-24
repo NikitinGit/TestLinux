@@ -1,5 +1,6 @@
 package com.example.testlinux;
 
+import com.example.testlinux.domain.User;
 import com.example.testlinux.dto.UserDto;
 import com.example.testlinux.repository.UserRepository;
 import com.example.testlinux.service.UserService;
@@ -26,14 +27,17 @@ public class UserServiceTest {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository; // Assuming UserRepository is defined in another class
-
     @Test
     void testGetUsersWithNoUsersInDatabase() {
         //when(userRepository.findAllUsers()).thenReturn(Collections.emptyList());
         ResponseEntity<List<UserDto>> responseEntity = userService.getUsers();
+        //assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
 
+    @Test
+    void addUser() {
+        userService.addUser(new User("John","johnnikitin.@gmail.com"));
+        userService.getUsers();
     }
 
     @Test
