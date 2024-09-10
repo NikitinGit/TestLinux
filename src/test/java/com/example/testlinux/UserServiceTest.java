@@ -14,8 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.Assert;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
@@ -27,6 +30,9 @@ public class UserServiceTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
     void testGetUsersWithNoUsersInDatabase() {
         //when(userRepository.findAllUsers()).thenReturn(Collections.emptyList());
@@ -36,17 +42,28 @@ public class UserServiceTest {
 
     @Test
     void addUser() {
-        userService.addUser(new User("John","johnnikitin.@gmail.com"));
+        userService.addUser(new User("Nikitin","nikitin.@gmail.com"));
         userService.getUsers();
     }
 
     @Test
-    void testTry(){
-        try{
-            int data=100/0;
-        }catch(Exception e){
-            System.out.println("ArithmeticException by nikitin 25; " + e);
-        }
+    void testDataLombok() {
+        User testEntity = new User("Stepan1","ivanov@gmail.com");
+        testEntity.setName("setName");
+        Set<User> set = new HashSet<>();
+
+        set.add(testEntity);
+        userRepository.save(testEntity);
+
+        System.out.println("testEntity.getName(): " + testEntity.getName() +
+                " hashCode: " + testEntity.hashCode());
+        User userTest = set.stream().findFirst().get();
+        System.out.println("userTest.getName(): " + userTest.getName() +
+                " hashCode: " + userTest.hashCode());
+
+        Assert.isTrue(set.contains(testEntity), "Entity not found in the set");
     }
+
+
 
 }

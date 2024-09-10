@@ -1,6 +1,8 @@
 package com.example.testlinux.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "user")
@@ -11,8 +13,12 @@ public class User {
     @Column(name="id")
     private Integer id;
 
+    @Setter
+    @Getter
     @Column(name="name")
     private String name;
+
+    @Setter
     @Column(name="email")
     private String email;
 
@@ -23,15 +29,4 @@ public class User {
        this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }
