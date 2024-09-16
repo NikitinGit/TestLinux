@@ -1,8 +1,8 @@
 package com.example.testlinux.unit.test;
 
-import com.example.testlinux.domain.User;
+import com.example.testlinux.domain.UserNew;
 import com.example.testlinux.dto.UserDto;
-import com.example.testlinux.repository.UserRepository;
+import com.example.testlinux.repository.UserNewRepository;
 import com.example.testlinux.service.UserService;
 
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UnitTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserNewRepository userNewRepository;
 
     @InjectMocks
     private UserService userService;
@@ -37,11 +36,11 @@ public class UnitTest {
 
     @Test
     void getUser(){
-        List<User> users = userRepository.findAllUsers();
+        List<UserNew> userNews = userNewRepository.findAllUsers();
         ArrayList<UserDto> usersDto = new ArrayList<>();
-        for(User user : users){
-            System.out.println("UserService getUsers() User.getName(); " + user.getName());
-            usersDto.add(new UserDto(user.getName()));
+        for(UserNew userNew : userNews){
+            System.out.println("UserService getUsers() User.getName(); " + userNew.getName());
+            usersDto.add(new UserDto(userNew.getName()));
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.testlinux.controller;
 
 
+import com.example.testlinux.dto.FighterDto;
 import com.example.testlinux.dto.UserDto;
 import com.example.testlinux.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,12 @@ public class ControllerRest {
     public ResponseEntity <List<UserDto>> getUsers() {
         System.out.println("getUsers");
         return userService.getUsers();
+    }
+
+    @GetMapping("/fighters")
+    public ResponseEntity <List<FighterDto>> getFighters() {
+        System.out.println("getFighters");
+        return userService.getFighters();
     }
 
     @GetMapping("/hello")

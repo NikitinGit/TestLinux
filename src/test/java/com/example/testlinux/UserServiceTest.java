@@ -1,19 +1,13 @@
 package com.example.testlinux;
 
-import com.example.testlinux.domain.User;
+import com.example.testlinux.domain.UserNew;
 import com.example.testlinux.dto.UserDto;
-import com.example.testlinux.repository.UserRepository;
+import com.example.testlinux.repository.UserNewRepository;
 import com.example.testlinux.service.UserService;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 
 import java.util.HashSet;
@@ -31,7 +25,7 @@ public class UserServiceTest {
     private UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserNewRepository userNewRepository;
 
     @Test
     void testGetUsersWithNoUsersInDatabase() {
@@ -42,24 +36,24 @@ public class UserServiceTest {
 
     @Test
     void addUser() {
-        userService.addUser(new User("Nikitin","nikitin.@gmail.com"));
+        userService.addUser(new UserNew("Nikitin","nikitin.@gmail.com"));
         userService.getUsers();
     }
 
     @Test
     void testDataLombok() {
-        User testEntity = new User("Stepan1","ivanov@gmail.com");
+        UserNew testEntity = new UserNew("Stepan1","ivanov@gmail.com");
         testEntity.setName("setName");
-        Set<User> set = new HashSet<>();
+        Set<UserNew> set = new HashSet<>();
 
         set.add(testEntity);
-        userRepository.save(testEntity);
+        userNewRepository.save(testEntity);
 
         System.out.println("testEntity.getName(): " + testEntity.getName() +
                 " hashCode: " + testEntity.hashCode());
-        User userTest = set.stream().findFirst().get();
-        System.out.println("userTest.getName(): " + userTest.getName() +
-                " hashCode: " + userTest.hashCode());
+        UserNew userNewTest = set.stream().findFirst().get();
+        System.out.println("userTest.getName(): " + userNewTest.getName() +
+                " hashCode: " + userNewTest.hashCode());
 
         Assert.isTrue(set.contains(testEntity), "Entity not found in the set");
     }
