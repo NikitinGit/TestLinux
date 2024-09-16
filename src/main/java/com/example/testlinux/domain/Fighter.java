@@ -18,7 +18,6 @@ import java.util.List;
 @Getter
 @Slf4j
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "fighters")
 public class Fighter {
     @Id
@@ -101,23 +100,5 @@ public class Fighter {
     @Column(name="sport_community")
     private String sportCommunity;
 
-
-    @CreatedBy
-    @Column(name="created_by")
-    private String createdBy;
-
-    @LastModifiedBy
-    @Column(name="modified_by")
-    private String modifiedBy;
-
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="created_at")
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="modified_at")
-    private LocalDateTime modifiedAt;
 }
 

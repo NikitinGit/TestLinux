@@ -17,12 +17,9 @@ import java.util.List;
 
 @Setter
 @Getter
-@DynamicUpdate
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "events")
 public class Event {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="event_id")
@@ -31,12 +28,6 @@ public class Event {
     //    @Version
     @Column(name="version")
     private Integer version = 0;
-
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<EventBidFighter> eventBidFighters = new ArrayList<>();
-
 
     @Column(name="organizer_login")
     private Integer organizerLogin;

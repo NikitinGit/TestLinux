@@ -28,7 +28,6 @@ public class ControllerRest {
 
     @GetMapping("/fighters")
     public ResponseEntity <List<FighterDto>> getFighters() {
-        System.out.println("getFighters");
         return userService.getFighters();
     }
 

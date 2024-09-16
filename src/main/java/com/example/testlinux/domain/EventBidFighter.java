@@ -13,20 +13,15 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "events_bids_fighters")
-@RequiredArgsConstructor
 public class EventBidFighter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
 
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idEvent")
-    private Event event;
+    @Column(name = "idEvent")
+    private Integer eventId;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
@@ -34,7 +29,7 @@ public class EventBidFighter {
     @JoinColumn(name = "fighter_id")
     private Fighter fighter;
 
-    @Column(name="approved")
+    /*@Column(name="approved")
     private Integer approved = 0;
 
     @Column(name="approved_doc")
@@ -67,27 +62,8 @@ public class EventBidFighter {
     @Column(name="number_of_short_media")
     private Integer numberOfShortMedia = 0;
 
-    @CreatedBy
-    @Column(name="created_by")
-    private String createdBy;
-
-    @LastModifiedBy
-    @Column(name="modified_by")
-    private String modifiedBy;
-
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="created_at")
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="modified_at")
-    private LocalDateTime modifiedAt;
 
     @Transient
-    private boolean bidIsNotValid = false;
-
-
+    private boolean bidIsNotValid = false;*/
 }
 
