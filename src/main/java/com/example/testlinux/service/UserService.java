@@ -1,11 +1,13 @@
 package com.example.testlinux.service;
 
+import com.example.testlinux.domain.Event;
 import com.example.testlinux.domain.EventBidFighter;
 import com.example.testlinux.domain.Fighter;
 import com.example.testlinux.domain.UserNew;
 import com.example.testlinux.dto.FighterDto;
 import com.example.testlinux.dto.UserDto;
 import com.example.testlinux.repository.EventBidFighterRepository;
+import com.example.testlinux.repository.EventRepository;
 import com.example.testlinux.repository.FighterRepository;
 import com.example.testlinux.repository.UserNewRepository;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +21,14 @@ public class UserService {
     private final UserNewRepository userNewRepository;
     private final FighterRepository fighterRepository;
     private final EventBidFighterRepository eventBidFighterRepository;
+    private final EventRepository eventRepository;
 
     public UserService(UserNewRepository userNewRepository, FighterRepository fighterRepository,
-                       EventBidFighterRepository eventBidFighter) {
+                       EventBidFighterRepository eventBidFighter, EventRepository eventRepository) {
         this.userNewRepository = userNewRepository;
         this.fighterRepository = fighterRepository;
         this.eventBidFighterRepository = eventBidFighter;
+        this.eventRepository = eventRepository;
     }
 
     public String addUser(UserNew userNew) {
@@ -60,6 +64,8 @@ public class UserService {
     }*/
 
     public ResponseEntity<List<FighterDto>> getFighters() {
+        Event event = eventRepository.findEventByMySql().get();
+        System.out.println("eventName; " + event.getNameEvent());
         int n = 0;
         List<FighterDto> fighterDtoList = eventBidFighterRepository.getAllFightersByEventId(122);
         for (FighterDto fighterDto : fighterDtoList) {
