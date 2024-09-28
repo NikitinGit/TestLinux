@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.*;
 
 import org.springframework.web.client.RestTemplate;
+
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
@@ -28,11 +30,13 @@ public class YooKassaService {
             headers.set("Authorization", "Basic " + encodedAuth);
             headers.set("Idempotence-Key", UUID.randomUUID().toString());
 
+            double payment = 555.55123345567d;
+            double roundPayment = Math.round(payment * 100.0 ) / 100.0;
             // Данные платежа
-            String jsonInputString = "{\"amount\":{\"value\":\"855.53\",\"currency\":\"RUB\"},"
+            String jsonInputString = "{\"amount\":{\"value\":" + roundPayment + ",\"currency\":\"RUB\"},"
                     + "\"capture\":true,"
                     + "\"confirmation\":{\"type\":\"redirect\",\"return_url\":\"https://example.com/success\"},"
-                    + "\"description\":\"Заказ №3\"}";
+                    + "\"description\":\"Заказ №5\"}";
 
             HttpEntity<String> requestEntity = new HttpEntity<>(jsonInputString, headers);
             ResponseEntity<String> responseEntity = restTemplate.exchange(URL, HttpMethod.POST,
@@ -62,4 +66,30 @@ public class YooKassaService {
             e.printStackTrace();
         }
     }
+
+    public void getPaymentDetails(String paymentId) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+
+            // Установка заголовков
+            HttpHeaders headers = new HttpHeaders();
+            String encodedAuth = Base64.getEncoder().encodeToString(AUTH.getBytes(StandardCharsets.UTF_8));
+            headers.set("Authorization", "Basic " + encodedAuth);
+
+            // Создание объекта запроса
+            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+            // Отправка GET-запроса
+            ResponseEntity<String> responseEntity = restTemplate.exchange(URL +"/" + paymentId, HttpMethod.GET,
+                    requestEntity, String.class);
+
+            // Получение ответа
+            System.out.println("Response Code : " + responseEntity.getStatusCodeValue());
+            System.out.println("Response: " + responseEntity.getBody());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

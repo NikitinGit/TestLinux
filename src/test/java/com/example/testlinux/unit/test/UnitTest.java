@@ -125,64 +125,12 @@ public class UnitTest {
     }
 
     @Test
-    void getValuesOfResponse3() {
-        try {
-            String url = "https://api.yookassa.ru/v3/payments";
-            URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json");
-
-            String auth = "465439:test_Jr8CqgCR_H777fgC41j4SSfmZM5GFpVXEuAHMSTqgxI"; // Замените на ваши учетные данные
-            String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes("UTF-8"));
-            con.setRequestProperty("Authorization", "Basic " + encodedAuth);
-
-            con.setRequestProperty("Idempotence-Key", UUID.randomUUID().toString());
-
-            String jsonInputString = "{\"amount\":{\"value\":\"1000.00\",\"currency\":\"RUB\"},"
-                    + "\"capture\":true,"
-                    + "\"confirmation\":{\"type\":\"redirect\",\"return_url\":\"https://example.com/success\"},"
-                    + "\"description\":\"Заказ №1\","
-                    + "\"receipt\":{"
-                    + "\"items\":["
-                    + "{"
-                    + "\"description\":\"Товар 1\","
-                    + "\"quantity\":1,"
-                    + "\"amount\":{\"value\":\"1000.00\",\"currency\":\"RUB\"},"
-                    + "\"vat_code\":1" // Укажите код НДС (например, 1 - 20%)
-                    + "}"
-                    + "]"
-                    + "}}";
-
-            con.setDoOutput(true);
-            try (OutputStream os = con.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
-
-            int responseCode = con.getResponseCode();
-            System.out.println("Response Code : " + responseCode);
-
-            BufferedReader in;
-            if (responseCode == HttpURLConnection.HTTP_OK) { // 200 OK
-                in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            } else {
-                in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-            }
-
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-
-            in.close();
-
-            System.out.println("Response: " + response.toString());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    void testGetPaymentDataYouKassa(){
+        //"id" : "2e8a2610-000f-5000-a000-122fc0aa0cea"
+        YooKassaService yooKassaService = new YooKassaService();
+        yooKassaService.getPaymentDetails("2e8a2610-000f-5000-a000-122fc0aa0cea");
+        yooKassaService.getPaymentDetails("2e88d1c7-000f-5000-9000-16526fd4dad5");
+        //        2e88d1c7-000f-5000-9000-16526fd4dad5
     }
 
     /*@Test
