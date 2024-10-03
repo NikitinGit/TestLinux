@@ -10,6 +10,7 @@ import com.example.testlinux.repository.EventBidFighterRepository;
 import com.example.testlinux.repository.EventRepository;
 import com.example.testlinux.repository.FighterRepository;
 import com.example.testlinux.repository.UserNewRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +19,14 @@ import java.util.List;
 
 @Service
 public class UserService {
-    private final UserNewRepository userNewRepository;
+    @Autowired
+    private UserNewRepository userNewRepository;
     private final FighterRepository fighterRepository;
     private final EventBidFighterRepository eventBidFighterRepository;
     private final EventRepository eventRepository;
 
-    public UserService(UserNewRepository userNewRepository, FighterRepository fighterRepository,
+    public UserService(FighterRepository fighterRepository,
                        EventBidFighterRepository eventBidFighter, EventRepository eventRepository) {
-        this.userNewRepository = userNewRepository;
         this.fighterRepository = fighterRepository;
         this.eventBidFighterRepository = eventBidFighter;
         this.eventRepository = eventRepository;

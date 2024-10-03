@@ -10,19 +10,25 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+/*import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
+import org.springframework.web.client.RestTemplate;*/
 /*import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -40,17 +46,19 @@ import java.util.UUID;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 //@PropertySource("classpath:application.properties") //not working
-@TestPropertySource(locations = "classpath:application.properties")
+//@TestPropertySource(locations = "classpath:application.properties")
 @Slf4j
 public class UnitTest {
-    @Mock
-    private UserNewRepository userNewRepository;
 
     @InjectMocks
     private UserService userService;
+
+    @InjectMocks
+    private YooKassaService yooKassaService;
 
     @Test
     void sum(){
@@ -59,13 +67,9 @@ public class UnitTest {
     }
 
     @Test
-    void getUser(){
-        List<UserNew> userNews = userNewRepository.findAllUsers();
-        ArrayList<UserDto> usersDto = new ArrayList<>();
-        for(UserNew userNew : userNews){
-            System.out.println("UserService getUsers() User.getName(); " + userNew.getName());
-            usersDto.add(new UserDto(userNew.getName()));
-        }
+    void addUser() {
+        userService.addUser(new UserNew("Nikitin 2","nikitin2.@gmail.com"));
+        userService.getUsers();
     }
 
     @Test
@@ -119,7 +123,6 @@ public class UnitTest {
 
     @Test
     void testRestTemplateYouKassa(){
-        YooKassaService yooKassaService = new YooKassaService();
         yooKassaService.registerPayment();
         //"id" : "2e89b7b0-000f-5000-a000-10d595a2ce4d"
     }
@@ -127,10 +130,28 @@ public class UnitTest {
     @Test
     void testGetPaymentDataYouKassa(){
         //"id" : "2e8a2610-000f-5000-a000-122fc0aa0cea"
-        YooKassaService yooKassaService = new YooKassaService();
         yooKassaService.getPaymentDetails("2e8a2610-000f-5000-a000-122fc0aa0cea");
         yooKassaService.getPaymentDetails("2e88d1c7-000f-5000-9000-16526fd4dad5");
         //        2e88d1c7-000f-5000-9000-16526fd4dad5
+    }
+
+    @Test
+    void testHandleNotification(){
+        List<String> allowedIps = List.of(
+                "77.75.156.11",
+                "77.75.156.35",
+                "185.71.76.5", // Доступные хосты: 185.71.76.1 - 185.71.76.30
+                "185.71.76.2", // Доступные хосты: 185.71.76.1 - 185.71.76.30
+                "185.71.76.25", // Доступные хосты: 185.71.76.1 - 185.71.76.30
+                "185.71.77.2",
+                "77.75.153.21", // Доступные хосты: 77.75.153.1 - 77.75.153.126
+                "77.75.154.129",
+                "77.75.154.222",
+                "2a02:5180::ffff"
+        );
+        for(String allowedIp : allowedIps) {
+            assertTrue(yooKassaService.isIpAllowed(allowedIp));
+        }
     }
 
     /*@Test

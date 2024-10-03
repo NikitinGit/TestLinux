@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -26,6 +27,7 @@ public class TestMysql {
     private DataSource dataSource;
 
     @Test
+    @Sql("/test-data.sql")
     void testMySQLConnection() throws SQLException {
         List<UserNew> userNews = userNewRepository.findAllUsers();
         ArrayList<UserDto> usersDto = new ArrayList<>();

@@ -1,12 +1,14 @@
 package com.example.testlinux.dto;
 
+import lombok.Data;
+import lombok.Getter;
+
+@Getter
+@Data
 public class UserDto {
-    private String userName = "hi";
+    private String userName;
 
     public UserDto (String userName) {
         this.userName = userName;
-    }
-    public String getUserName() {
-        return userName;
     }
 }

@@ -36,7 +36,7 @@ public class UserServiceTest {
 
     @Test
     void addUser() {
-        userService.addUser(new UserNew("Nikitin","nikitin.@gmail.com"));
+        userService.addUser(new UserNew("Nikitin 2","nikitin2.@gmail.com"));
         userService.getUsers();
     }
 

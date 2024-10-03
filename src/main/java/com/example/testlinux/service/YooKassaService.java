@@ -1,23 +1,27 @@
 package com.example.testlinux.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 
+@Slf4j
+@Service
 public class YooKassaService {
-
-    private static final String URL = "https://api.yookassa.ru/v3/payments";
-    private static final String AUTH = "465439:test_Jr8CqgCR_H777fgC41j4SSfmZM5GFpVXEuAHMSTqgxI"; // Замените на ваши учетные данные
+    private final String URL = "https://api.yookassa.ru/v3/payments";
+    private final String shopId = "465439";
+    private final String secretKey = "test_pTudOuL99eJ5nQ-aUYGKt7-_nVaNNWqga3y7GU4y4ok";
+    private final String AUTH = shopId + ":" + secretKey;
 
     public void registerPayment() {
         try {
@@ -43,8 +47,6 @@ public class YooKassaService {
                     requestEntity, String.class);
             System.out.println("Response Code : " + responseEntity.getStatusCodeValue());
             System.out.println("Response: " + responseEntity.getBody());
-
-            //////////////////////////////
 
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -92,4 +94,46 @@ public class YooKassaService {
         }
     }
 
+
+    private final List<String> allowedIps = List.of(
+            "77.75.156.11",
+            "77.75.156.35"
+    );
+
+    //
+    private final List<String> allowedCidrIps = List.of(
+            "185.71.76.0/27", // Доступные хосты: 185.71.76.1 - 185.71.76.30
+            "185.71.77.0/27",
+            "77.75.153.0/25", // Доступные хосты: 77.75.153.1 - 77.75.153.126
+            "77.75.154.128/25"
+    );
+
+    private final String ipV6 = "2a02:5180::/32";
+
+    public boolean isIpAllowed(String ipOfSender) {
+        try {
+            if (ipV6.substring(0, 11).contains(ipOfSender.substring(0, 11))){
+                return true;
+            }
+
+            for (String allowedIp : allowedIps) {
+                if (allowedIp.contains(ipOfSender)){
+                    return true;
+                }
+            }
+
+            for (String allowedIp : allowedCidrIps) {
+                if (allowedIp.substring(0, 10).contains(ipOfSender.substring(0, 10))){
+                    return true;
+                }
+            }
+
+
+        } catch (Exception e) {
+            log.error("isIpAllowed Exception ipOfSender; {}", ipOfSender);
+            e.printStackTrace();
+        }
+
+        return false; // IP not allowed
+    }
 }
