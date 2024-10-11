@@ -60,6 +60,8 @@ public class UnitTest {
     @InjectMocks
     private YooKassaService yooKassaService;
 
+    private SolutionTest solutionTest = new SolutionTest();
+
     @Test
     void sum(){
         assertEquals(8, userService.getSum(5, 3));
@@ -154,6 +156,25 @@ public class UnitTest {
         }
     }
 
+    @Test
+    void isPalindrome(){
+        solutionTest.isPalindrome(1357897531);
+    }
+    @Test
+    void romanToInt(){
+        solutionTest.romanToInt("III");
+    }
+
+    @Test
+    void longestCommonPrefix(){
+        String [] names = new String[]{"flower","flow","flight"};
+        log.info("solutionTest.longestCommonPrefix(names); {}", solutionTest.longestCommonPrefix(names));
+    }
+
+    @Test
+    public void isValid(String s) {
+        log.info("isValid: {}", solutionTest.isValid("[]"));
+    }
     /*@Test
     public Map<String, String> getValuesOfResponse(FighterPaymentDto clientDto) throws JsonProcessingException {
         String orderNumber = UUID.randomUUID().toString().replace("-", "");

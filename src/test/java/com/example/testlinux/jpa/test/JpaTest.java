@@ -3,6 +3,7 @@ package com.example.testlinux.jpa.test;
 import com.example.testlinux.domain.UserNew;
 import com.example.testlinux.dto.UserDto;
 import com.example.testlinux.repository.UserNewRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Slf4j
 @DataJpaTest
 @AutoConfigureTestDatabase (replace = AutoConfigureTestDatabase.Replace.NONE)
 public class JpaTest {
@@ -43,7 +44,7 @@ public class JpaTest {
         List<UserNew> userNews = userNewRepository.findAllUsers();
         ArrayList<UserDto> usersDto = new ArrayList<>();
         for(UserNew userNew : userNews){
-            System.out.println("UserService getUsers() User.getName(); " + userNew.getName());
+            log.info("UserService getUsers() User.getName() {}; ", userNew.getName());
             usersDto.add(new UserDto(userNew.getName()));
         }
     }

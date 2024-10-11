@@ -15,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -46,6 +48,23 @@ public class UserService {
         }
 
         return ResponseEntity.ok(usersDto);
+    }
+
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> numKey = new HashMap<>();
+
+        for (int i = 0; i < nums.length; i++) {
+            int value1 = target - nums[i];
+
+            if (numKey.containsKey(value1)){
+                int j = numKey.get(value1);
+
+                return new int[]{i, j};
+            }
+            numKey.put(nums[i], i);
+        }
+
+        return new int[]{};
     }
 
     /*public ResponseEntity <List <FighterDto>> getFighters(){
