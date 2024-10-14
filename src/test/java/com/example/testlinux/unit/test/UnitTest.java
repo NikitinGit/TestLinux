@@ -172,8 +172,24 @@ public class UnitTest {
     }
 
     @Test
-    public void isValid(String s) {
+    void isValid(String s) {
         log.info("isValid: {}", solutionTest.isValid("[]"));
+    }
+
+    @Test
+    void mergeTwoLists(){
+        SolutionTest.ListNode list1 = new SolutionTest.ListNode(1, new SolutionTest.ListNode(2, new SolutionTest.ListNode(4)));
+
+        // Create second linked list: 1 -> 3 -> 4
+        SolutionTest.ListNode list2 = new SolutionTest.ListNode(1, new SolutionTest.ListNode(3, new SolutionTest.ListNode(4)));
+
+        SolutionTest.ListNode mergedList = solutionTest.mergeTwoLists(list1, list2);
+
+        // Print merged linked list
+        while (mergedList != null) {
+            System.out.print(mergedList.val + " ");
+            mergedList = mergedList.next;
+        }
     }
     /*@Test
     public Map<String, String> getValuesOfResponse(FighterPaymentDto clientDto) throws JsonProcessingException {

@@ -130,7 +130,6 @@ public class SolutionTest {
                     if (++countOfOpenLetters > 3){
                         return false;
                     }
-                    if
                 }else {
                     if (--countOfOpenLetters < 0){
                         return false;
@@ -163,5 +162,65 @@ public class SolutionTest {
         }
 
         return stack.isEmpty();
+    }
+    /*public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        if(list1 == null || list2 == null) {
+            return new ListNode();
+        }
+
+        if (list1.getVal() > list2.getVal()) {
+
+        }
+
+        while () {
+
+        }
+
+        if (list1.getNext() != null) {
+            if (list1.getVal() > list2.getVal()) {
+
+            }
+        }
+    }*/
+
+    public static class ListNode{
+        int val;
+        ListNode next;
+
+        ListNode() {
+        }
+
+        ListNode(int val) {
+            this.val = val;
+        }
+
+         ListNode(int val, ListNode next) {
+            this.val = val;
+            this.next = next;
+        }
+    }
+
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode dummy = new ListNode(0);
+        ListNode current = dummy;
+
+        while (list1 != null && list2 != null) {
+            if (list1.val <= list2.val) {
+                current.next = list1;
+                list1 = list1.next;
+            } else {
+                current.next = list2;
+                list2 = list2.next;
+            }
+            current = current.next;
+        }
+
+        if (list1 != null) {
+            current.next = list1;
+        } else if (list2 != null) {
+            current.next = list2;
+        }
+
+        return dummy.next;
     }
 }
