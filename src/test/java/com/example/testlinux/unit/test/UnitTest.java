@@ -6,6 +6,7 @@ import com.example.testlinux.repository.UserNewRepository;
 import com.example.testlinux.service.UserService;
 
 import com.example.testlinux.service.YooKassaService;
+import com.example.testlinux.service.type.extend.TestExtendsMethodTypes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -178,7 +179,7 @@ public class UnitTest {
 
     @Test
     void mergeTwoLists(){
-        SolutionTest.ListNode list1 = new SolutionTest.ListNode(1, new SolutionTest.ListNode(2, new SolutionTest.ListNode(4)));
+        /*SolutionTest.ListNode list1 = new SolutionTest.ListNode(1, new SolutionTest.ListNode(2, new SolutionTest.ListNode(4)));
 
         // Create second linked list: 1 -> 3 -> 4
         SolutionTest.ListNode list2 = new SolutionTest.ListNode(1, new SolutionTest.ListNode(3, new SolutionTest.ListNode(4)));
@@ -189,7 +190,52 @@ public class UnitTest {
         while (mergedList != null) {
             System.out.print(mergedList.val + " ");
             mergedList = mergedList.next;
-        }
+        }*/
+    }
+
+    @Test
+    void removeDuplicates(){
+        int nums[] = {1,1,2};
+        solutionTest.removeDuplicates(nums);
+    }
+
+    @Test
+    void removeElement(){
+        int nums[] = {0,1,2,2,3,0,4,2};
+        solutionTest.removeElement(nums, 2);
+        float f =  100000.0f + 0.3f - 100000.0f;
+        System.out.println(f); // prints 0.296875
+
+        double d = 100000.0  + 0.3  - 100000.0;
+        System.out.println(d); // prints 0.3000000000029104
+    }
+
+    @Test
+    void addTwoNumbers(){
+        //solutionTest.addTwoNumbers(); // prints 0.3000000000029104
+    }
+    @Test
+    void addBinary(){
+        System.out.println(solutionTest.addBinary("1010","1011"));
+    }
+
+    @Test
+    void testGeneric(){
+        TestExtendsMethodTypes testExtendsMethodTypes = new TestExtendsMethodTypes();
+        testExtendsMethodTypes.someType(true);
+    }
+
+    @Test
+    void testInorderTraversal(){
+        solutionTest.inorderTraversal();
+    }
+
+    @Test
+    void testRemainder(){
+        int i = 170;
+        int max = 169;
+        int remainsder = i % max;
+        log.info("remainder: {}", remainsder);
     }
     /*@Test
     public Map<String, String> getValuesOfResponse(FighterPaymentDto clientDto) throws JsonProcessingException {
