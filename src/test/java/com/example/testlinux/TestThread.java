@@ -32,7 +32,7 @@ public class TestThread {
         Thread thread1 = new Thread(() -> {
             System.out.println("Thread 1 is running");
             try {
-                Thread.sleep(555); // Имитация работы
+                Thread.sleep(2555); // Имитация работы
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -42,8 +42,8 @@ public class TestThread {
         Thread thread2 = new Thread(() -> {
             System.out.println("Thread 2 is running");
             try {
-                thread1.join(); // Ожидаем завершения thread1
                 Thread.sleep(5); // Имитация работы
+                thread1.join(255); // Ожидаем завершения thread1
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -60,6 +60,72 @@ public class TestThread {
         }
 
         System.out.println("Both threads have finished. Main thread resumes.");
+    }
+
+    @Test
+    public void testThreadLifeCircle(){
+        Thread thread = new Thread(() -> {
+            System.out.println("Мы находимся в методе 'run'.");
+        });
+
+        System.out.println("Состояние потока после создания: " + thread.getState());  // NEW
+
+        thread.start();
+        System.out.println("Состояние потока после вызова start(): " + thread.getState());  // RUNNABLE
+
+        // Дадим потоку время для завершения
+        try {
+            Thread.sleep(100);  // Переход основного потока в TIMED_WAITING
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Состояние потока после завершения: " + thread.getState());
+    }
+
+    @Test
+    public void testThreadInterupted(){
+        Thread thread1 = new Thread(() -> {
+            int i = 0;
+            while (true){
+                try {
+                   Thread.sleep(500);
+                   System.out.println("Thread 1 is running i: " + ++i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        try {
+            thread1.start();
+            Thread.sleep(3000);
+            thread1.interrupt();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        System.out.println("Both threads have finished. Main thread resumes.");
+    }
+
+    @Test
+    public void testDeamonThread(){
+        Thread thread1 = new Thread(() -> {
+            int i = 0;
+            while (++i < 10){
+                try {
+                    System.out.println("Thread Deamon 1 is running i: " + i);
+                    Thread.sleep(500);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+        //thread1.setDaemon(true);
+        thread1.start();
+
+        try {
+            Thread.sleep(3500);
+        }catch (Exception e){}
     }
 
     private volatile int count = 0;
