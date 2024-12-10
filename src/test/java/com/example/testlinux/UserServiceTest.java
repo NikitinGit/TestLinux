@@ -43,16 +43,16 @@ public class UserServiceTest {
     @Test
     void testDataLombok() {
         UserNew testEntity = new UserNew("Stepan1","ivanov@gmail.com");
-        testEntity.setName("setName");
+        testEntity.setPass("setName");
         Set<UserNew> set = new HashSet<>();
 
         set.add(testEntity);
         userNewRepository.save(testEntity);
 
-        System.out.println("testEntity.getName(): " + testEntity.getName() +
+        System.out.println("testEntity.getAcstatus(): " + testEntity.getPass() +
                 " hashCode: " + testEntity.hashCode());
         UserNew userNewTest = set.stream().findFirst().get();
-        System.out.println("userTest.getName(): " + userNewTest.getName() +
+        System.out.println("userTest.getAcstatus(): " + userNewTest.getPass() +
                 " hashCode: " + userNewTest.hashCode());
 
         Assert.isTrue(set.contains(testEntity), "Entity not found in the set");

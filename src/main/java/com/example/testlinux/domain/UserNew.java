@@ -4,29 +4,27 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class UserNew {
     @Id
-    //@GeneratedValue(strategy= GenerationType.AUTO)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Integer id;
 
-    @Setter
-    @Getter
-    @Column(name="name")
-    private String name;
+    @Column(name="pass")
+    private String pass;
 
-    @Setter
-    @Column(name="email")
-    private String email;
+    @Column(name="telefon")
+    private String telefon;
 
     public UserNew() {}
 
-    public UserNew(String name, String email) {
-       this.email = email;
-       this.name = name;
+    public UserNew(String telefon, String pass) {
+       this.telefon = telefon;
+       this.pass = pass;
     }
 
 }

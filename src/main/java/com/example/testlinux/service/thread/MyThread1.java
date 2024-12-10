@@ -20,6 +20,7 @@ public class MyThread1 implements Runnable {
             System.out.println("Loop " + counter++);
             try{
                 Thread.sleep(400);
+                throw new RuntimeException("Необработанная ошибка в потоке ");
             }
             catch(InterruptedException e){
                 System.out.println("Thread has been interrupted");

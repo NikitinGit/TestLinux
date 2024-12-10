@@ -32,8 +32,8 @@ public class TestMysql {
         List<UserNew> userNews = userNewRepository.findAllUsers();
         ArrayList<UserDto> usersDto = new ArrayList<>();
         for(UserNew userNew : userNews){
-            System.out.println("UserService getUsers() User.getName(); " + userNew.getName());
-            usersDto.add(new UserDto(userNew.getName()));
+            System.out.println("UserService getUsers() User.getAcstatus(); " + userNew.getPass());
+            usersDto.add(new UserDto(userNew.getPass()));
         }
        /* try (Connection connection = dataSource.getConnection()) {
             // Здесь можно выполнять тестовые запросы к базе данных
@@ -41,8 +41,8 @@ public class TestMysql {
             List<User> users = userRepository.findAllUsers();
             ArrayList<UserDto> usersDto = new ArrayList<>();
             for(User user : users){
-                System.out.println("UserService getUsers() User.getName(); " + user.getName());
-                usersDto.add(new UserDto(user.getName()));
+                System.out.println("UserService getUsers() User.getAcstatus(); " + user.getAcstatus());
+                usersDto.add(new UserDto(user.getAcstatus()));
             }
         }*/
     }

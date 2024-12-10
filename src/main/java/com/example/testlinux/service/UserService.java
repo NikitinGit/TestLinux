@@ -1,8 +1,6 @@
 package com.example.testlinux.service;
 
 import com.example.testlinux.domain.Event;
-import com.example.testlinux.domain.EventBidFighter;
-import com.example.testlinux.domain.Fighter;
 import com.example.testlinux.domain.UserNew;
 import com.example.testlinux.dto.FighterDto;
 import com.example.testlinux.dto.UserDto;
@@ -43,8 +41,8 @@ public class UserService {
         List<UserNew> userNews = userNewRepository.findAllUsers();
         ArrayList<UserDto> usersDto = new ArrayList<>();
         for (UserNew userNew : userNews) {
-            System.out.println("UserService getUsers() User.getName(); " + userNew.getName());
-            usersDto.add(new UserDto(userNew.getName()));
+            System.out.println("UserService getUsers() User.getAcstatus(); " + userNew.getPass());
+            usersDto.add(new UserDto(userNew.getPass()));
         }
 
         return ResponseEntity.ok(usersDto);

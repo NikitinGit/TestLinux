@@ -27,8 +27,8 @@ public class MainController {
         // @RequestParam means it is a parameter from the GET or POST request
 
         UserNew n = new UserNew();
-        n.setName(name);
-        n.setEmail(email);
+        n.setTelefon(name);
+        n.setPass(email);
         userNewRepository.save(n);
 
         List<UserNew> userNews = userNewRepository.findAllUsers();
@@ -51,7 +51,7 @@ public class MainController {
     @GetMapping(path="/sqlinjection") // Map ONLY POST Requests
     public @ResponseBody String sqlInjection (@RequestParam String sqlName) {
         List<UserNew> userNew = userNewRepository.getUser(sqlName);
-        return userNew.get(0).getName();
+        return userNew.get(0).getPass();
     }
 
     @RequestMapping(value = "/hellonikitin", method = RequestMethod.GET)

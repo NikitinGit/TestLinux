@@ -4,7 +4,6 @@ package com.example.testlinux.controller;
 import com.example.testlinux.dto.FighterDto;
 import com.example.testlinux.dto.UserDto;
 import com.example.testlinux.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

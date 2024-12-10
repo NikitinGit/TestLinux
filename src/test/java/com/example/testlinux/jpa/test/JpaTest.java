@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public class JpaTest {
     private UserNewRepository userNewRepository;
 
     @BeforeEach
-    @Sql("/test-data.sql")
+    //@Sql("/test-data.sql")
     public void setUp() {
         System.out.println("setUp()");
         for (int n = 0; n < 100; n++){
@@ -44,8 +43,8 @@ public class JpaTest {
         List<UserNew> userNews = userNewRepository.findAllUsers();
         ArrayList<UserDto> usersDto = new ArrayList<>();
         for(UserNew userNew : userNews){
-            log.info("UserService getUsers() User.getName() {}; ", userNew.getName());
-            usersDto.add(new UserDto(userNew.getName()));
+            log.info("UserService getUsers() User.getAcstatus() {}; ", userNew.getPass());
+            usersDto.add(new UserDto(userNew.getPass()));
         }
     }
 }
