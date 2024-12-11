@@ -15,7 +15,5 @@ public class GlobalUncaughtExceptionHandling {
         MyThread1 thread1 = new MyThread1();
         new Thread(thread1, "Thread name; ").start();
         thread.start();
-
-
     }
 }
