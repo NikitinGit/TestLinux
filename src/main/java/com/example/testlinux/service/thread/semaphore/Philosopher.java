@@ -21,19 +21,19 @@ public class Philosopher extends Thread {
             while (num < 3) {
                 //Запрашиваем у семафора разрешение на выполнение
                 sem.acquire();
-                System.out.println("Философ " + id + " садится за стол");
+                System.out.println("Философ " + id + " садится за стол sem.availablePermits(): " + sem.availablePermits());
                 // философ ест
                 sleep(500);
                 num++;
 
-                System.out.println("Философ " + id + " выходит из-за стола");
+                System.out.println("Философ " + id + " выходит из-за стола sem.availablePermits(): " + sem.availablePermits());
                 sem.release();
 
                 // философ гуляет
                 sleep(500);
             }
         } catch (InterruptedException e) {
-            System.out.println("у философа " + id + " проблемы со здоровьем");
+            System.out.println("у философа " + id + " проблемы со здоровьем sem; " + sem.availablePermits());
         }
     }
 }
