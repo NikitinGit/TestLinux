@@ -14,6 +14,15 @@ public class UserNew {
     @Column(name="id")
     private Integer id;
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Fighter fighter;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Judge judge;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Trainer trainer;
+
     @Column(name="pass")
     private String pass;
 

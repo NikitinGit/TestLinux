@@ -26,23 +26,26 @@ public class Trainer {
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "login", referencedColumnName = "id")
-    private User user;
+    private UserNew user;
 
-    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
-    private List<Fighter> pupilList = new ArrayList<>();
+    @Column(name="fullName")
+    private String fullname;
 
-    @Column(name="slug")
+/*    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
+    private List<Fighter> pupilList = new ArrayList<>();*/
+
+/*    @Column(name="slug")
     private String slug;
     @Column(name="fullName")
     private String fullName;
 
     @CreatedBy
     @Column(name="created_by", updatable = false)
-    private String createdBy;
+    private String createdBy;*/
 
-    @LastModifiedBy
+    /*@LastModifiedBy
     @Column(name="modified_by")
     private String modifiedBy;
 
@@ -54,6 +57,6 @@ public class Trainer {
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="modified_at")
-    private LocalDateTime modifiedAt;
+    private LocalDateTime modifiedAt;*/
 }
 

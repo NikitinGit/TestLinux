@@ -8,6 +8,7 @@ import com.example.testlinux.repository.EventBidFighterRepository;
 import com.example.testlinux.repository.EventRepository;
 import com.example.testlinux.repository.FighterRepository;
 import com.example.testlinux.repository.UserNewRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,17 +18,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class UserService {
+
     @Autowired
     private UserNewRepository userNewRepository;
-    private final FighterRepository fighterRepository;
+    @Autowired
+    private FighterRepository fighterRepository;
     private final EventBidFighterRepository eventBidFighterRepository;
     private final EventRepository eventRepository;
 
-    public UserService(FighterRepository fighterRepository,
-                       EventBidFighterRepository eventBidFighter, EventRepository eventRepository) {
-        this.fighterRepository = fighterRepository;
+    public UserService(EventBidFighterRepository eventBidFighter, EventRepository eventRepository) {
+
         this.eventBidFighterRepository = eventBidFighter;
         this.eventRepository = eventRepository;
     }
@@ -84,8 +87,9 @@ public class UserService {
     public ResponseEntity<List<FighterDto>> getFighters() {
         Event event = eventRepository.findEventByMySql().get();
         System.out.println("eventName; " + event.getNameEvent());
+        List<FighterDto> fighterDtoList = new ArrayList<>();
         int n = 0;
-        List<FighterDto> fighterDtoList = eventBidFighterRepository.getAllFightersByEventId(122);
+        fighterDtoList = eventBidFighterRepository.getAllFightersByEventId(175);
         for (FighterDto fighterDto : fighterDtoList) {
             System.out.println("fighterDto.getFirstName(): " + fighterDto.getFighterName() +
                     ", phoneByFighter(): " + fighterDto.getPhoneByFighter());
@@ -93,6 +97,25 @@ public class UserService {
         }
 
         return ResponseEntity.ok(fighterDtoList);
+    }
+
+    public ResponseEntity<String> getUserById(int id) {
+        //UserNew user = userNewRepository.findUserById(id).get();
+        UserDto user = userNewRepository.getUserFast(1L).get();
+
+        /*if (user.getJudge() != null){
+            log.info("user.getJudge().getFullName();", user.getJudge().getFullName());
+        }
+
+        if (user.getFighter() != null){
+            log.info("user.getFighter().getFullName();", user.getFighter().getFirstName());
+        }
+
+        if (user.getTrainer() != null){
+            log.info("user.getTrainer().getFullName();", user.getTrainer().getFullname());
+        }*/
+
+        return ResponseEntity.ok(user.getUserName());
     }
 
     public int getSum(int n1, int n2) {

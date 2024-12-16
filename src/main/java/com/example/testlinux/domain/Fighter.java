@@ -34,7 +34,7 @@ public class Fighter {
     @ToString.Exclude
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "login", referencedColumnName = "id")
-    private User user;
+    private UserNew user;
 
     @Column(name="first_name")
     private String firstName;
@@ -88,11 +88,11 @@ public class Fighter {
     @Column(name="fromSortition")
     private String fromSortition;
 
-    @EqualsAndHashCode.Exclude
+    /*@EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idTrainer")
-    private Trainer trainer;
+    private Trainer trainer;*/
 
     @Column(name="nameTrainer")
     private String nameTrainer;

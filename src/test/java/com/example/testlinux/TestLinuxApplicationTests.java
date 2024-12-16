@@ -1,6 +1,7 @@
 package com.example.testlinux;
 
 import com.example.testlinux.controller.ControllerRest;
+import com.example.testlinux.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,10 +12,17 @@ class TestLinuxApplicationTests {
     @Autowired
     private ControllerRest controllerRest;
 
+    @Autowired
+    private UserService userService;
+
     @Test
     void contextLoads() {
     }
 
+    @Test
+    void getUser(){
+        userService.getUserById(1);
+    }
 
     // @Transactional   @Commit   @Rollback(false)
     @Test
