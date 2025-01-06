@@ -21,14 +21,9 @@ import java.util.List;
 @Table(name = "fighters")
 public class Fighter {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
     private Integer id;
-
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @OneToMany(mappedBy = "fighter", fetch = FetchType.LAZY)
-    private List<EventBidFighter> bidsList;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
@@ -61,8 +56,8 @@ public class Fighter {
     private String gender;
 
 
-    @Column(name="timeBusy")
-    private Integer timeBusyMonth = 0; // время занятий боксом в месяцах
+    /*@Column(name="timeBusy")
+    private Integer timeBusyMonth = 0; */
 
     @Column(name="phone_by_fighter")
     private String phoneByFighter;
@@ -94,11 +89,10 @@ public class Fighter {
     @JoinColumn(name = "idTrainer")
     private Trainer trainer;*/
 
-    @Column(name="nameTrainer")
-    private String nameTrainer;
+    /*@Column(name="nameTrainer")
+    private String nameTrainer;*/
 
     @Column(name="sport_community")
     private String sportCommunity;
-
 }
 

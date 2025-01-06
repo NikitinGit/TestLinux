@@ -10,17 +10,17 @@ import lombok.Setter;
 @Table(name = "users")
 public class UserNew {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
     private Integer id;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user")
     private Fighter fighter;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user")
     private Judge judge;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user")
     private Trainer trainer;
 
     @Column(name="pass")
@@ -35,5 +35,4 @@ public class UserNew {
        this.telefon = telefon;
        this.pass = pass;
     }
-
 }

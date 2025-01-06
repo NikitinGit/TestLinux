@@ -48,11 +48,11 @@ public class MainController {
         return userNewRepository.findAll();
     }
 
-    @GetMapping(path="/sqlinjection") // Map ONLY POST Requests
+   /* @GetMapping(path="/sqlinjection") // Map ONLY POST Requests
     public @ResponseBody String sqlInjection (@RequestParam String sqlName) {
         List<UserNew> userNew = userNewRepository.getUser(sqlName);
         return userNew.get(0).getPass();
-    }
+    }*/
 
     @RequestMapping(value = "/hellonikitin", method = RequestMethod.GET)
     @ResponseBody

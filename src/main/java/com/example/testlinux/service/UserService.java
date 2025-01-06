@@ -2,8 +2,7 @@ package com.example.testlinux.service;
 
 import com.example.testlinux.domain.Event;
 import com.example.testlinux.domain.UserNew;
-import com.example.testlinux.dto.FighterDto;
-import com.example.testlinux.dto.UserDto;
+import com.example.testlinux.dto.*;
 import com.example.testlinux.repository.EventBidFighterRepository;
 import com.example.testlinux.repository.EventRepository;
 import com.example.testlinux.repository.FighterRepository;
@@ -13,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -85,7 +81,7 @@ public class UserService {
     }*/
 
     public ResponseEntity<List<FighterDto>> getFighters() {
-        Event event = eventRepository.findEventByMySql().get();
+        Event event = eventRepository.findEventByEventId(175).get();
         System.out.println("eventName; " + event.getNameEvent());
         List<FighterDto> fighterDtoList = new ArrayList<>();
         int n = 0;
@@ -99,23 +95,41 @@ public class UserService {
         return ResponseEntity.ok(fighterDtoList);
     }
 
-    public ResponseEntity<String> getUserById(int id) {
-        //UserNew user = userNewRepository.findUserById(id).get();
-        UserDto user = userNewRepository.getUserFast(1L).get();
+    public String getUserById(Integer id) {
+        //List<UserFighterDto> userOpt = userNewRepository.findUserById(id);
+        //Optional<Event> eventOpt = eventRepository.findEventByEventId(id);
 
-        /*if (user.getJudge() != null){
+        Optional<UserNew> userOpt = userNewRepository.findUserById(id);
+        //UserDto user = userNewRepository.getUserFast(1L).get();
+        //Optional<UserEntityDto> userOpt = userNewRepository.getRole(id);
+        if (userOpt.isEmpty()) {
+            return "empty";
+        }
+        UserNew user = userOpt.get();
+
+        //UserEntityDto user = optUser.get();
+        /*Optional<UserEntityFighterDto> optUser = userNewRepository.getFighter(1L);
+        if (!optUser.isPresent()) {
+            return ResponseEntity.ok("empty");
+        }
+        UserEntityFighterDto user = optUser.get();*/
+
+/*        if (user.getJudge() != null){
+            name = user.getJudge().getFullName();
             log.info("user.getJudge().getFullName();", user.getJudge().getFullName());
-        }
-
-        if (user.getFighter() != null){
-            log.info("user.getFighter().getFullName();", user.getFighter().getFirstName());
-        }
-
-        if (user.getTrainer() != null){
-            log.info("user.getTrainer().getFullName();", user.getTrainer().getFullname());
         }*/
 
-        return ResponseEntity.ok(user.getUserName());
+        /*if (user.getFighter() != null){
+            name = user.getFighter().getFirstName();
+            log.info("user.getFighter().getFullName();", name);
+        }*/
+
+/*        if (user.getTrainer() != null){
+            name = user.getTrainer().getFullname();
+            log.info("user.getTrainer().getFullName();", name);
+        }*/
+
+        return user.getFighter().getFirstName() + user.getFighter().getLastName();
     }
 
     public int getSum(int n1, int n2) {

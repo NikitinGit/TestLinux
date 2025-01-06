@@ -25,9 +25,15 @@ public class Event {
     @Column(name="event_id")
     private Integer eventId;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "version", referencedColumnName = "id")
+    private UserNew user;
+
     //    @Version
-    @Column(name="version")
-    private Integer version = 0;
+/*    @Column(name="version")
+    private Integer version = 0;*/
 
     @Column(name="organizer_login")
     private Integer organizerLogin;
@@ -74,7 +80,7 @@ public class Event {
 
     @Column(name="organizer_mail")
     private String organizerMail;
-
+/*
     @CreatedBy
     @Column(name="created_by", updatable = false)
     private String createdBy;
@@ -91,5 +97,5 @@ public class Event {
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="modified_at")
-    private LocalDateTime modifiedAt;
+    private LocalDateTime modifiedAt;*/
 }

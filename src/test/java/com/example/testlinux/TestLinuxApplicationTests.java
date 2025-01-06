@@ -2,11 +2,13 @@ package com.example.testlinux;
 
 import com.example.testlinux.controller.ControllerRest;
 import com.example.testlinux.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 //@WebMvcTest(MainController.class)
+@Slf4j
 @SpringBootTest
 class TestLinuxApplicationTests {
     @Autowired
@@ -21,7 +23,7 @@ class TestLinuxApplicationTests {
 
     @Test
     void getUser(){
-        userService.getUserById(1);
+        log.info("userService.getUserById(1): {}", userService.getUserById(1));
     }
 
     // @Transactional   @Commit   @Rollback(false)

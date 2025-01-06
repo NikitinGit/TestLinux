@@ -16,10 +16,10 @@ import java.util.Optional;
 
 @Repository("eventRepository")
 public interface EventRepository extends JpaRepository<Event, Integer> {
-    Optional<Event> findEventByEventId(Integer eventId);
+    //Optional<Event> findEventByEventId(Integer eventId);
 
-    @Query(value = "SELECT * FROM `events` WHERE event_id = 175", nativeQuery = true)
-    Optional<Event> findEventByMySql();
+    @Query(value = "SELECT * FROM `events` WHERE event_id = :eventId", nativeQuery = true)
+    Optional<Event> findEventByEventId(@Param("eventId")  Integer eventId);
     /*@Query("SELECT new com.strikerstat.webapp.dto.open_events.EventVersionDto(e.version) FROM Event e WHERE e.eventId = :eventId")
     Optional<Event> getEventVersionDto(@Param("eventId") Integer eventId);*/
 

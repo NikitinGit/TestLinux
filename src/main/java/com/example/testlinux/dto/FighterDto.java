@@ -8,7 +8,7 @@ public class FighterDto {
 
     public FighterDto (Fighter fighter) {
         fighterName = fighter.getFirstName() + " " + fighter.getLastName();
-        phoneByFighter = fighter.getPhoneByFighter();
+        //phoneByFighter = fighter.getPhoneByFighter();
     }
 
     public FighterDto(String firstName, String phoneByFighter){
