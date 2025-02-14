@@ -80,22 +80,4 @@ public class Event {
 
     @Column(name="organizer_mail")
     private String organizerMail;
-/*
-    @CreatedBy
-    @Column(name="created_by", updatable = false)
-    private String createdBy;
-
-    @LastModifiedBy
-    @Column(name="modified_by")
-    private String modifiedBy;
-
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="modified_at")
-    private LocalDateTime modifiedAt;*/
 }
