@@ -1,14 +1,10 @@
 package com.example.testlinux.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Setter
 @Getter
@@ -29,8 +25,9 @@ public class EventBidFighter {
     @JoinColumn(name = "fighter_id")
     private Fighter fighter;
 
-    /*@Column(name="approved")
+    @Column(name="approved")
     private Integer approved = 0;
+    /*
 
     @Column(name="approved_doc")
     private Integer approvedDoc = 0;

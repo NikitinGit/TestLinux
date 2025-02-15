@@ -1,16 +1,13 @@
 package com.example.testlinux.repository;
 
-import com.example.testlinux.domain.Event;
 import com.example.testlinux.domain.EventBidFighter;
-import com.example.testlinux.domain.Fighter;
 import com.example.testlinux.dto.FighterDto;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 
 public interface EventBidFighterRepository extends JpaRepository<EventBidFighter, Long> {
@@ -24,5 +21,8 @@ public interface EventBidFighterRepository extends JpaRepository<EventBidFighter
             "INNER JOIN Fighter fgt ON ebf.fighter.id = fgt.id " +
             "WHERE ebf.eventId = :eventId")
     List<FighterDto> getAllFightersByEventId(@Param("eventId") Integer eventId);
+
+    @Query("SELECT t FROM EventBidFighter t WHERE t.id = 175")
+    Optional<EventBidFighter> getBid();
 }
 

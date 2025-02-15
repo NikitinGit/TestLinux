@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface BattlesRepository extends JpaRepository<Battle, Long> {
 
+    //@Lock(LockModeType.OPTIMISTIC)
     @Query("SELECT t FROM Battle t WHERE t.idBattle = :battleId")
     Optional<Battle> getOpenEventBattleByBattleId(Long battleId);
 }
