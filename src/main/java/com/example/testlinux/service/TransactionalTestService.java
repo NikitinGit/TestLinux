@@ -26,8 +26,9 @@ public class TransactionalTestService {
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED)
     public void updateBattle(Long battleId) {
         Battle battle = battlesRepository.getOpenEventBattleByBattleId(battleId).get();
-        battle.setSectionNumber(battle.getSectionNumber() + 1);
-        //battlesRepository.save(battle); не обязательно
+        battlesRepository.updateBattle(battleId);
+        //battle.setSectionNumber(battle.getSectionNumber() + 1);
+        //battlesRepository.save(battle); не обязательно  battlesRepository.flush();
 
         log.info("updateBattleBgn() - ThreadName: {}, battle1.getSectionNumber(): {}",
                 Thread.currentThread().getName(), battle.getSectionNumber());
@@ -46,6 +47,7 @@ public class TransactionalTestService {
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED)
     public void dirtyRead(Long battleId) {
         Battle battle = battlesRepository.getOpenEventBattleByBattleId(battleId).get();//battle.setSectionNumber(25);
+        battlesRepository.updateBattle(battleId);
         log.info("dirtyRead() - Read sectionNumber: {}, ThreadName: {}",
                 battle.getSectionNumber(), Thread.currentThread().getName());
     }
