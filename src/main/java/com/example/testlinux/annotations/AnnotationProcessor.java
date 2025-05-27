@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class AnnotationProcessor {
     public static void main(String[] args) {
+        System.out.println("third-branch commit 1");
         Person pers = new Person(); System.out.println("it not work pers.getAge(); " + pers.getAge());
         // Получаем все поля класса Person
         test(UnKnown.class);
