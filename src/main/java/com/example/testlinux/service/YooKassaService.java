@@ -22,6 +22,7 @@ public class YooKassaService {
     private final String shopId = "465439";
     private final String secretKey = "test_pTudOuL99eJ5nQ-aUYGKt7-_nVaNNWqga3y7GU4y4ok";
     private final String AUTH = shopId + ":" + secretKey;
+    private boolean bin;
 
     public void registerPayment() {
         try {
