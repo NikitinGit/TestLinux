@@ -9,7 +9,7 @@ public class TestLinuxApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TestLinuxApplication.class, args);
-        System.out.println("Hello, Linux!");
+        System.out.println("Hello, Linux 25!");
     }
 
 }

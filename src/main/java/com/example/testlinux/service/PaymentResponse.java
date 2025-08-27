@@ -27,24 +27,16 @@ public class PaymentResponse {
         return confirmation;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Amount {
         @JsonProperty("value")
         private String value;
-        @JsonProperty("currency")
-        private String currency;
 
         public String getValue() {
             return value;
         }
 
-        public String getCurrency() {
-            return currency;
-        }
-
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Confirmation {
         @JsonProperty("type")
         private String type;
