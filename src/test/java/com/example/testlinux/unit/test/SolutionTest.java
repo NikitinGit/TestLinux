@@ -686,17 +686,6 @@ public class SolutionTest {
     }
 
     @Test
-    public void test1() {
-        int[] nums = new int[]{3,2,1,8,6};
-        Map<Integer, Integer> mapOfNums = IntStream.range(0, nums.length)
-                .boxed()
-                .sorted(Comparator.comparingInt(i -> nums[i]))
-                .collect(Collectors.toMap(i -> i, i -> nums[i], (a, b) -> a, LinkedHashMap::new));
-
-        mapOfNums.values().forEach(System.out::println);
-    }
-
-    @Test
     public void test2() {
         int[] nums = new int[]{3,2,1,8,6};
         Map<Integer, Integer> mapOfNums = IntStream.range(0, nums.length)
@@ -707,4 +696,14 @@ public class SolutionTest {
         mapOfNums.values().forEach(System.out::println);
     }
 
+    @Test
+    public void test1() {
+        int[] nums = new int[]{3,2,1,8,6};
+        Map<Integer, Integer> mapOfNums = IntStream.range(0, nums.length)
+                .boxed()
+                .sorted(Comparator.comparingInt(i -> nums[i]))
+                .collect(Collectors.toMap(i -> i, i -> nums[i], (a, b) -> a, LinkedHashMap::new));
+
+        mapOfNums.values().forEach(System.out::println);
+    }
 }
