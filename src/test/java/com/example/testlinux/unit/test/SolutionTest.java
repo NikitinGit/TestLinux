@@ -694,6 +694,9 @@ public class SolutionTest {
                 .collect(Collectors.toMap(i -> i, i -> nums[i], (a, b) -> a, LinkedHashMap::new));
 
         mapOfNums.values().forEach(System.out::println);
+        for (int num : nums) {
+            System.out.println(num);
+        }
     }
 
     @Test
