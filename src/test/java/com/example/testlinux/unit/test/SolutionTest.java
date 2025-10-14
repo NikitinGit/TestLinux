@@ -685,6 +685,7 @@ public class SolutionTest {
         return true; // All checks passed, tree is symmetric
     }
 
+
     @Test
     public void test2() {
         int[] nums = new int[]{3,2,1,8,6};
@@ -706,4 +707,7 @@ public class SolutionTest {
 
         mapOfNums.values().forEach(System.out::println);
     }
+
+
+
 }
