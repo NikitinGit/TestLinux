@@ -1,10 +1,13 @@
 package com.example.testlinux.unit.test;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 public class SolutionTest {
@@ -680,6 +683,17 @@ public class SolutionTest {
         }
 
         return true; // All checks passed, tree is symmetric
+    }
+
+    @Test
+    public void test() {
+        int[] nums = new int[]{3,2,1,8,6};
+        Map<Integer, Integer> mapOfNums = IntStream.range(0, nums.length)
+                .boxed()
+                .sorted(Comparator.comparingInt(i -> nums[i]))
+                .collect(Collectors.toMap(i -> i, i -> nums[i], (a, b) -> a, LinkedHashMap::new));
+
+        mapOfNums.values().forEach(System.out::println);
     }
 
 }
