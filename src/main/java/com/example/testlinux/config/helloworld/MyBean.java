@@ -1,4 +1,4 @@
-package com.example.testlinux.config;
+package com.example.testlinux.config.helloworld;
 
 public class MyBean {
     int number = 25;

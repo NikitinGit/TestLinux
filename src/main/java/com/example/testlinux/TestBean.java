@@ -1,8 +1,8 @@
 package com.example.testlinux;
 
-import com.example.testlinux.config.AppConfig1;
-import com.example.testlinux.config.AppConfig2;
-import com.example.testlinux.config.MyBean;
+import com.example.testlinux.config.helloworld.AppConfig1;
+import com.example.testlinux.config.helloworld.AppConfig3;
+import com.example.testlinux.config.helloworld.MyBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -13,7 +13,8 @@ public class TestBean {
         MyBean bean1 = (MyBean) context.getBean("bean1");
         bean1.sayHello();
 
-        MyBean bean2 = (MyBean) context.getBean("bean2");
+        ApplicationContext context3 = new AnnotationConfigApplicationContext(AppConfig3.class);
+        MyBean bean2 = (MyBean) context3.getBean("bean1");
         bean2.sayHello();
 
         // Вывести все имена бинов

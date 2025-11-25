@@ -1,6 +1,6 @@
 package com.example.testlinux.controller;
 
-import com.example.testlinux.config.MyBean;
+import com.example.testlinux.config.helloworld.MyBean;
 import com.example.testlinux.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

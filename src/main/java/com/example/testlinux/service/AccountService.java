@@ -14,9 +14,6 @@ import java.math.BigDecimal;
 @Service
 public class AccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
-
     @PersistenceContext
     private EntityManager entityManager;
 

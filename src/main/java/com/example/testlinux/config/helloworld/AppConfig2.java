@@ -1,4 +1,4 @@
-package com.example.testlinux.config;
+package com.example.testlinux.config.helloworld;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
