@@ -1,28 +1,15 @@
 package com.example.testlinux.unit.test;
 
 import com.example.testlinux.domain.UserNew;
-import com.example.testlinux.dto.UserDto;
-import com.example.testlinux.repository.UserNewRepository;
 import com.example.testlinux.service.UserService;
 
 import com.example.testlinux.service.YooKassaService;
-import com.example.testlinux.service.type.extend.TestExtendsMethodTypes;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.testlinux.java.core.generic.TestExtendsMethodTypes;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 /*import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
