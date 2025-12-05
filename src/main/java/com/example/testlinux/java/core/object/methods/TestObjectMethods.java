@@ -16,9 +16,6 @@ public class TestObjectMethods {
         System.out.println("MAIN 2 (parentObj3 instanceof ObjectMethodsExtends); " + (parentObj1 instanceof ObjectMethodsExtends)
                 + " childObj1.equals(parentObj1); " + childObj1.equals(parentObj2));
 
-        var original = new ObjectMethods();
-        var clone = original.clone();
-        System.out.println("MAIN original.equals(clone); " + original.equals(clone));
     }
 
 }

@@ -13,11 +13,6 @@ public class ObjectMethods implements Cloneable {
     public String toString(){
         return name + "; " + number;
     }
-
-    @Override
-    public Object clone() {
-        return super.clone();
-    }
     public ObjectMethods getObject() {
         System.out.println("ObjectMethods getObject(); " + this);
         return this;
