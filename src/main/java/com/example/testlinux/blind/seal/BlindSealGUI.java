@@ -10,6 +10,7 @@ public class BlindSealGUI extends JFrame {
     static final char[] symbols = new char[]{'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'};
 
     private JLabel instructionLabel;
+    private JLabel timerLabel;
     private JLabel symbolLabel;
     private JLabel statsLabel;
     private JButton startButton;
@@ -17,10 +18,12 @@ public class BlindSealGUI extends JFrame {
     private char currentSymbol;
     private int countAllSymbols = 0;
     private int countWrongSymbols = 0;
+    private int elapsedSeconds = 0;
     private boolean gameActive = false;
 
     private Timer gameTimer;
     private Timer blinkTimer;
+    private Timer secondsTimer;
 
     public BlindSealGUI() {
         setTitle("Слепая печать");
@@ -44,6 +47,11 @@ public class BlindSealGUI extends JFrame {
         instructionLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         instructionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        timerLabel = new JLabel("Время: 0 сек", SwingConstants.CENTER);
+        timerLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        timerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        timerLabel.setForeground(new Color(0, 102, 204));
+
         symbolLabel = new JLabel("", SwingConstants.CENTER);
         symbolLabel.setFont(new Font("Arial", Font.BOLD, 72));
         symbolLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -63,7 +71,9 @@ public class BlindSealGUI extends JFrame {
 
         mainPanel.add(Box.createVerticalGlue());
         mainPanel.add(instructionLabel);
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        mainPanel.add(timerLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         mainPanel.add(symbolLabel);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 30)));
         mainPanel.add(statsLabel);
@@ -109,6 +119,16 @@ public class BlindSealGUI extends JFrame {
         gameTimer = new Timer(60000, e -> endGame());
         gameTimer.setRepeats(false);
         gameTimer.start();
+
+        secondsTimer = new Timer(1000, e -> {
+            elapsedSeconds++;
+            updateTimerDisplay();
+        });
+        secondsTimer.start();
+    }
+
+    private void updateTimerDisplay() {
+        timerLabel.setText("Время: " + elapsedSeconds + " сек");
     }
 
     private void generateNewSymbol() {
@@ -154,11 +174,16 @@ public class BlindSealGUI extends JFrame {
         if (gameTimer != null && gameTimer.isRunning()) {
             gameTimer.stop();
         }
+        if (secondsTimer != null && secondsTimer.isRunning()) {
+            secondsTimer.stop();
+        }
 
         countAllSymbols = 0;
         countWrongSymbols = 0;
+        elapsedSeconds = 0;
         gameActive = true;
 
+        timerLabel.setText("Время: 0 сек");
         symbolLabel.setFont(new Font("Arial", Font.BOLD, 72));
         startButton.setVisible(false);
 
@@ -170,6 +195,9 @@ public class BlindSealGUI extends JFrame {
         gameActive = false;
         if (gameTimer != null) {
             gameTimer.stop();
+        }
+        if (secondsTimer != null && secondsTimer.isRunning()) {
+            secondsTimer.stop();
         }
 
         double accuracy = countAllSymbols > 0 ? 100 * (1 - ((double) countWrongSymbols / countAllSymbols)) : 0;
