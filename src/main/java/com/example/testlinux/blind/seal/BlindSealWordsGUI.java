@@ -25,6 +25,9 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
     // Presentation component (UI layer)
     private final UIComponents uiComponents;
 
+    // State flag for statistics visibility
+    private boolean statisticsShown;
+
     /**
      * Constructs the main game window and initializes all components.
      * Follows Dependency Injection pattern.
@@ -69,6 +72,9 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
 
         // Configure start button action
         uiComponents.getStartButton().addActionListener(e -> resetGame());
+
+        // Configure show statistics button action
+        uiComponents.getShowStatsButton().addActionListener(e -> showStatistics());
     }
 
     /**
@@ -94,8 +100,8 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
     private void handleKeyPress(KeyEvent e) {
         char inputChar = e.getKeyChar();
 
-        // Handle space to start game when not active
-        if (!gameState.isActive() && inputChar == KeyEvent.VK_SPACE) {
+        // Handle space to start game when not active (only if statistics are shown)
+        if (!gameState.isActive() && inputChar == KeyEvent.VK_SPACE && statisticsShown) {
             resetGame();
             return;
         }
@@ -136,6 +142,7 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
         // Reset domain state
         statistics.reset();
         gameState.setActive(true);
+        statisticsShown = false;
 
         // Update UI
         uiComponents.showGameStartState();
@@ -152,9 +159,18 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
         gameState.setActive(false);
         gameTimer.stopAll();
 
-        // Display final results
+        // Show game end state with "Show Statistics" button
+        uiComponents.showGameEndState();
+        statisticsShown = false;
+    }
+
+    /**
+     * Shows final statistics after user clicks the button.
+     */
+    private void showStatistics() {
         String finalResults = statistics.getFormattedFinalResults();
-        uiComponents.showGameEndState(finalResults);
+        uiComponents.showFinalStatistics(finalResults);
+        statisticsShown = true;
     }
 
     // ========== GameEventListener Implementation ==========

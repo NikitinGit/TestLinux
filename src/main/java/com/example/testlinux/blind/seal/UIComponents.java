@@ -1,5 +1,7 @@
 package com.example.testlinux.blind.seal;
 
+import lombok.Getter;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,7 +14,10 @@ public class UIComponents {
     private final JLabel timerLabel;
     private final JLabel wordLabel;
     private final JLabel statsLabel;
+    @Getter
     private final JButton startButton;
+    @Getter
+    private final JButton showStatsButton;
 
     public UIComponents() {
         this.instructionLabel = createInstructionLabel();
@@ -20,6 +25,7 @@ public class UIComponents {
         this.wordLabel = createWordLabel();
         this.statsLabel = createStatsLabel();
         this.startButton = createStartButton();
+        this.showStatsButton = createShowStatsButton();
     }
 
     private JLabel createInstructionLabel() {
@@ -62,6 +68,17 @@ public class UIComponents {
         return button;
     }
 
+    private JButton createShowStatsButton() {
+        JButton button = new JButton("ПОКАЗАТЬ СТАТИСТИКУ");
+        button.setFont(new Font("Arial", Font.BOLD, 20));
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setPreferredSize(new Dimension(300, 60));
+        button.setMaximumSize(new Dimension(300, 60));
+        button.setFocusable(false);
+        button.setVisible(false);
+        return button;
+    }
+
     /**
      * Creates and returns the main panel with all components.
      *
@@ -82,6 +99,8 @@ public class UIComponents {
         mainPanel.add(Box.createRigidArea(new Dimension(0, 30)));
         mainPanel.add(statsLabel);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        mainPanel.add(showStatsButton);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         mainPanel.add(startButton);
         mainPanel.add(Box.createVerticalGlue());
 
@@ -152,19 +171,26 @@ public class UIComponents {
     }
 
     /**
-     * Shows game end state.
+     * Shows game end state with "Show Statistics" button.
+     */
+    public void showGameEndState() {
+        wordLabel.setText("Игра завершена!");
+        wordLabel.setFont(new Font("Arial", Font.BOLD, 48));
+        statsLabel.setText("");
+        showStatsButton.setVisible(true);
+        startButton.setVisible(false);
+    }
+
+    /**
+     * Shows final statistics and restart button.
      *
      * @param finalResults formatted final results string
      */
-    public void showGameEndState(String finalResults) {
-        wordLabel.setText("Игра завершена!");
-        wordLabel.setFont(new Font("Arial", Font.BOLD, 48));
+    public void showFinalStatistics(String finalResults) {
         statsLabel.setText(finalResults);
+        showStatsButton.setVisible(false);
         startButton.setVisible(true);
         startButton.setText("ПЕРЕЗАПУСК");
     }
 
-    public JButton getStartButton() {
-        return startButton;
-    }
 }
