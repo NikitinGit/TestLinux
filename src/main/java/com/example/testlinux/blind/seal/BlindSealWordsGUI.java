@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 
 public class BlindSealWordsGUI extends JFrame {
 
-    static final String[] words = {"нищий", "тень", "меч", "честь", "семь", "нить", "щит", "кит", "куст", "сеть", "месть", "мешки", "счет", "цех", "шум", "шут", "учет", "зуб", "куб", "тушь", "щи", "тишь", "мишень", "цемент"};
+    static final String[] words = {"нищий ", "тень ", "меч ", "честь ", "семь ", "нить ", "щит ", "кит ", "куст ", "сеть ", "месть ", "мешки ", "счет ", "цех ", "шум ", "шут ", "учет ", "зуб ", "куб ", "тушь ", "щи ", "тишь ", "мишень ", "цемент "};
 
     private JLabel instructionLabel;
     private JLabel timerLabel;
@@ -17,8 +17,9 @@ public class BlindSealWordsGUI extends JFrame {
 
     private String currentWord;
     private StringBuilder typedWord;
-    private int countAllWords = 0;
-    private int countWrongWords = 0;
+    private int countAllSymbols = 0;
+    private int countWrongSymbols = 0;
+    private int countCompletedWords = 0;
     private int elapsedSeconds = 0;
     private boolean gameActive = false;
 
@@ -141,28 +142,28 @@ public class BlindSealWordsGUI extends JFrame {
 
     private void processInput(char inputChar) {
         if (inputChar == KeyEvent.VK_BACK_SPACE) {
-            if (typedWord.length() > 0) {
-                typedWord.deleteCharAt(typedWord.length() - 1);
-                updateWordDisplay();
-            }
             return;
         }
 
-        typedWord.append(inputChar);
-        updateWordDisplay();
+        countAllSymbols++;
+        int currentPosition = typedWord.length();
 
-        if (typedWord.length() == currentWord.length()) {
-            countAllWords++;
+        if (currentPosition < currentWord.length() && inputChar == currentWord.charAt(currentPosition)) {
+            // Верный символ - добавляем его
+            typedWord.append(inputChar);
+            updateWordDisplay();
+            updateStats();
 
-            if (typedWord.toString().equals(currentWord)) {
-                generateNewWord();
-                updateStats();
-            } else {
-                countWrongWords++;
-                blinkRed();
-                updateStats();
+            // Проверяем, завершено ли слово
+            if (typedWord.length() == currentWord.length()) {
+                countCompletedWords++;
                 generateNewWord();
             }
+        } else {
+            // Неверный символ - не добавляем, мигаем красным
+            countWrongSymbols++;
+            blinkRed();
+            updateStats();
         }
     }
 
@@ -186,9 +187,9 @@ public class BlindSealWordsGUI extends JFrame {
     }
 
     private void updateStats() {
-        double accuracy = 100 * (1 - ((double) countWrongWords / countAllWords));
-        statsLabel.setText(String.format("Всего слов: %d | Ошибок: %d | Точность: %.1f%%",
-                countAllWords, countWrongWords, accuracy));
+        double accuracy = 100 * (1 - ((double) countWrongSymbols / countAllSymbols));
+        statsLabel.setText(String.format("Всего символов: %d | Ошибок: %d | Точность: %.1f%%",
+                countAllSymbols, countWrongSymbols, accuracy));
     }
 
     private void resetGame() {
@@ -199,8 +200,9 @@ public class BlindSealWordsGUI extends JFrame {
             secondsTimer.stop();
         }
 
-        countAllWords = 0;
-        countWrongWords = 0;
+        countAllSymbols = 0;
+        countWrongSymbols = 0;
+        countCompletedWords = 0;
         elapsedSeconds = 0;
         gameActive = true;
 
@@ -221,12 +223,12 @@ public class BlindSealWordsGUI extends JFrame {
             secondsTimer.stop();
         }
 
-        double accuracy = countAllWords > 0 ? 100 * (1 - ((double) countWrongWords / countAllWords)) : 0;
+        double accuracy = countAllSymbols > 0 ? 100 * (1 - ((double) countWrongSymbols / countAllSymbols)) : 0;
 
         wordLabel.setText("Игра завершена!");
         wordLabel.setFont(new Font("Arial", Font.BOLD, 48));
-        statsLabel.setText(String.format("<html><center>Набрано всего слов: %d<br>Набрано неверных слов: %d<br>Процент попадания: %.2f%%</center></html>",
-                countAllWords, countWrongWords, accuracy));
+        statsLabel.setText(String.format("<html><center>Набрано слов: %d<br>Набрано всего символов: %d<br>Набрано неверных символов: %d<br>Процент попадания: %.2f%%</center></html>",
+                countCompletedWords, countAllSymbols, countWrongSymbols, accuracy));
 
         startButton.setVisible(true);
         startButton.setText("ПЕРЕЗАПУСК");
