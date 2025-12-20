@@ -9,6 +9,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class TestConfiguration {
 
     public static void main(String[] args) {
+        // LocalTime test1 = LocalTime.of(10, 75); до компиляции не падает
         ApplicationContext ctx = new AnnotationConfigApplicationContext(BeanConfig.class);
 
         A a = ctx.getBean(A.class);

@@ -4,22 +4,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 
-public class BlindSealGUI extends JFrame {
-
-    static final char[] symbols = new char[]{'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'};
+public class BlindSealWordsGUI extends JFrame {
 
     static final String[] words = {"нищий", "тень", "меч", "честь", "семь", "нить", "щит", "кит", "куст", "сеть", "месть", "мешки", "счет", "цех", "шум", "шут", "учет", "зуб", "куб", "тушь", "щи", "тишь", "мишень", "цемент"};
+
     private JLabel instructionLabel;
     private JLabel timerLabel;
-    private JLabel symbolLabel;
+    private JLabel wordLabel;
     private JLabel statsLabel;
     private JButton startButton;
 
-    private char currentSymbol;
-    private int countAllSymbols = 0;
-    private int countWrongSymbols = 0;
+    private String currentWord;
+    private StringBuilder typedWord;
+    private int countAllWords = 0;
+    private int countWrongWords = 0;
     private int elapsedSeconds = 0;
     private boolean gameActive = false;
 
@@ -27,8 +26,8 @@ public class BlindSealGUI extends JFrame {
     private Timer blinkTimer;
     private Timer secondsTimer;
 
-    public BlindSealGUI() {
-        setTitle("Слепая печать");
+    public BlindSealWordsGUI() {
+        setTitle("Слепая печать - Слова");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout(10, 10));
@@ -54,10 +53,10 @@ public class BlindSealGUI extends JFrame {
         timerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         timerLabel.setForeground(new Color(0, 102, 204));
 
-        symbolLabel = new JLabel("", SwingConstants.CENTER);
-        symbolLabel.setFont(new Font("Arial", Font.BOLD, 72));
-        symbolLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        symbolLabel.setPreferredSize(new Dimension(200, 150));
+        wordLabel = new JLabel("", SwingConstants.CENTER);
+        wordLabel.setFont(new Font("Arial", Font.BOLD, 72));
+        wordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        wordLabel.setPreferredSize(new Dimension(400, 150));
 
         statsLabel = new JLabel("Нажмите кнопку СТАРТ для начала игры", SwingConstants.CENTER);
         statsLabel.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -76,7 +75,7 @@ public class BlindSealGUI extends JFrame {
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         mainPanel.add(timerLabel);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        mainPanel.add(symbolLabel);
+        mainPanel.add(wordLabel);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 30)));
         mainPanel.add(statsLabel);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -94,7 +93,7 @@ public class BlindSealGUI extends JFrame {
 
                 if (!gameActive) {
                     if (inputChar == KeyEvent.VK_SPACE) {
-                        System.out.println("inputChar == KeyEvent.VK_SPACE && countAllSymbols == 0");
+                        System.out.println("inputChar == KeyEvent.VK_SPACE && countAllWords == 0");
                         resetGame();
                     }
                     return;
@@ -116,7 +115,7 @@ public class BlindSealGUI extends JFrame {
     }
 
     private void startGame() {
-        generateNewSymbol();
+        generateNewWord();
 
         gameTimer = new Timer(60000, e -> endGame());
         gameTimer.setRepeats(false);
@@ -133,43 +132,63 @@ public class BlindSealGUI extends JFrame {
         timerLabel.setText("Время: " + elapsedSeconds + " сек");
     }
 
-    private void generateNewSymbol() {
-        currentSymbol = symbols[(int) (Math.random() * symbols.length)];
-        symbolLabel.setText("Введите символ: " + currentSymbol);
-        symbolLabel.setForeground(Color.BLACK);
+    private void generateNewWord() {
+        currentWord = words[(int) (Math.random() * words.length)];
+        typedWord = new StringBuilder();
+        wordLabel.setText("Введите слово: " + currentWord);
+        wordLabel.setForeground(Color.BLACK);
     }
 
     private void processInput(char inputChar) {
-        countAllSymbols++;
+        if (inputChar == KeyEvent.VK_BACK_SPACE) {
+            if (typedWord.length() > 0) {
+                typedWord.deleteCharAt(typedWord.length() - 1);
+                updateWordDisplay();
+            }
+            return;
+        }
 
-        if (inputChar == currentSymbol) {
-            generateNewSymbol();
-            updateStats();
-        } else {
-            countWrongSymbols++;
-            blinkRed();
-            updateStats();
+        typedWord.append(inputChar);
+        updateWordDisplay();
+
+        if (typedWord.length() == currentWord.length()) {
+            countAllWords++;
+
+            if (typedWord.toString().equals(currentWord)) {
+                generateNewWord();
+                updateStats();
+            } else {
+                countWrongWords++;
+                blinkRed();
+                updateStats();
+                generateNewWord();
+            }
         }
     }
 
+    private void updateWordDisplay() {
+        String display = "Введите слово: " + currentWord + "<br>Набрано: " + typedWord.toString();
+        wordLabel.setText("<html><center>" + display + "</center></html>");
+    }
+
     private void blinkRed() {
-        symbolLabel.setForeground(Color.RED);
+        wordLabel.setForeground(Color.RED);
 
         if (blinkTimer != null && blinkTimer.isRunning()) {
             blinkTimer.stop();
         }
 
         blinkTimer = new Timer(300, e -> {
-            symbolLabel.setForeground(Color.BLACK);
+            wordLabel.setForeground(Color.BLACK);
         });
         blinkTimer.setRepeats(false);
         blinkTimer.start();
     }
 
     private void updateStats() {
-        double accuracy = 100 * (1 - ((double) countWrongSymbols / countAllSymbols));
-        statsLabel.setText(String.format("Всего символов: %d | Ошибок: %d | Точность: %.1f%%",
-                countAllSymbols, countWrongSymbols, accuracy));
+        double accuracy = 100 * (1 - ((double) countWrongWords / countAllWords));
+        statsLabel.setText(String.format("Всего слов: %d | Ошибок: %d | Точность: %.1f%%",
+                countAllWords, countWrongWords, accuracy));
     }
 
     private void resetGame() {
@@ -180,13 +199,13 @@ public class BlindSealGUI extends JFrame {
             secondsTimer.stop();
         }
 
-        countAllSymbols = 0;
-        countWrongSymbols = 0;
+        countAllWords = 0;
+        countWrongWords = 0;
         elapsedSeconds = 0;
         gameActive = true;
 
         timerLabel.setText("Время: 0 сек");
-        symbolLabel.setFont(new Font("Arial", Font.BOLD, 72));
+        wordLabel.setFont(new Font("Arial", Font.BOLD, 72));
         startButton.setVisible(false);
 
         startGame();
@@ -202,18 +221,18 @@ public class BlindSealGUI extends JFrame {
             secondsTimer.stop();
         }
 
-        double accuracy = countAllSymbols > 0 ? 100 * (1 - ((double) countWrongSymbols / countAllSymbols)) : 0;
+        double accuracy = countAllWords > 0 ? 100 * (1 - ((double) countWrongWords / countAllWords)) : 0;
 
-        symbolLabel.setText("Игра завершена!");
-        symbolLabel.setFont(new Font("Arial", Font.BOLD, 48));
-        statsLabel.setText(String.format("<html><center>Набрано всего символов: %d<br>Набрано неверных символов: %d<br>Процент попадания: %.2f%%</center></html>",
-                countAllSymbols, countWrongSymbols, accuracy));
+        wordLabel.setText("Игра завершена!");
+        wordLabel.setFont(new Font("Arial", Font.BOLD, 48));
+        statsLabel.setText(String.format("<html><center>Набрано всего слов: %d<br>Набрано неверных слов: %d<br>Процент попадания: %.2f%%</center></html>",
+                countAllWords, countWrongWords, accuracy));
 
         startButton.setVisible(true);
         startButton.setText("ПЕРЕЗАПУСК");
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(BlindSealGUI::new);
+        SwingUtilities.invokeLater(BlindSealWordsGUI::new);
     }
 }
