@@ -5,109 +5,80 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class BlindSealWordsGUI extends JFrame {
+/**
+ * Main GUI class for the Blind Typing Game.
+ * Refactored to follow SOLID principles:
+ * - Acts as a coordinator/facade for game components
+ * - Delegates responsibilities to specialized classes
+ * - Implements GameEventListener for loose coupling
+ * - Follows Dependency Inversion Principle by depending on abstractions
+ */
+public class BlindSealWordsGUI extends JFrame implements GameEventListener {
 
-    static final String[] words = {"нищий ", "тень ", "меч ", "честь ", "семь ", "нить ", "щит ", "кит ", "куст ", "сеть ", "месть ", "мешки ", "счет ", "цех ", "шум ", "шут ", "учет ", "зуб ", "куб ", "тушь ", "щи ", "тишь ", "мишень ", "цемент "};
+    // Domain components (business logic layer)
+    private final GameState gameState;
+    private final TypingStatistics statistics;
+    private final WordProvider wordProvider;
+    private final GameTimer gameTimer;
+    private final InputProcessor inputProcessor;
 
-    private JLabel instructionLabel;
-    private JLabel timerLabel;
-    private JLabel wordLabel;
-    private JLabel statsLabel;
-    private JButton startButton;
+    // Presentation component (UI layer)
+    private final UIComponents uiComponents;
 
-    private String currentWord;
-    private StringBuilder typedWord;
-    private int countAllSymbols = 0;
-    private int countWrongSymbols = 0;
-    private int countCompletedWords = 0;
-    private int elapsedSeconds = 0;
-    private boolean gameActive = false;
-
-    private Timer gameTimer;
-    private Timer blinkTimer;
-    private Timer secondsTimer;
-
+    /**
+     * Constructs the main game window and initializes all components.
+     * Follows Dependency Injection pattern.
+     */
     public BlindSealWordsGUI() {
-        setTitle("Слепая печать - Слова");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setLayout(new BorderLayout(10, 10));
+        // Initialize domain layer components
+        this.gameState = new GameState();
+        this.statistics = new TypingStatistics();
+        this.wordProvider = new WordProvider();
+        this.gameTimer = new GameTimer();
 
-        initComponents();
+        // Initialize input processor with dependencies
+        this.inputProcessor = new InputProcessor(gameState, statistics, wordProvider, this);
+
+        // Initialize UI components
+        this.uiComponents = new UIComponents();
+
+        // Setup frame
+        setupFrame();
+        setupUI();
         setupKeyListener();
 
         setVisible(true);
     }
 
-    private void initComponents() {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        mainPanel.setBackground(Color.WHITE);
-
-        instructionLabel = new JLabel("Нажмите ESC для выхода");
-        instructionLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        instructionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        timerLabel = new JLabel("Время: 0 сек", SwingConstants.CENTER);
-        timerLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        timerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        timerLabel.setForeground(new Color(0, 102, 204));
-
-        wordLabel = new JLabel("", SwingConstants.CENTER);
-        wordLabel.setFont(new Font("Arial", Font.BOLD, 72));
-        wordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        wordLabel.setPreferredSize(new Dimension(400, 150));
-
-        statsLabel = new JLabel("Нажмите кнопку СТАРТ для начала игры", SwingConstants.CENTER);
-        statsLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        statsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        startButton = new JButton("СТАРТ");
-        startButton.setFont(new Font("Arial", Font.BOLD, 24));
-        startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        startButton.setPreferredSize(new Dimension(200, 60));
-        startButton.setMaximumSize(new Dimension(200, 60));
-        startButton.setFocusable(false);
-        startButton.addActionListener(e -> resetGame());
-
-        mainPanel.add(Box.createVerticalGlue());
-        mainPanel.add(instructionLabel);
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        mainPanel.add(timerLabel);
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        mainPanel.add(wordLabel);
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 30)));
-        mainPanel.add(statsLabel);
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        mainPanel.add(startButton);
-        mainPanel.add(Box.createVerticalGlue());
-
-        add(mainPanel, BorderLayout.CENTER);
+    /**
+     * Configures the main JFrame properties.
+     */
+    private void setupFrame() {
+        setTitle("Слепая печать - Слова");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setLayout(new BorderLayout(10, 10));
     }
 
+    /**
+     * Sets up the UI components and layout.
+     */
+    private void setupUI() {
+        JPanel mainPanel = uiComponents.createMainPanel();
+        add(mainPanel, BorderLayout.CENTER);
+
+        // Configure start button action
+        uiComponents.getStartButton().addActionListener(e -> resetGame());
+    }
+
+    /**
+     * Sets up keyboard input listener.
+     */
     private void setupKeyListener() {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                char inputChar = e.getKeyChar();
-
-                if (!gameActive) {
-                    if (inputChar == KeyEvent.VK_SPACE) {
-                        System.out.println("inputChar == KeyEvent.VK_SPACE && countAllWords == 0");
-                        resetGame();
-                    }
-                    return;
-                }
-
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    endGame();
-                    return;
-                }
-
-                if (inputChar == KeyEvent.CHAR_UNDEFINED) return;
-
-                processInput(inputChar);
+                handleKeyPress(e);
             }
         });
 
@@ -115,125 +86,129 @@ public class BlindSealWordsGUI extends JFrame {
         requestFocus();
     }
 
-    private void startGame() {
-        generateNewWord();
+    /**
+     * Handles keyboard input events.
+     *
+     * @param e the key event
+     */
+    private void handleKeyPress(KeyEvent e) {
+        char inputChar = e.getKeyChar();
 
-        gameTimer = new Timer(60000, e -> endGame());
-        gameTimer.setRepeats(false);
-        gameTimer.start();
-
-        secondsTimer = new Timer(1000, e -> {
-            elapsedSeconds++;
-            updateTimerDisplay();
-        });
-        secondsTimer.start();
-    }
-
-    private void updateTimerDisplay() {
-        timerLabel.setText("Время: " + elapsedSeconds + " сек");
-    }
-
-    private void generateNewWord() {
-        currentWord = words[(int) (Math.random() * words.length)];
-        typedWord = new StringBuilder();
-        wordLabel.setText("Введите слово: " + currentWord);
-        wordLabel.setForeground(Color.BLACK);
-    }
-
-    private void processInput(char inputChar) {
-        if (inputChar == KeyEvent.VK_BACK_SPACE) {
+        // Handle space to start game when not active
+        if (!gameState.isActive() && inputChar == KeyEvent.VK_SPACE) {
+            resetGame();
             return;
         }
 
-        countAllSymbols++;
-        int currentPosition = typedWord.length();
+        // Handle ESC to end game
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE && gameState.isActive()) {
+            endGame();
+            return;
+        }
 
-        if (currentPosition < currentWord.length() && inputChar == currentWord.charAt(currentPosition)) {
-            // Верный символ - добавляем его
-            typedWord.append(inputChar);
-            updateWordDisplay();
-            updateStats();
-
-            // Проверяем, завершено ли слово
-            if (typedWord.length() == currentWord.length()) {
-                countCompletedWords++;
-                generateNewWord();
-            }
-        } else {
-            // Неверный символ - не добавляем, мигаем красным
-            countWrongSymbols++;
-            blinkRed();
-            updateStats();
+        // Process character input
+        if (inputChar != KeyEvent.CHAR_UNDEFINED) {
+            inputProcessor.processCharacter(inputChar);
         }
     }
 
-    private void updateWordDisplay() {
-        String display = "Введите слово: " + currentWord + "<br>Набрано: " + typedWord.toString();
-        wordLabel.setText("<html><center>" + display + "</center></html>");
+    /**
+     * Starts a new game session.
+     */
+    private void startGame() {
+        // Generate first word
+        inputProcessor.generateNewWord();
+
+        // Start game timer (60 seconds)
+        gameTimer.startGameTimer(this::endGame);
+
+        // Start seconds counter
+        gameTimer.startSecondsTimer(this::onSecondElapsed);
     }
 
-    private void blinkRed() {
-        wordLabel.setForeground(Color.RED);
-
-        if (blinkTimer != null && blinkTimer.isRunning()) {
-            blinkTimer.stop();
-        }
-
-        blinkTimer = new Timer(300, e -> {
-            wordLabel.setForeground(Color.BLACK);
-        });
-        blinkTimer.setRepeats(false);
-        blinkTimer.start();
-    }
-
-    private void updateStats() {
-        double accuracy = 100 * (1 - ((double) countWrongSymbols / countAllSymbols));
-        statsLabel.setText(String.format("Всего символов: %d | Ошибок: %d | Точность: %.1f%%",
-                countAllSymbols, countWrongSymbols, accuracy));
-    }
-
+    /**
+     * Resets the game to initial state and starts a new session.
+     */
     private void resetGame() {
-        if (gameTimer != null && gameTimer.isRunning()) {
-            gameTimer.stop();
-        }
-        if (secondsTimer != null && secondsTimer.isRunning()) {
-            secondsTimer.stop();
-        }
+        // Stop all timers
+        gameTimer.stopAll();
 
-        countAllSymbols = 0;
-        countWrongSymbols = 0;
-        countCompletedWords = 0;
-        elapsedSeconds = 0;
-        gameActive = true;
+        // Reset domain state
+        statistics.reset();
+        gameState.setActive(true);
 
-        timerLabel.setText("Время: 0 сек");
-        wordLabel.setFont(new Font("Arial", Font.BOLD, 72));
-        startButton.setVisible(false);
+        // Update UI
+        uiComponents.showGameStartState();
 
+        // Start game
         startGame();
         requestFocus();
     }
 
+    /**
+     * Ends the current game session.
+     */
     private void endGame() {
-        gameActive = false;
-        if (gameTimer != null) {
-            gameTimer.stop();
-        }
-        if (secondsTimer != null && secondsTimer.isRunning()) {
-            secondsTimer.stop();
-        }
+        gameState.setActive(false);
+        gameTimer.stopAll();
 
-        double accuracy = countAllSymbols > 0 ? 100 * (1 - ((double) countWrongSymbols / countAllSymbols)) : 0;
-
-        wordLabel.setText("Игра завершена!");
-        wordLabel.setFont(new Font("Arial", Font.BOLD, 48));
-        statsLabel.setText(String.format("<html><center>Набрано слов: %d<br>Набрано всего символов: %d<br>Набрано неверных символов: %d<br>Процент попадания: %.2f%%</center></html>",
-                countCompletedWords, countAllSymbols, countWrongSymbols, accuracy));
-
-        startButton.setVisible(true);
-        startButton.setText("ПЕРЕЗАПУСК");
+        // Display final results
+        String finalResults = statistics.getFormattedFinalResults();
+        uiComponents.showGameEndState(finalResults);
     }
 
+    // ========== GameEventListener Implementation ==========
+
+    @Override
+    public void onCorrectChar() {
+        // Update word display with current progress
+        uiComponents.updateWordDisplay(gameState.getCurrentWord(), gameState.getTypedWord());
+
+        // Update statistics display
+        uiComponents.updateStats(statistics.getFormattedStats());
+    }
+
+    @Override
+    public void onIncorrectChar() {
+        // Show error indication
+        uiComponents.highlightError();
+
+        // Start blink timer to reset color
+        gameTimer.startBlinkTimer(uiComponents::resetWordColor);
+
+        // Update statistics display
+        uiComponents.updateStats(statistics.getFormattedStats());
+    }
+
+    @Override
+    public void onWordCompleted() {
+        // Word completion is handled by generating new word
+        // Statistics are already updated in InputProcessor
+    }
+
+    @Override
+    public void onSecondElapsed() {
+        statistics.incrementElapsedSeconds();
+        uiComponents.updateTimer(statistics.getElapsedSeconds());
+    }
+
+    @Override
+    public void onGameEnd() {
+        endGame();
+    }
+
+    @Override
+    public void onNewWord(String word) {
+        uiComponents.showNewWord(word);
+    }
+
+    // ========== Application Entry Point ==========
+
+    /**
+     * Application entry point.
+     *
+     * @param args command line arguments (not used)
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(BlindSealWordsGUI::new);
     }
