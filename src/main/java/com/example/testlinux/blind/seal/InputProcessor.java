@@ -66,14 +66,17 @@ public class InputProcessor {
 
     private void handleIncorrectChar() {
         statistics.incrementWrongSymbols();
+        wordProvider.markError();
         eventListener.onIncorrectChar();
     }
 
     /**
      * Generates a new word for the game.
+     * Delegates word selection logic to WordProvider.
      */
     public void generateNewWord() {
-        String newWord = wordProvider.getRandomWord();
+        String newWord = wordProvider.getNextWord();
+
         gameState.setCurrentWord(newWord);
         eventListener.onNewWord(newWord);
     }

@@ -47,7 +47,7 @@ public class UIComponents {
         JLabel label = new JLabel("", SwingConstants.CENTER);
         label.setFont(new Font("Arial", Font.BOLD, 72));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setPreferredSize(new Dimension(400, 150));
+        label.setPreferredSize(new Dimension(400, 350));
         return label;
     }
 
@@ -96,7 +96,7 @@ public class UIComponents {
         mainPanel.add(timerLabel);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         mainPanel.add(wordLabel);
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 80)));
         mainPanel.add(statsLabel);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         mainPanel.add(showStatsButton);
