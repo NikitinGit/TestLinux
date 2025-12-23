@@ -7,7 +7,7 @@ import javax.swing.Timer;
  * Follows Single Responsibility Principle - manages only timer logic.
  */
 public class GameTimer {
-    private static final int GAME_DURATION_MS = 60000; // 1 minute
+    private static final int GAME_DURATION_MS = 180000; // 3 minutes
     private static final int SECOND_INTERVAL_MS = 1000;
     private static final int BLINK_DURATION_MS = 300;
 
@@ -22,7 +22,11 @@ public class GameTimer {
      */
     public void startGameTimer(Runnable onExpire) {
         stopGameTimer();
-        gameTimer = new Timer(GAME_DURATION_MS, e -> onExpire.run());
+        System.out.println("Starting game timer for " + (GAME_DURATION_MS / 1000) + " seconds");
+        gameTimer = new Timer(GAME_DURATION_MS, e -> {
+            System.out.println("Game timer expired!");
+            onExpire.run();
+        });
         gameTimer.setRepeats(false);
         gameTimer.start();
     }
