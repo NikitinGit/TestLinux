@@ -25,8 +25,9 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
     // Presentation component (UI layer)
     private final UIComponents uiComponents;
 
-    // State flag for statistics visibility
+    // State flags
     private boolean statisticsShown;
+    private boolean timerStarted;
 
     /**
      * Constructs the main game window and initializes all components.
@@ -112,6 +113,12 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
             return;
         }
 
+        // Start timers on first character input
+        if (gameState.isActive() && !timerStarted && inputChar != KeyEvent.CHAR_UNDEFINED) {
+            startTimers();
+            timerStarted = true;
+        }
+
         // Process character input
         if (inputChar != KeyEvent.CHAR_UNDEFINED) {
             inputProcessor.processCharacter(inputChar);
@@ -119,12 +126,9 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
     }
 
     /**
-     * Starts a new game session.
+     * Starts the game timers.
      */
-    private void startGame() {
-        // Generate first word
-        inputProcessor.generateNewWord();
-
+    private void startTimers() {
         // Start game timer (60 seconds)
         gameTimer.startGameTimer(this::endGame);
 
@@ -133,7 +137,7 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
     }
 
     /**
-     * Resets the game to initial state and starts a new session.
+     * Resets the game to initial state and prepares for a new session.
      */
     private void resetGame() {
         // Stop all timers
@@ -143,12 +147,14 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
         statistics.reset();
         gameState.setActive(true);
         statisticsShown = false;
+        timerStarted = false;
 
         // Update UI
         uiComponents.showGameStartState();
 
-        // Start game
-        startGame();
+        // Generate first word (but don't start timers yet)
+        inputProcessor.generateNewWord();
+
         requestFocus();
     }
 
