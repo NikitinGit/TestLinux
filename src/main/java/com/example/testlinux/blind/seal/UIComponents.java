@@ -123,8 +123,13 @@ public class UIComponents {
      * @param typedWord   characters typed so far
      */
     public void updateWordDisplay(String currentWord, String typedWord) {
-        String display = "Введите слово: " + currentWord + "<br>Набрано: " + typedWord;
-        wordLabel.setText("<html><center>" + display + "</center></html>");
+        String display = "<html><table>" +
+                "<tr><td style='width:150px; text-align:right;'>Введите слово:&nbsp;</td>" +
+                "<td style='width:250px; text-align:left;'>" + currentWord + "</td></tr>" +
+                "<tr><td style='width:150px; text-align:right;'>Набрано:&nbsp;</td>" +
+                "<td style='width:250px; text-align:left;'>" + typedWord + "</td></tr>" +
+                "</table></html>";
+        wordLabel.setText(display);
         wordLabel.setForeground(Color.BLACK);
     }
 
@@ -134,7 +139,13 @@ public class UIComponents {
      * @param word the new word
      */
     public void showNewWord(String word) {
-        wordLabel.setText("Введите слово: " + word);
+        String display = "<html><table>" +
+                "<tr><td style='width:150px; text-align:right;'>Введите слово:&nbsp;</td>" +
+                "<td style='width:250px; text-align:left;'>" + word + "</td></tr>" +
+                "<tr><td style='width:150px; text-align:right;'>Набрано:&nbsp;</td>" +
+                "<td style='width:250px; text-align:left;'></td></tr>" +
+                "</table></html>";
+        wordLabel.setText(display);
         wordLabel.setForeground(Color.BLACK);
     }
 
