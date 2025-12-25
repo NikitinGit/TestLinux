@@ -31,6 +31,7 @@ public class WordProvider {
     private String previousWord;
     private String currentWord;
     private boolean errorInCurrentWord;
+    private boolean lastWordWasRandom;
 
     public WordProvider() {
         this.random = new Random();
@@ -56,6 +57,15 @@ public class WordProvider {
     }
 
     /**
+     * Checks if the last word was randomly selected from WORDS array.
+     *
+     * @return true if word was random, false if from repeat queue
+     */
+    public boolean wasLastWordRandom() {
+        return lastWordWasRandom;
+    }
+
+    /**
      * Returns the next word based on error status.
      * If there was an error in the current word, adds previous and current words to repeat queue.
      * Next words will be: previous word → current word → random words.
@@ -75,8 +85,10 @@ public class WordProvider {
         String nextWord;
         if (!repeatQueue.isEmpty()) {
             nextWord = repeatQueue.poll();
+            lastWordWasRandom = false;
         } else {
             nextWord = WORDS[random.nextInt(WORDS.length)];
+            lastWordWasRandom = true;
         }
 
         // Update word history and reset error flag

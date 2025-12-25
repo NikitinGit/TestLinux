@@ -83,6 +83,11 @@ public class InputProcessor {
     public void generateNewWord() {
         String newWord = wordProvider.getNextWord();
 
+        // Increment counter only for randomly generated words (not from repeat queue)
+        if (wordProvider.wasLastWordRandom()) {
+            statistics.incrementGeneratedWords();
+        }
+
         gameState.setCurrentWord(newWord);
         eventListener.onNewWord(newWord);
     }

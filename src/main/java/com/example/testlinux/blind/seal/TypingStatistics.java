@@ -1,5 +1,7 @@
 package com.example.testlinux.blind.seal;
 
+import lombok.Getter;
+
 /**
  * Tracks typing statistics during the game.
  * Follows Single Responsibility Principle - manages only statistical data.
@@ -9,6 +11,8 @@ public class TypingStatistics {
     private int wrongSymbols;
     private int completedWords;
     private int correctWords;
+    private int generatedWords;
+    @Getter
     private int elapsedSeconds;
 
     public TypingStatistics() {
@@ -31,29 +35,14 @@ public class TypingStatistics {
         correctWords++;
     }
 
+    public void incrementGeneratedWords() {
+        generatedWords++;
+    }
+
     public void incrementElapsedSeconds() {
         elapsedSeconds++;
     }
 
-    public int getTotalSymbols() {
-        return totalSymbols;
-    }
-
-    public int getWrongSymbols() {
-        return wrongSymbols;
-    }
-
-    public int getCompletedWords() {
-        return completedWords;
-    }
-
-    public int getCorrectWords() {
-        return correctWords;
-    }
-
-    public int getElapsedSeconds() {
-        return elapsedSeconds;
-    }
 
     /**
      * Calculates typing accuracy as a percentage.
@@ -83,9 +72,9 @@ public class TypingStatistics {
      * @return formatted final results
      */
     public String getFormattedFinalResults() {
-        return String.format("<html><center>Набрано слов: %d<br>Правильно набранных слов: %d<br>Набрано всего символов: %d<br>" +
+        return String.format("<html><center>Сгенерировано рандомных слов: %d<br>Набрано слов: %d<br>Правильно набранных слов: %d<br>Набрано всего символов: %d<br>" +
                         "Набрано неверных символов: %d<br>Процент попадания: %.2f%%</center></html>",
-                completedWords, correctWords, totalSymbols, wrongSymbols, getAccuracy());
+                generatedWords, completedWords, correctWords, totalSymbols, wrongSymbols, getAccuracy());
     }
 
     public void reset() {
@@ -93,6 +82,7 @@ public class TypingStatistics {
         wrongSymbols = 0;
         completedWords = 0;
         correctWords = 0;
+        generatedWords = 0;
         elapsedSeconds = 0;
     }
 }
