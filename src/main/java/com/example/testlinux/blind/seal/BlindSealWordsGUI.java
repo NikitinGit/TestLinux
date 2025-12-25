@@ -28,6 +28,7 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
     // State flags
     private boolean statisticsShown;
     private boolean timerStarted;
+    private boolean gameJustEnded;
 
     /**
      * Constructs the main game window and initializes all components.
@@ -101,8 +102,8 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
     private void handleKeyPress(KeyEvent e) {
         char inputChar = e.getKeyChar();
 
-        // Handle space to start game when not active (only if statistics are shown)
-        if (!gameState.isActive() && inputChar == KeyEvent.VK_SPACE && statisticsShown) {
+        // Handle space to start game when not active (except right after game ends)
+        if (!gameState.isActive() && inputChar == KeyEvent.VK_SPACE && !gameJustEnded) {
             resetGame();
             return;
         }
@@ -148,6 +149,7 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
         gameState.setActive(true);
         statisticsShown = false;
         timerStarted = false;
+        gameJustEnded = false;
 
         // Update UI
         uiComponents.showGameStartState();
@@ -168,6 +170,7 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
         // Show game end state with "Show Statistics" button
         uiComponents.showGameEndState();
         statisticsShown = false;
+        gameJustEnded = true;
     }
 
     /**
@@ -177,6 +180,7 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
         String finalResults = statistics.getFormattedFinalResults();
         uiComponents.showFinalStatistics(finalResults);
         statisticsShown = true;
+        gameJustEnded = false;
     }
 
     // ========== GameEventListener Implementation ==========
