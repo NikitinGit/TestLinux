@@ -53,7 +53,7 @@ public class UIComponents {
 
     private JLabel createStatsLabel() {
         JLabel label = new JLabel("Нажмите кнопку СТАРТ для начала игры", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.PLAIN, 14));
+        label.setFont(new Font("Arial", Font.PLAIN, 28));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         return label;
     }
