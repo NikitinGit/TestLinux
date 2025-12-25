@@ -86,25 +86,4 @@ public class WordProvider {
 
         return nextWord;
     }
-
-    /**
-     * Returns a random word from the word list.
-     * For initial word generation.
-     *
-     * @return a random word
-     */
-    public String getRandomWord() {
-        String word = WORDS[random.nextInt(WORDS.length)];
-        currentWord = word;
-        return word;
-    }
-
-    /**
-     * Returns the total number of words available.
-     *
-     * @return word count
-     */
-    public int getWordCount() {
-        return WORDS.length;
-    }
 }
