@@ -59,6 +59,12 @@ public class InputProcessor {
 
         if (gameState.isWordCompleted()) {
             statistics.incrementCompletedWords();
+
+            // Increment correct words counter if no errors occurred
+            if (!wordProvider.hasErrorInCurrentWord()) {
+                statistics.incrementCorrectWords();
+            }
+
             eventListener.onWordCompleted();
             generateNewWord();
         }

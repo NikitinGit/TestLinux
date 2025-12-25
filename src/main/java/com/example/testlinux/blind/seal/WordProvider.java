@@ -47,6 +47,15 @@ public class WordProvider {
     }
 
     /**
+     * Checks if an error occurred in the current word.
+     *
+     * @return true if error occurred, false otherwise
+     */
+    public boolean hasErrorInCurrentWord() {
+        return errorInCurrentWord;
+    }
+
+    /**
      * Returns the next word based on error status.
      * If there was an error in the current word, adds previous and current words to repeat queue.
      * Next words will be: previous word → current word → random words.

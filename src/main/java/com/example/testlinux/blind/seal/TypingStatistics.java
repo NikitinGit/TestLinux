@@ -8,6 +8,7 @@ public class TypingStatistics {
     private int totalSymbols;
     private int wrongSymbols;
     private int completedWords;
+    private int correctWords;
     private int elapsedSeconds;
 
     public TypingStatistics() {
@@ -26,6 +27,10 @@ public class TypingStatistics {
         completedWords++;
     }
 
+    public void incrementCorrectWords() {
+        correctWords++;
+    }
+
     public void incrementElapsedSeconds() {
         elapsedSeconds++;
     }
@@ -40,6 +45,10 @@ public class TypingStatistics {
 
     public int getCompletedWords() {
         return completedWords;
+    }
+
+    public int getCorrectWords() {
+        return correctWords;
     }
 
     public int getElapsedSeconds() {
@@ -74,15 +83,16 @@ public class TypingStatistics {
      * @return formatted final results
      */
     public String getFormattedFinalResults() {
-        return String.format("<html><center>Набрано слов: %d<br>Набрано всего символов: %d<br>" +
+        return String.format("<html><center>Набрано слов: %d<br>Правильно набранных слов: %d<br>Набрано всего символов: %d<br>" +
                         "Набрано неверных символов: %d<br>Процент попадания: %.2f%%</center></html>",
-                completedWords, totalSymbols, wrongSymbols, getAccuracy());
+                completedWords, correctWords, totalSymbols, wrongSymbols, getAccuracy());
     }
 
     public void reset() {
         totalSymbols = 0;
         wrongSymbols = 0;
         completedWords = 0;
+        correctWords = 0;
         elapsedSeconds = 0;
     }
 }
