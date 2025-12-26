@@ -5,11 +5,16 @@ import java.util.Queue;
 import java.util.Random;
 
 /**
- * Provides words for the typing game with repetition logic.
- * Follows Single Responsibility Principle - manages only word selection logic.
+ * Provides words or letters for the typing game with repetition logic.
+ * Follows Single Responsibility Principle - manages only word/letter selection logic.
  * If user makes an error, the word sequence will be: previous word → current word → random words.
  */
 public class WordProvider {
+    private static final String[] LETTERS = {
+            "б ", "г ", "е ", "ё ", "з ", "и ", "й ", "к ", "м ", "н ", "с ", "т ",
+            "у ", "х ", "ц ", "ч ", "ш ", "щ ", "ъ ", "ь ", "ю ", "я "
+    };
+
     private static final String[] WORDS = {
             "нищий ", "тень ", "меч ", "честь ", "семь ", "нить ", "щит ", "кит ",
             "куст ", "сеть ", "месть ", "мешки ", "счет ", "цех ", "шум ", "шут ",
@@ -32,11 +37,31 @@ public class WordProvider {
     private String currentWord;
     private boolean errorInCurrentWord;
     private boolean lastWordWasRandom;
+    private GameMode gameMode;
 
     public WordProvider() {
         this.random = new Random();
         this.repeatQueue = new LinkedList<>();
         this.errorInCurrentWord = false;
+        this.gameMode = GameMode.WORDS; // Default mode
+    }
+
+    /**
+     * Sets the game mode (WORDS or LETTERS).
+     *
+     * @param mode the game mode to set
+     */
+    public void setGameMode(GameMode mode) {
+        this.gameMode = mode;
+    }
+
+    /**
+     * Gets the current game mode.
+     *
+     * @return the current game mode
+     */
+    public GameMode getGameMode() {
+        return gameMode;
     }
 
     /**
@@ -87,7 +112,8 @@ public class WordProvider {
             nextWord = repeatQueue.poll();
             lastWordWasRandom = false;
         } else {
-            nextWord = WORDS[random.nextInt(WORDS.length)];
+            String[] source = (gameMode == GameMode.LETTERS) ? LETTERS : WORDS;
+            nextWord = source[random.nextInt(source.length)];
             lastWordWasRandom = true;
         }
 

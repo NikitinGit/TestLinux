@@ -18,6 +18,11 @@ public class UIComponents {
     private final JButton startButton;
     @Getter
     private final JButton showStatsButton;
+    @Getter
+    private final JButton wordsButton;
+    @Getter
+    private final JButton lettersButton;
+    private final JPanel modeSelectionPanel;
 
     public UIComponents() {
         this.instructionLabel = createInstructionLabel();
@@ -26,6 +31,9 @@ public class UIComponents {
         this.statsLabel = createStatsLabel();
         this.startButton = createStartButton();
         this.showStatsButton = createShowStatsButton();
+        this.wordsButton = createWordsButton();
+        this.lettersButton = createLettersButton();
+        this.modeSelectionPanel = createModeSelectionPanel();
     }
 
     private JLabel createInstructionLabel() {
@@ -79,6 +87,33 @@ public class UIComponents {
         return button;
     }
 
+    private JButton createWordsButton() {
+        JButton button = new JButton("СЛОВА");
+        button.setFont(new Font("Arial", Font.BOLD, 24));
+        button.setPreferredSize(new Dimension(200, 60));
+        button.setFocusable(false);
+        return button;
+    }
+
+    private JButton createLettersButton() {
+        JButton button = new JButton("БУКВЫ");
+        button.setFont(new Font("Arial", Font.BOLD, 24));
+        button.setPreferredSize(new Dimension(200, 60));
+        button.setFocusable(false);
+        return button;
+    }
+
+    private JPanel createModeSelectionPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.setBackground(Color.WHITE);
+        panel.add(wordsButton);
+        panel.add(Box.createRigidArea(new Dimension(20, 0)));
+        panel.add(lettersButton);
+        return panel;
+    }
+
     /**
      * Creates and returns the main panel with all components.
      *
@@ -101,6 +136,8 @@ public class UIComponents {
         mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         mainPanel.add(showStatsButton);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        mainPanel.add(modeSelectionPanel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         mainPanel.add(startButton);
         mainPanel.add(Box.createVerticalGlue());
 
@@ -121,10 +158,12 @@ public class UIComponents {
      *
      * @param currentWord the word to type
      * @param typedWord   characters typed so far
+     * @param mode        game mode (WORDS or LETTERS)
      */
-    public void updateWordDisplay(String currentWord, String typedWord) {
+    public void updateWordDisplay(String currentWord, String typedWord, GameMode mode) {
+        String label = mode == GameMode.LETTERS ? "Введите букву:" : "Введите слово:";
         String display = "<html><table>" +
-                "<tr><td style='width:150px; text-align:right;'>Введите слово:&nbsp;</td>" +
+                "<tr><td style='width:150px; text-align:right;'>" + label + "&nbsp;</td>" +
                 "<td style='width:250px; text-align:left;'>" + currentWord + "</td></tr>" +
                 "<tr><td style='width:150px; text-align:right;'>Набрано:&nbsp;</td>" +
                 "<td style='width:250px; text-align:left;'>" + typedWord + "</td></tr>" +
@@ -137,10 +176,12 @@ public class UIComponents {
      * Shows a new word to type.
      *
      * @param word the new word
+     * @param mode game mode (WORDS or LETTERS)
      */
-    public void showNewWord(String word) {
+    public void showNewWord(String word, GameMode mode) {
+        String label = mode == GameMode.LETTERS ? "Введите букву:" : "Введите слово:";
         String display = "<html><table>" +
-                "<tr><td style='width:150px; text-align:right;'>Введите слово:&nbsp;</td>" +
+                "<tr><td style='width:150px; text-align:right;'>" + label + "&nbsp;</td>" +
                 "<td style='width:250px; text-align:left;'>" + word + "</td></tr>" +
                 "<tr><td style='width:150px; text-align:right;'>Набрано:&nbsp;</td>" +
                 "<td style='width:250px; text-align:left;'></td></tr>" +
@@ -200,8 +241,25 @@ public class UIComponents {
     public void showFinalStatistics(String finalResults) {
         statsLabel.setText(finalResults);
         showStatsButton.setVisible(false);
+        startButton.setVisible(false);
+        modeSelectionPanel.setVisible(true);
+    }
+
+    /**
+     * Shows mode selection buttons and hides start button.
+     */
+    public void showModeSelection() {
+        modeSelectionPanel.setVisible(true);
+        startButton.setVisible(false);
+        statsLabel.setText("Выберите режим игры");
+    }
+
+    /**
+     * Hides mode selection buttons and shows start button.
+     */
+    public void hideModeSelection() {
+        modeSelectionPanel.setVisible(false);
         startButton.setVisible(true);
-        startButton.setText("ПЕРЕЗАПУСК");
     }
 
 }

@@ -77,6 +77,25 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
 
         // Configure show statistics button action
         uiComponents.getShowStatsButton().addActionListener(e -> showStatistics());
+
+        // Configure mode selection buttons
+        uiComponents.getWordsButton().addActionListener(e -> selectMode(GameMode.WORDS));
+        uiComponents.getLettersButton().addActionListener(e -> selectMode(GameMode.LETTERS));
+
+        // Show mode selection on startup
+        uiComponents.showModeSelection();
+    }
+
+    /**
+     * Handles mode selection by user.
+     *
+     * @param mode selected game mode
+     */
+    private void selectMode(GameMode mode) {
+        wordProvider.setGameMode(mode);
+        uiComponents.hideModeSelection();
+        uiComponents.updateStats("Нажмите кнопку СТАРТ для начала игры");
+        setTitle("Слепая печать - " + mode.getDisplayName());
     }
 
     /**
@@ -188,7 +207,7 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
     @Override
     public void onCorrectChar() {
         // Update word display with current progress
-        uiComponents.updateWordDisplay(gameState.getCurrentWord(), gameState.getTypedWord());
+        uiComponents.updateWordDisplay(gameState.getCurrentWord(), gameState.getTypedWord(), wordProvider.getGameMode());
 
         // Update statistics display
         uiComponents.updateStats(statistics.getFormattedStats());
@@ -225,7 +244,7 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
 
     @Override
     public void onNewWord(String word) {
-        uiComponents.showNewWord(word);
+        uiComponents.showNewWord(word, wordProvider.getGameMode());
     }
 
     // ========== Application Entry Point ==========
