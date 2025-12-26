@@ -85,7 +85,6 @@ public class WordProvider {
 
     /**
      * Checks if the last word was randomly selected from WORDS array.
-     *
      * @return true if word was random, false if from repeat queue
      */
     public boolean wasLastWordRandom() {
