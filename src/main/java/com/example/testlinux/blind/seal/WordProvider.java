@@ -1,5 +1,7 @@
 package com.example.testlinux.blind.seal;
 
+import lombok.Getter;
+
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
@@ -11,24 +13,24 @@ import java.util.Random;
  */
 public class WordProvider {
     private static final String[] LETTERS = {
-            "б ", "г ", "е ", "ё ", "з ", "и ", "й ", "к ", "м ", "н ", "с ", "т ",
-            "у ", "х ", "ц ", "ч ", "ш ", "щ ", "ъ ", "ь ", "ю ", "я "
+            "б", "г", "е", "ё", "з", "и", "й", "к", "м", "н", "с", "т",
+            "у", "х", "ц", "ч", "ш", "щ", "ъ", "ь", "ю", "я"
     };
 
     private static final String[] WORDS = {
-            "нищий ", "тень ", "меч ", "честь ", "семь ", "нить ", "щит ", "кит ",
-            "куст ", "сеть ", "месть ", "мешки ", "счет ", "цех ", "шум ", "шут ",
-            "учет ", "зуб ", "куб ", "тушь ", "щи ", "тишь ", "мишень ", "цемент ",
-            "мечеть ", "течь ", "смесь ", "немец ", "шесть ", "снег ", "цент ", "хит ",
-            "них ", "миг ", "низ ", "тихий ", "бить ", "шить ", "гнет ", "стих ",
-            "гимн ", "шест ", "тест ", "текст ",
-            "шитье ", "нитью ", "щитки ", "шитый ", "чуткий ", "чисть ",
-            "щепки ", "шестик ", "кистью ", "тишье ", "щенки ", "щипцы ",
-            "шинкуй ", "чекань ", "щемит ", "чешки ", "щуки ", "щиты ",
-            "шитью ", "чинить ", "кнут ", "шнур ", "чингис ",
-            "шумит ", "чутье ", "щебни ", "чистки ", "шитьщик ",
-            "щекот ", "чинки ", "щемящий ", "штих ", "чекушь ",
-            "кишки ", "чушки ", "щучьи ", "шмель ", "чистенький ", "чувство "
+            "нищий", "тень", "меч", "честь", "семь", "нить", "щит", "кит",
+            "куст", "сеть", "месть", "мешки", "счет", "цех", "шум", "шут",
+            "учет", "зуб", "куб", "тушь", "щи", "тишь", "мишень", "цемент",
+            "мечеть", "течь", "смесь", "немец", "шесть", "снег", "цент", "хит",
+            "них", "миг", "низ", "тихий", "бить", "шить", "гнет", "стих",
+            "гимн", "шест", "тест", "текст",
+            "шитье", "нитью", "щитки", "шитый", "чуткий", "чисть",
+            "щепки", "шестик", "кистью", "тишье", "щенки", "щипцы",
+            "шинкуй", "чекань", "щемит", "чешки", "щуки", "щиты",
+            "шитью", "чинить", "кнут", "шнур", "чингис",
+            "шумит", "чутье", "щебни", "чистки", "шитьщик",
+            "щекот", "чинки", "щемящий", "штих", "чекушь",
+            "кишки", "чушки", "щучьи", "шмель", "чистенький", "чувство"
     };
 
     private final Random random;
@@ -37,7 +39,15 @@ public class WordProvider {
     private String currentWord;
     private boolean errorInCurrentWord;
     private boolean lastWordWasRandom;
+    /**
+     * -- GETTER --
+     *  Gets the current game mode.
+     *
+     * @return the current game mode
+     */
+    @Getter
     private GameMode gameMode;
+    private String initialSymbol;
 
     public WordProvider() {
         this.random = new Random();
@@ -52,16 +62,8 @@ public class WordProvider {
      * @param mode the game mode to set
      */
     public void setGameMode(GameMode mode) {
+        this.initialSymbol = LETTERS[random.nextInt(LETTERS.length)];
         this.gameMode = mode;
-    }
-
-    /**
-     * Gets the current game mode.
-     *
-     * @return the current game mode
-     */
-    public GameMode getGameMode() {
-        return gameMode;
     }
 
     /**
@@ -113,8 +115,11 @@ public class WordProvider {
             lastWordWasRandom = false;
         } else {
             String[] source = (gameMode == GameMode.LETTERS) ? LETTERS : WORDS;
-            nextWord = source[random.nextInt(source.length)];
+            nextWord = (gameMode == GameMode.LETTERS)
+                    ? (initialSymbol + source[random.nextInt(source.length)])
+                    : source[random.nextInt(source.length)];
             lastWordWasRandom = true;
+            nextWord += " ";
         }
 
         // Update word history and reset error flag
