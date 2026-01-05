@@ -93,6 +93,32 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
      */
     private void selectMode(GameMode mode) {
         wordProvider.setGameMode(mode);
+
+        // For LETTERS mode, ask user to input the initial letter
+        if (mode == GameMode.LETTERS) {
+            String initialLetter = showCustomInputDialog(
+                "Введите префикс буквы:",
+                "Выбор префикса буквы",
+                new Color(240, 248, 255), // Alice Blue background
+                new Color(0, 5, 5),        // Message text color
+                400,                       // Width
+                200,                       // Height
+                15,                        // Input field width (columns)
+                24,                        // Input text font size
+                new Color(0, 0, 0)         // Input text color (black)
+            );
+
+
+
+            if (initialLetter != null && !initialLetter.isEmpty()) {
+                wordProvider.setInitialSymbol(initialLetter.toLowerCase());
+            } else {
+                // If user cancelled or didn't enter anything, go back to mode selection
+                uiComponents.showModeSelection();
+                return;
+            }
+        }
+
         uiComponents.hideModeSelection();
         uiComponents.updateStats("Нажмите кнопку СТАРТ для начала игры");
         setTitle("Слепая печать - " + mode.getDisplayName());
@@ -245,6 +271,84 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
     @Override
     public void onNewWord(String word) {
         uiComponents.showNewWord(word, wordProvider.getGameMode());
+    }
+
+    // ========== Helper Methods ==========
+
+    /**
+     * Shows a custom input dialog with specified colors and size.
+     *
+     * @param message           the message to display
+     * @param title             the dialog title
+     * @param bgColor           background color
+     * @param textColor         text color
+     * @param width             dialog width
+     * @param height            dialog height
+     * @param inputFieldColumns width of input field in columns
+     * @param inputFontSize     font size of input text
+     * @param inputTextColor    color of input text
+     * @return the user input or null if cancelled
+     */
+    private String showCustomInputDialog(String message, String title, Color bgColor, Color textColor, int width, int height, int inputFieldColumns, int inputFontSize, Color inputTextColor) {
+        JDialog dialog = new JDialog(this, title, true);
+        dialog.setLayout(new BorderLayout(10, 10));
+        dialog.getContentPane().setBackground(bgColor);
+        dialog.setPreferredSize(new Dimension(width, height));
+
+        // Create message label
+        JLabel messageLabel = new JLabel(message);
+        messageLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        messageLabel.setForeground(textColor);
+        messageLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
+
+        // Create input field
+        JTextField inputField = new JTextField(inputFieldColumns);
+        inputField.setFont(new Font("Arial", Font.PLAIN, inputFontSize));
+        inputField.setForeground(inputTextColor);
+        inputField.setHorizontalAlignment(JTextField.CENTER);
+
+        // Create button panel
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(bgColor);
+        JButton okButton = new JButton("OK");
+        JButton cancelButton = new JButton("Отмена");
+
+        okButton.setFont(new Font("Arial", Font.BOLD, 14));
+        cancelButton.setFont(new Font("Arial", Font.BOLD, 14));
+
+        final String[] result = {null};
+
+        okButton.addActionListener(e -> {
+            result[0] = inputField.getText();
+            dialog.dispose();
+        });
+
+        cancelButton.addActionListener(e -> dialog.dispose());
+
+        inputField.addActionListener(e -> {
+            result[0] = inputField.getText();
+            dialog.dispose();
+        });
+
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+
+        // Create input panel
+        JPanel inputPanel = new JPanel();
+        inputPanel.setBackground(bgColor);
+        inputPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 10, 20));
+        inputPanel.add(inputField);
+
+        // Add components to dialog
+        dialog.add(messageLabel, BorderLayout.NORTH);
+        dialog.add(inputPanel, BorderLayout.CENTER);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+
+        return result[0];
     }
 
     // ========== Application Entry Point ==========

@@ -1,6 +1,7 @@
 package com.example.testlinux.blind.seal;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -47,6 +48,7 @@ public class WordProvider {
      */
     @Getter
     private GameMode gameMode;
+    @Setter
     private String initialSymbol;
 
     public WordProvider() {

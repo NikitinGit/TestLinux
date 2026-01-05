@@ -1,10 +1,13 @@
 package com.example.testlinux.blind.seal;
 
+import lombok.Getter;
+
 /**
  * Game mode enumeration.
  * WORDS - typing words
  * LETTERS - typing individual letters
  */
+@Getter
 public enum GameMode {
     WORDS("Слова"),
     LETTERS("Буквы");
@@ -15,7 +18,4 @@ public enum GameMode {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
 }
