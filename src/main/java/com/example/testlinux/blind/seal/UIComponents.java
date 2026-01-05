@@ -22,6 +22,8 @@ public class UIComponents {
     private final JButton wordsButton;
     @Getter
     private final JButton lettersButton;
+    @Getter
+    private final JButton multipleWordsButton;
     private final JPanel modeSelectionPanel;
 
     public UIComponents() {
@@ -33,6 +35,7 @@ public class UIComponents {
         this.showStatsButton = createShowStatsButton();
         this.wordsButton = createWordsButton();
         this.lettersButton = createLettersButton();
+        this.multipleWordsButton = createMultipleWordsButton();
         this.modeSelectionPanel = createModeSelectionPanel();
     }
 
@@ -103,6 +106,14 @@ public class UIComponents {
         return button;
     }
 
+    private JButton createMultipleWordsButton() {
+        JButton button = new JButton("НЕСКОЛЬКО СЛОВ");
+        button.setFont(new Font("Arial", Font.BOLD, 18));
+        button.setPreferredSize(new Dimension(250, 60));
+        button.setFocusable(false);
+        return button;
+    }
+
     private JPanel createModeSelectionPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
@@ -111,6 +122,8 @@ public class UIComponents {
         panel.add(wordsButton);
         panel.add(Box.createRigidArea(new Dimension(20, 0)));
         panel.add(lettersButton);
+        panel.add(Box.createRigidArea(new Dimension(20, 0)));
+        panel.add(multipleWordsButton);
         return panel;
     }
 
@@ -187,6 +200,32 @@ public class UIComponents {
                 "<td style='width:250px; text-align:left;'></td></tr>" +
                 "</table></html>";
         wordLabel.setText(display);
+        wordLabel.setForeground(Color.BLACK);
+    }
+
+    /**
+     * Shows multiple words (current + preview).
+     *
+     * @param currentWord the current word to type
+     * @param nextWords   array of next words for preview
+     * @param typedWord   characters typed so far
+     */
+    public void showMultipleWords(String currentWord, String[] nextWords, String typedWord) {
+        StringBuilder display = new StringBuilder("<html><div style='font-size:48px;'>");
+
+        // Current word being typed (larger and bold)
+        display.append("<b>").append(currentWord).append("</b>");
+
+        // Next words (grayed out)
+        for (String nextWord : nextWords) {
+            display.append(" <span style='color:#AAAAAA;'>").append(nextWord).append("</span>");
+        }
+
+        display.append("</div>");
+        display.append("<div style='font-size:24px; margin-top:20px;'>Набрано: ").append(typedWord).append("</div>");
+        display.append("</html>");
+
+        wordLabel.setText(display.toString());
         wordLabel.setForeground(Color.BLACK);
     }
 

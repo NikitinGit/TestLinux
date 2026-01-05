@@ -36,6 +36,7 @@ public class WordProvider {
 
     private final Random random;
     private final Queue<String> repeatQueue;
+    private final Queue<String> upcomingWordsQueue; // Queue for MULTIPLE_WORDS mode
     private String previousWord;
     private String currentWord;
     private boolean errorInCurrentWord;
@@ -54,6 +55,7 @@ public class WordProvider {
     public WordProvider() {
         this.random = new Random();
         this.repeatQueue = new LinkedList<>();
+        this.upcomingWordsQueue = new LinkedList<>();
         this.errorInCurrentWord = false;
         this.gameMode = GameMode.WORDS; // Default mode
     }
@@ -66,6 +68,16 @@ public class WordProvider {
     public void setGameMode(GameMode mode) {
         this.initialSymbol = LETTERS[random.nextInt(LETTERS.length)];
         this.gameMode = mode;
+
+        // Initialize upcoming words queue for MULTIPLE_WORDS mode
+        if (mode == GameMode.MULTIPLE_WORDS) {
+            upcomingWordsQueue.clear();
+            String[] source = WORDS;
+            // Pre-fill with 3 words
+            for (int i = 0; i < 3; i++) {
+                upcomingWordsQueue.add(source[random.nextInt(source.length)] + " ");
+            }
+        }
     }
 
     /**
@@ -95,18 +107,24 @@ public class WordProvider {
 
     /**
      * Returns the next word based on error status.
-     * If there was an error in the current word, adds previous and current words to repeat queue.
-     * Next words will be: previous word → current word → random words.
+     * For MULTIPLE_WORDS mode: If error occurred, adds only current word to repeat queue.
+     * For other modes: If error occurred, adds previous and current words to repeat queue.
      *
      * @return the next word to type
      */
     public String getNextWord() {
         // If error occurred, add words to repeat queue
         if (errorInCurrentWord && currentWord != null) {
-            if (previousWord != null) {
-                repeatQueue.add(previousWord);
+            if (gameMode == GameMode.MULTIPLE_WORDS) {
+                // For MULTIPLE_WORDS mode: only add current word
+                repeatQueue.add(currentWord);
+            } else {
+                // For other modes: add previous and current words
+                if (previousWord != null) {
+                    repeatQueue.add(previousWord);
+                }
+                repeatQueue.add(currentWord);
             }
-            repeatQueue.add(currentWord);
         }
 
         // Select next word: from queue or random
@@ -114,7 +132,14 @@ public class WordProvider {
         if (!repeatQueue.isEmpty()) {
             nextWord = repeatQueue.poll();
             lastWordWasRandom = false;
+        } else if (gameMode == GameMode.MULTIPLE_WORDS) {
+            // For MULTIPLE_WORDS mode: take from upcoming queue and add new word to end
+            nextWord = upcomingWordsQueue.poll();
+            String[] source = WORDS;
+            upcomingWordsQueue.add(source[random.nextInt(source.length)] + " ");
+            lastWordWasRandom = true;
         } else {
+            // For other modes: generate random word
             String[] source = (gameMode == GameMode.LETTERS) ? LETTERS : WORDS;
             nextWord = (gameMode == GameMode.LETTERS)
                     ? (initialSymbol + source[random.nextInt(source.length)])
@@ -129,5 +154,37 @@ public class WordProvider {
         errorInCurrentWord = false;
 
         return nextWord;
+    }
+
+    /**
+     * Returns the next N words for preview (without actually moving to them).
+     * For MULTIPLE_WORDS mode: returns actual words from the upcoming queue.
+     * For other modes: generates random preview words.
+     *
+     * @param count number of words to preview
+     * @return array of preview words
+     */
+    public String[] getPreviewWords(int count) {
+        String[] previewWords = new String[count];
+
+        if (gameMode == GameMode.MULTIPLE_WORDS) {
+            // Return actual words from the queue without removing them
+            Object[] queueArray = upcomingWordsQueue.toArray();
+            for (int i = 0; i < count && i < queueArray.length; i++) {
+                previewWords[i] = (String) queueArray[i];
+            }
+        } else {
+            // For other modes: generate random preview words (not used currently)
+            String[] source = (gameMode == GameMode.LETTERS) ? LETTERS : WORDS;
+            for (int i = 0; i < count; i++) {
+                if (gameMode == GameMode.LETTERS) {
+                    previewWords[i] = initialSymbol + source[random.nextInt(source.length)] + " ";
+                } else {
+                    previewWords[i] = source[random.nextInt(source.length)] + " ";
+                }
+            }
+        }
+
+        return previewWords;
     }
 }

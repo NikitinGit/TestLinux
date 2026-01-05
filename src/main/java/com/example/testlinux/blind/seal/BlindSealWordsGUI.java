@@ -81,6 +81,7 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
         // Configure mode selection buttons
         uiComponents.getWordsButton().addActionListener(e -> selectMode(GameMode.WORDS));
         uiComponents.getLettersButton().addActionListener(e -> selectMode(GameMode.LETTERS));
+        uiComponents.getMultipleWordsButton().addActionListener(e -> selectMode(GameMode.MULTIPLE_WORDS));
 
         // Show mode selection on startup
         uiComponents.showModeSelection();
@@ -233,7 +234,12 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
     @Override
     public void onCorrectChar() {
         // Update word display with current progress
-        uiComponents.updateWordDisplay(gameState.getCurrentWord(), gameState.getTypedWord(), wordProvider.getGameMode());
+        if (wordProvider.getGameMode() == GameMode.MULTIPLE_WORDS) {
+            String[] nextWords = wordProvider.getPreviewWords(2);
+            uiComponents.showMultipleWords(gameState.getCurrentWord(), nextWords, gameState.getTypedWord());
+        } else {
+            uiComponents.updateWordDisplay(gameState.getCurrentWord(), gameState.getTypedWord(), wordProvider.getGameMode());
+        }
 
         // Update statistics display
         uiComponents.updateStats(statistics.getFormattedStats());
@@ -270,7 +276,12 @@ public class BlindSealWordsGUI extends JFrame implements GameEventListener {
 
     @Override
     public void onNewWord(String word) {
-        uiComponents.showNewWord(word, wordProvider.getGameMode());
+        if (wordProvider.getGameMode() == GameMode.MULTIPLE_WORDS) {
+            String[] nextWords = wordProvider.getPreviewWords(2);
+            uiComponents.showMultipleWords(word, nextWords, "");
+        } else {
+            uiComponents.showNewWord(word, wordProvider.getGameMode());
+        }
     }
 
     // ========== Helper Methods ==========
