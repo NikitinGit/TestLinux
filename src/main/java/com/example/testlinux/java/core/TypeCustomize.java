@@ -1,10 +1,22 @@
 package com.example.testlinux.java.core;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class TypeCustomize {
 
     public static void main(String[] st) {
+        long xn = 2_000_000_000L;  // младшие 32 бита начинаются с 0...
+        int y = (int) xn;          // ...положительное
+        System.out.println("y; " + y);
+
+        String test = "25".repeat(125);
+        System.out.println("test; " + test);
+
+        BigInteger bI = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000));
+        System.out.println("1. " + bI);
+        System.out.println("2. " + Long.MAX_VALUE);
+
         long maxLong = Long.MAX_VALUE;
         System.out.println("TypeCustomize maxLong; " + maxLong);
 
@@ -38,11 +50,19 @@ public class TypeCustomize {
         d = b.subtract(c);
         System.out.println("b.subtract(c) d; " + d);
 
+        double e = Double.MAX_VALUE + 10000000005d;
+        System.out.println("e: " + e + "\ne > Double.MAX_VALUE: " + (e > Double.MAX_VALUE));
+
         if (d.compareTo(new BigDecimal("0.3")) == 0) {
             System.out.println("TypeCustomize c.compareTo(new BigDecimal" );
         }
 
         boolean equalsBig = d.equals(b.add(c));
         System.out.println("TypeCustomize equalsBig; " + equalsBig);
+
+        int longInt = (int)(Long.MAX_VALUE - 255555555L);
+        System.out.println("longInt; " + longInt);
+
+        //int exp = Math.toIntExact(Long.MAX_VALUE);
     }
 }
