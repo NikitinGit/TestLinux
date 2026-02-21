@@ -19,6 +19,14 @@ public class StreamApi {
         /*List<String> names = stage1s.stream().flatMap(stage1 -> stage1.stages.stream()).map(Stage2::getName).toList();*/
         names.forEach(System.out::println);
 
+        System.out.println("Вариант с Arrays.stream() - преобразуем List в массив------------------------------------------------------------------------");
+        names = Arrays.stream(stage1s.toArray(new Stage1[0]))
+                .flatMap(Stage1::getStagesStream)
+                .flatMap(Stage2::getStagesStream)
+                .map(Stage3::getName)
+                .toList();
+        names.forEach(System.out::println);
+
         System.out.println("------------------------------------------------------------------------");
         names = stage1s.stream()
                 .flatMap(Stage1::getStagesStream)
@@ -26,6 +34,12 @@ public class StreamApi {
                 .map(Stage3::getName)
                 .toList();
         names.forEach(System.out::println);
+
+        System.out.println("------------------------------------------------------------------------");
+        // Получение стрима из двумерного массива - вариант 2: плоский Stream<Integer>
+        stage1s.get(0).getArray2dStream()
+                .flatMap(Arrays::stream)
+                .forEach(System.out::println);
 
         System.out.println("------------------------------------------------------------------------");
         stage1s.stream()
