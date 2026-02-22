@@ -7,9 +7,9 @@ import java.util.stream.Stream;
 
 public class Stage1 {
     public List<Stage2> stages = new ArrayList<>();
-    private Float[][] array2d = new Float[][] {
-            {1.2f, 2.5f, 3f},
-            {4f, 5f}
+    private Stage2[][] array2d = new Stage2[][] {
+            {new Stage2("1bn"), new Stage2("12bn"), new Stage2("13bn")},
+            {new Stage2("14bn"), new Stage2("51bn")}
     };
 
     public Stage1(String name) {
@@ -22,7 +22,7 @@ public class Stage1 {
         return stages.stream();
     }
 
-    public Stream<Float[]> getArray2dStream() {
+    public Stream<Stage2[]> getArray2dStream() {
         return Arrays.stream(array2d);
     }
 }
