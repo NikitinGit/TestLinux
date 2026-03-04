@@ -41,5 +41,22 @@ public class BitWiseOperators {
 
         int blue2 = rgb1 & mask;
         System.out.println("blue2; " + blue2);
+
+        byte ICEBERG  = 0b1000000;
+        System.out.println("ICEBERG; " + ICEBERG);
+
+        // BYTE (8 бит)
+        byte b1 = 0b0000_1000; // Число 8 (ICEBERG)
+        byte b2 = (byte) 0xFF; // Число -1 (все единицы, нужна явная типизация)
+
+        // INT (32 бита)
+        int i1 = 0b1010_1011_1100; // Двоичный вид
+        int i2 = 0xFF;             // 255 в десятичной (маска)
+        int i3 = 0x7FFFFFFF;       // Максимальный положительный int (все единицы, кроме знакового)
+
+        // LONG (64 бита)
+        long l1 = 0b1101L;         // Число 13 (нужен суффикс L)
+        long l2 = 0xCAFE_BABEL;   // Популярная "магическая" константа в Java
+        System.out.println("b2; " + b2 + "\nmask; " + mask + "\n0xFF; " + 0xFF + "\nl2; " + l2);
     }
 }
