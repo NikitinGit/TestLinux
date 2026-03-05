@@ -1,5 +1,7 @@
 package com.example.testlinux.bit.wise;
 
+import java.math.BigInteger;
+
 public class BitWiseOperators {
 
     public static void main(String[] text) {
@@ -58,5 +60,10 @@ public class BitWiseOperators {
         long l1 = 0b1101L;         // Число 13 (нужен суффикс L)
         long l2 = 0xCAFE_BABEL;   // Популярная "магическая" константа в Java
         System.out.println("b2; " + b2 + "\nmask; " + mask + "\n0xFF; " + 0xFF + "\nl2; " + l2);
+
+        // Теоретически (НЕ стандарт!)
+        BigInteger num = new BigInteger("10", 32);  // 10₃₂ = 32₁₀
+        System.out.println(num);  // 32 ✅
+
     }
 }
