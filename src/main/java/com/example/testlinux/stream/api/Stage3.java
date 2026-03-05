@@ -1,4 +1,4 @@
-package com.example.testlinux.collections;
+package com.example.testlinux.stream.api;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +10,6 @@ public class Stage3 {
     private String name;
 
     public Stage3(String name) {
-        this.name = name;
+        this.name = name + " - stage3 ";
     }
 }

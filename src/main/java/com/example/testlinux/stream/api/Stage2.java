@@ -1,4 +1,4 @@
-package com.example.testlinux.collections;
+package com.example.testlinux.stream.api;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
