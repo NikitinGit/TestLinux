@@ -18,6 +18,7 @@ public class DigitType {
                 "\n, c == b; " + (c == b) +
                 "\n, c == 23458; " + (c == 23458) +
                 "\n, b == a; " + (b == a) +
+                "\n, unBoxingIsWork(a, b); " + unBoxingIsWork(a, b) +
                 "\n, b == 23458; " + (b == 23458)
         );
         booleanToByte();
@@ -37,6 +38,9 @@ public class DigitType {
         numberSystems();
     }
 
+    static boolean unBoxingIsWork(int a, int b) {
+        return a == b;
+    }
     // Можно ли напрямую присвоить boolean в byte? Если нет — как правильно преобразовать?
     static void booleanToByte() {
         boolean a = true;
