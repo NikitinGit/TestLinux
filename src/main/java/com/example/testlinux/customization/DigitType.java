@@ -8,6 +8,18 @@ public class DigitType {
 
     // Ctrl правый +Shift левый +- (минус) — свернуть все блоки в файле
     public static void main(String[] test) {
+        Integer a = 23458;
+        Integer b = 23458;
+        int c = a;
+        System.out.println("Правило простое: если хотя бы одна сторона == — примитив, обёртка распаковывается. " +
+                "\na.equals(23458); " + a.equals(23458) +
+                "\n, a.equals(b); " + a.equals(b) +
+                "\n, c == a; " + (c == a) +
+                "\n, c == b; " + (c == b) +
+                "\n, c == 23458; " + (c == 23458) +
+                "\n, b == a; " + (b == a) +
+                "\n, b == 23458; " + (b == 23458)
+        );
         booleanToByte();
         arithmeticPromotion();
         bigDecimalPrecision();
