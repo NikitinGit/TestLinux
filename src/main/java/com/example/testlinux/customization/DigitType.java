@@ -8,19 +8,9 @@ public class DigitType {
 
     // Ctrl правый +Shift левый +- (минус) — свернуть все блоки в файле
     public static void main(String[] test) {
-        Integer a = 23458;
-        Integer b = 23458;
-        int c = a;
-        System.out.println("Правило простое: если хотя бы одна сторона == — примитив, обёртка распаковывается. " +
-                "\na.equals(23458); " + a.equals(23458) +
-                "\n, a.equals(b); " + a.equals(b) +
-                "\n, c == a; " + (c == a) +
-                "\n, c == b; " + (c == b) +
-                "\n, c == 23458; " + (c == 23458) +
-                "\n, b == a; " + (b == a) +
-                "\n, unBoxingIsWork(a, b); " + unBoxingIsWork(a, b) +
-                "\n, b == 23458; " + (b == 23458)
-        );
+        minIntervalOfDouble();
+        autoAndUnboxing();
+        compareLongDouble();
         booleanToByte();
         arithmeticPromotion();
         bigDecimalPrecision();
@@ -36,6 +26,38 @@ public class DigitType {
         autoboxingAndUnboxing();
         parseStringToNumber();
         numberSystems();
+    }
+
+    private static void minIntervalOfDouble() {
+        double big1 = 179756789012345611d;
+        System.out.println("big1: " + big1 + "\nbign: " + Double.MAX_VALUE);
+        double big2 = 179756789012345617d;
+        System.out.println("big1: " + big1 + "\nbig2: " + big2 + "\n(big1 == big2)" + (big1 == big2));
+    }
+
+    private static void autoAndUnboxing() {
+        Integer a = 23458;
+        Integer b = 23458;
+        int c = a;
+        System.out.println("Правило простое: если хотя бы одна сторона == — примитив, обёртка распаковывается. " +
+                "\na.equals(23458); " + a.equals(23458) +
+                "\n, a.equals(b); " + a.equals(b) +
+                "\n, c == a; " + (c == a) +
+                "\n, c == b; " + (c == b) +
+                "\n, c == 23458; " + (c == 23458) +
+                "\n, b == a; " + (b == a) +
+                "\n, unBoxingIsWork(a, b); " + unBoxingIsWork(a, b) +
+                "\n, b == 23458; " + (b == 23458)
+        );
+    }
+
+    private static void compareLongDouble() {
+        long bigLong = 5555555555L;
+        double bigDouble = 5555555555d;
+        System.out.println(
+                "Double.MAX_VALUE > Long.MAX_VALUE: " + (Double.MAX_VALUE > Long.MAX_VALUE)
+                + "\n(bigLong == bigDouble): " + (bigLong == bigDouble) // true
+        );
     }
 
     static boolean unBoxingIsWork(int a, int b) {
