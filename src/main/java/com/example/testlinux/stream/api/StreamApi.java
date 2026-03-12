@@ -12,6 +12,7 @@ public class StreamApi {
 
         List<Stage1> stage1s = List.of(new Stage1("Nikitin"), new Stage1("Ton"));
 
+        stage1s.stream().peek(u -> System.out.println("name: " + u.name)).toList();
 /*        List<String> names = stage1s.stream()
                 .flatMap(Stage1::getStagesStream)
                 .map(Stage2::getName)
