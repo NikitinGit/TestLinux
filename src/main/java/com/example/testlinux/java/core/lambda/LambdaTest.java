@@ -29,8 +29,10 @@ public class LambdaTest {
         System.out.println("GenericInterface<String> gin2; op.getIntNumber(3, 5); " + gin2.test(28.75d, 0.5d));
 
         GenericInterface<StaticMethod> gin3 = (b, c) -> b;
-
         GenericInterface<StaticMethod> gin4 = (b, c) -> new StaticMethod();
+
+        ConstructorInterface ct = ConstructorTest::new;
+        ct.test(125);
     }
 
     public static int testAbstract(int x, int y) {
