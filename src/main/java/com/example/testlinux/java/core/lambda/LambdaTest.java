@@ -2,6 +2,8 @@ package com.example.testlinux.java.core.lambda;
 
 public class LambdaTest {
 
+    static int b = 2;
+    int c = 3;
     public static void main (String[] test) {
         Operationable op = Integer::sum;
         int a = op.getIntNumber(3, 5);
@@ -33,6 +35,24 @@ public class LambdaTest {
 
         ConstructorInterface ct = ConstructorTest::new;
         ct.test(125);
+
+        LambdaTest lt = new LambdaTest();
+        op = (x, y) -> {
+            b++;
+            b += ++lt.c;
+            x += b;
+            y *= x;
+
+            return y;
+        };
+
+        System.out.println("op.getIntNumber(5, 2); " + op.getIntNumber(5, 2));
+
+    }
+
+    public ConstructorTest testConstruct(int i) {
+        i += 25;
+        return new ConstructorTest(i);
     }
 
     public static int testAbstract(int x, int y) {
