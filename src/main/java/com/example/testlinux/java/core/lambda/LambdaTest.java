@@ -1,9 +1,6 @@
 package com.example.testlinux.java.core.lambda;
 
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 
 public class LambdaTest {
 
@@ -79,6 +76,11 @@ public class LambdaTest {
 
         f1ToF2 = Function1::getF2;// or f1ToF2 = x -> x.getF2();
         System.out.println("f1ToF2.apply(f1).getName(); " + f1ToF2.apply(f1).getName());
+
+        BiFunction<Integer, Function1, Function2> intWithF1ToF2 = (x, y) ->
+                new Function2(y.getName() + ": " + (x * 2));
+        var f3 = intWithF1ToF2.apply(25, f1);
+        System.out.println("BiFunction f3; " + f3.getName());
 
     }
 
