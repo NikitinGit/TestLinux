@@ -1,10 +1,17 @@
 package com.example.testlinux.java.core.lambda;
 
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+
 public class LambdaTest {
 
     static int b = 2;
     int c = 3;
     public static void main (String[] test) {
+        functionInterfaces();
+
         Operationable op = Integer::sum;
         int a = op.getIntNumber(3, 5);
         System.out.println("a; " + a);
@@ -47,6 +54,28 @@ public class LambdaTest {
         };
 
         System.out.println("op.getIntNumber(5, 2); " + op.getIntNumber(5, 2));
+
+    }
+
+    static void functionInterfaces() {
+        Predicate<Integer> testInt = x -> x % 3 == 1;
+        boolean test2 = testInt.test(2);
+        System.out.println("test2; " + test2);
+
+        boolean test4 = testInt.test(4);
+        System.out.println("test4: " + test4);
+
+        BinaryOperator<Integer> multiply = (x, y) -> x*y;
+        System.out.println("multiply.apply(3, 5)); " + multiply.apply(3, 5)); // 15
+
+        UnaryOperator<Integer> square = x -> x*x;
+        System.out.println("square.apply(5); " + square.apply(5)); // 25
+
+        Function1 f1 = new Function1("new Function1");
+
+        Function<Function1, Function2> f1ToF2 = x -> new Function2(x.getName() + " from lambda nikitin");
+        var f2 = f1ToF2.apply(f1);
+        System.out.println("var f2 = f1ToF2.apply(f1) , f2.getName(); " + f2.getName());
 
     }
 
