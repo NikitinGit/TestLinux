@@ -77,6 +77,9 @@ public class LambdaTest {
         var f2 = f1ToF2.apply(f1);
         System.out.println("var f2 = f1ToF2.apply(f1) , f2.getName(); " + f2.getName());
 
+        f1ToF2 = Function1::getF2;// or f1ToF2 = x -> x.getF2();
+        System.out.println("f1ToF2.apply(f1).getName(); " + f1ToF2.apply(f1).getName());
+
     }
 
     public ConstructorTest testConstruct(int i) {
