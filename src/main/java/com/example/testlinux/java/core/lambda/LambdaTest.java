@@ -82,6 +82,10 @@ public class LambdaTest {
         var f3 = intWithF1ToF2.apply(25, f1);
         System.out.println("BiFunction f3; " + f3.getName());
 
+        Consumer<Function2> consumerF2 = x -> x.setName("consumerF2");
+        consumerF2.accept(f2);
+        System.out.println("f2.getName; " + f2.getName());
+
     }
 
     public ConstructorTest testConstruct(int i) {
