@@ -1,6 +1,8 @@
 package com.example.testlinux.java.core.lambda;
 
+import java.util.List;
 import java.util.function.*;
+import java.util.stream.Stream;
 
 public class LambdaTest {
 
@@ -67,6 +69,7 @@ public class LambdaTest {
         task10_functionAndThen();
         task11_binaryOperatorMethodRef();
         task12_consumerAndThen();
+        streamWithLambdas();
     }
 
     // ЗАДАЧА 1: Predicate<Integer> — напиши лямбду которая возвращает true если x % 3 == 1
@@ -160,6 +163,77 @@ public class LambdaTest {
         Consumer<Function2> second = x -> x.setName(x.getName() + " + second");
         first.andThen(second).accept(f2);
         System.out.println("task12_consumerAndThen andThen consumer: " + f2.getName()); // first + second
+    }
+
+    // ===== лямбды в Stream API =====
+    static void streamWithLambdas() {
+        List<Function1> f1List = List.of(
+                new Function1("Alice"),
+                new Function1("Bob"),
+                new Function1("Charlie"),
+                new Function1("Al")
+        );
+
+        // Predicate → .filter()
+        // оставить только те у кого name длиннее 3 символов
+        Predicate<Function1> longName = f -> f.getName().length() > 3;
+        f1List.stream()
+                .filter(longName)
+                .map(Function1::getName)
+                .forEach(s -> System.out.println("streamWithLambdas filter: " + s));
+
+        // Function → .map() — преобразование Function1 в Function2
+        Function<Function1, Function2> toF2 = Function1::getF2;
+        List<Function2> f2List = f1List.stream()
+                .map(toF2)
+                .toList();
+        f2List.forEach(f -> System.out.println("streamWithLambdas map toF2: " + f.getName()));
+
+        // UnaryOperator → .map() — преобразование строки саму в себя (uppercase)
+        UnaryOperator<String> toUpper = String::toUpperCase;
+        f1List.stream()
+                .map(Function1::getName)
+                .map(toUpper)
+                .forEach(s -> System.out.println("streamWithLambdas toUpper: " + s));
+
+        // BinaryOperator → .reduce() — склеить все имена через ", "
+        BinaryOperator<String> joinNames = (a, b) -> a + ", " + b;
+        String joined = f1List.stream()
+                .map(Function1::getName)
+                .reduce(joinNames)
+                .orElse("");
+        System.out.println("streamWithLambdas reduce: " + joined);
+
+        // Consumer → .forEach() — напечатать каждый элемент
+        Consumer<Function2> printF2 = f -> System.out.println("streamWithLambdas forEach consumer: " + f.getName());
+        f2List.stream().forEach(printF2);
+
+        // Supplier → Stream.generate() — бесконечный стрим, берём первые 3
+        Supplier<Function1> supplier = () -> new Function1("generated");
+        Stream.generate(supplier)
+                .limit(3)
+                .map(Function1::getName)
+                .forEach(s -> System.out.println("streamWithLambdas generate: " + s));
+
+        // Predicate.and() → .filter() с двумя условиями
+        Predicate<Function1> startsWithA = f -> f.getName().startsWith("A");
+        f1List.stream()
+                .filter(longName.and(startsWithA))
+                .map(Function1::getName)
+                .forEach(s -> System.out.println("streamWithLambdas filter and: " + s)); // только Alice
+
+        // Function.andThen() → .map() с цепочкой: Function1 -> Function2 -> String
+        Function<Function1, String> f1ToName = toF2.andThen(Function2::getName);
+        f1List.stream()
+                .map(f1ToName)
+                .forEach(s -> System.out.println("streamWithLambdas andThen: " + s));
+
+        // BiFunction → нет прямого аналога в стриме, но можно через map с захватом переменной
+        String prefix = "hello";
+        f1List.stream()
+                .map(f -> new Function2(prefix + " " + f.getName()))
+                .map(Function2::getName)
+                .forEach(s -> System.out.println("streamWithLambdas biFunction via map: " + s));
     }
 
     public ConstructorTest testConstruct(int i) {
