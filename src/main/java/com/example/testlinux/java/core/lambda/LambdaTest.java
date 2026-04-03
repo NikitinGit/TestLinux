@@ -1,7 +1,8 @@
 package com.example.testlinux.java.core.lambda;
 
-import java.util.List;
+import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class LambdaTest {
@@ -77,6 +78,28 @@ public class LambdaTest {
                     return 0;
                 }).sum();
         System.out.println("streamTest() countSumNums; " + countSumNums);
+
+        List<String> list = List.of("a", "b", "c", "a", "b", "d");
+        Set<String> set = new HashSet<>();
+        Map<String, String> map = new LinkedHashMap<>();
+        for(String s : list) {
+            if(!set.contains(s)) {
+                map.put(s, s);
+                set.add(s);
+            } else {
+                map.remove(s);
+            }
+        }
+
+        String firstString = map.entrySet().iterator().next().getValue();
+
+        System.out.println("streamTest() firstString; " + firstString);
+
+        Map<String, Long> counts = list.stream().collect(Collectors.groupingBy(s -> s, Collectors.counting()));
+        firstString = list.stream().filter(s -> counts.get(s) == 1).findFirst().orElse(null);
+        System.out.println("streamTest() after stream firstString; " + firstString);
+
+        //String firstString = list.
     }
     static void functionInterfaces() {
         System.out.println("functionInterfaces()------------------------------------------------------");
