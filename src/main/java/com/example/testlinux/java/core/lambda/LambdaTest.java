@@ -69,11 +69,14 @@ public class LambdaTest {
         nums = List.of(1, 2, 3, 4, 5);
         // peek — для побочных эффектов (логирование), не для преобразования
         // map → преобразование, mapToInt → даёт IntStream с .sum()
-        long countSumNums = nums.stream()
-                .filter(c -> c % 2 == 0) // 2, 4
-                .mapToInt(f -> f * f)     // 4, 16
-                .sum();                   // 20
-        System.out.println("countSumNums; " + countSumNums);
+        int countSumNums = nums.stream()
+                .mapToInt(f -> {
+                    if (f % 2 == 0){
+                        return f * f;
+                    }
+                    return 0;
+                }).sum();
+        System.out.println("streamTest() countSumNums; " + countSumNums);
     }
     static void functionInterfaces() {
         System.out.println("functionInterfaces()------------------------------------------------------");
