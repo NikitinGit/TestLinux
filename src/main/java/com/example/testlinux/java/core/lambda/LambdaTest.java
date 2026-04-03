@@ -9,9 +9,10 @@ public class LambdaTest {
     static int b = 2;
     int c = 3;
     public static void main (String[] test) {
-        functionInterfaces();
+        streamTest();
+        //functionInterfaces();
 
-        Operationable op = Integer::sum;
+/*        Operationable op = Integer::sum;
         int a = op.getIntNumber(3, 5);
         System.out.println("a; " + a);
 
@@ -52,11 +53,30 @@ public class LambdaTest {
             return y;
         };
 
-        System.out.println("op.getIntNumber(5, 2); " + op.getIntNumber(5, 2));
+        System.out.println("op.getIntNumber(5, 2); " + op.getIntNumber(5, 2));*/
 
     }
 
+    static void streamTest() {
+        List<Integer> nums = List.of(5, 3, 1, 2, 3, 5, 4);
+        List<Integer> uniqueNums = nums.stream().distinct().toList();
+        uniqueNums.forEach(s -> System.out.println("streamTest() uniqueNums; " + s));
+
+        List<String> words = List.of("apple", "banana", "kiwi", "pear", "grape");
+        List<String> filterWords = words.stream().filter(s -> s.length() > 4).toList();
+        filterWords.forEach(s -> System.out.println("streamTest() filterWords; " + s));
+
+        nums = List.of(1, 2, 3, 4, 5);
+        // peek — для побочных эффектов (логирование), не для преобразования
+        // map → преобразование, mapToInt → даёт IntStream с .sum()
+        long countSumNums = nums.stream()
+                .filter(c -> c % 2 == 0) // 2, 4
+                .mapToInt(f -> f * f)     // 4, 16
+                .sum();                   // 20
+        System.out.println("countSumNums; " + countSumNums);
+    }
     static void functionInterfaces() {
+        System.out.println("functionInterfaces()------------------------------------------------------");
         task1_predicate();
         task2_binaryOperator();
         task3_unaryOperator();
