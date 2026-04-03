@@ -55,37 +55,111 @@ public class LambdaTest {
     }
 
     static void functionInterfaces() {
+        task1_predicate();
+        task2_binaryOperator();
+        task3_unaryOperator();
+        task4_function();
+        task5_functionMethodRef();
+        task6_biFunction();
+        task7_consumer();
+        task8_supplier();
+        task9_predicateAnd();
+        task10_functionAndThen();
+        task11_binaryOperatorMethodRef();
+        task12_consumerAndThen();
+    }
+
+    // ЗАДАЧА 1: Predicate<Integer> — напиши лямбду которая возвращает true если x % 3 == 1
+    static void task1_predicate() {
         Predicate<Integer> testInt = x -> x % 3 == 1;
-        boolean test2 = testInt.test(2);
-        System.out.println("test2; " + test2);
+        System.out.println("test2; " + testInt.test(2)); // false
+        System.out.println("test4: " + testInt.test(4)); // true
+    }
 
-        boolean test4 = testInt.test(4);
-        System.out.println("test4: " + test4);
+    // ЗАДАЧА 2: BinaryOperator<Integer> — напиши лямбду умножения двух чисел
+    static void task2_binaryOperator() {
+        BinaryOperator<Integer> multiply = (x, y) -> x * y;
+        System.out.println("multiply.apply(3, 5): " + multiply.apply(3, 5)); // 15
+    }
 
-        BinaryOperator<Integer> multiply = (x, y) -> x*y;
-        System.out.println("multiply.apply(3, 5)); " + multiply.apply(3, 5)); // 15
+    // ЗАДАЧА 3: UnaryOperator<Integer> — напиши лямбду возведения в квадрат
+    static void task3_unaryOperator() {
+        UnaryOperator<Integer> square = x -> x * x;
+        System.out.println("square.apply(5): " + square.apply(5)); // 25
+    }
 
-        UnaryOperator<Integer> square = x -> x*x;
-        System.out.println("square.apply(5); " + square.apply(5)); // 25
-
+    // ЗАДАЧА 4: Function<Function1, Function2> — напиши лямбду которая создаёт новый Function2
+    // с именем f1.getName() + " from lambda nikitin"
+    static void task4_function() {
         Function1 f1 = new Function1("new Function1");
-
         Function<Function1, Function2> f1ToF2 = x -> new Function2(x.getName() + " from lambda nikitin");
-        var f2 = f1ToF2.apply(f1);
-        System.out.println("var f2 = f1ToF2.apply(f1) , f2.getName(); " + f2.getName());
+        System.out.println("f2.getName: " + f1ToF2.apply(f1).getName());
+    }
 
-        f1ToF2 = Function1::getF2;// or f1ToF2 = x -> x.getF2();
-        System.out.println("f1ToF2.apply(f1).getName(); " + f1ToF2.apply(f1).getName());
+    // ЗАДАЧА 5: перепиши Function<Function1, Function2> через ссылку на метод вместо лямбды
+    static void task5_functionMethodRef() {
+        Function1 f1 = new Function1("new Function1");
+        Function<Function1, Function2> f1ToF2 = Function1::getF2;
+        System.out.println("f1ToF2 method ref: " + f1ToF2.apply(f1).getName());
+    }
 
+    // ЗАДАЧА 6: BiFunction<Integer, Function1, Function2> — напиши лямбду которая создаёт Function2
+    // с именем y.getName() + ": " + (x * 2)
+    static void task6_biFunction() {
+        Function1 f1 = new Function1("new Function1");
         BiFunction<Integer, Function1, Function2> intWithF1ToF2 = (x, y) ->
                 new Function2(y.getName() + ": " + (x * 2));
-        var f3 = intWithF1ToF2.apply(25, f1);
-        System.out.println("BiFunction f3; " + f3.getName());
+        System.out.println("BiFunction f3: " + intWithF1ToF2.apply(25, f1).getName());
+    }
 
+    // ЗАДАЧА 7: Consumer<Function2> — напиши лямбду которая меняет name у f2 на "consumerF2"
+    static void task7_consumer() {
+        Function2 f2 = new Function2("initial");
         Consumer<Function2> consumerF2 = x -> x.setName("consumerF2");
         consumerF2.accept(f2);
-        System.out.println("f2.getName; " + f2.getName());
+        System.out.println("f2.getName: " + f2.getName()); // consumerF2
+    }
 
+    // ЗАДАЧА 8: Supplier<Integer> — напиши лямбду которая возвращает случайное число от 1 до 10
+    static void task8_supplier() {
+        Supplier<Integer> randomValue = () -> (int)(Math.random() * 10) + 1;
+        System.out.println("Случайное значение: " + randomValue.get());
+    }
+
+    // ЗАДАЧА 9: Predicate.and() — напиши andTest: true если строка не пустая И длиннее 3 символов
+    static void task9_predicateAnd() {
+        Predicate<String> notEmpty = s -> !s.isEmpty();
+        Predicate<String> longerThan3 = s -> s.length() > 3;
+        Predicate<String> andTest = notEmpty.and(longerThan3);
+        System.out.println("andTest(\"\"):     " + andTest.test(""));      // false
+        System.out.println("andTest(\"ab\"):   " + andTest.test("ab"));    // false
+        System.out.println("andTest(\"abcd\"): " + andTest.test("abcd"));  // true
+    }
+
+    // ЗАДАЧА 10: Function.andThen() — напиши цепочку: Function1 -> Function2 -> String (getName)
+    static void task10_functionAndThen() {
+        Function1 f1 = new Function1("new Function1");
+        Function<Function1, String> f1ToName = ((Function<Function1, Function2>) Function1::getF2)
+                .andThen(Function2::getName);
+        System.out.println("f1ToName: " + f1ToName.apply(f1));
+    }
+
+    // ЗАДАЧА 11: BinaryOperator — напиши sum и max через ссылку на статический метод Integer (не лямбду)
+    static void task11_binaryOperatorMethodRef() {
+        BinaryOperator<Integer> sum = Integer::sum;
+        BinaryOperator<Integer> max = Integer::max;
+        System.out.println("sum(3,5): " + sum.apply(3, 5)); // 8
+        System.out.println("max(3,5): " + max.apply(3, 5)); // 5
+    }
+
+    // ЗАДАЧА 12: Consumer.andThen() — объедини два Consumer:
+    // первый меняет name на "first", второй добавляет " + second"
+    static void task12_consumerAndThen() {
+        Function2 f2 = new Function2("initial");
+        Consumer<Function2> first  = x -> x.setName("first");
+        Consumer<Function2> second = x -> x.setName(x.getName() + " + second");
+        first.andThen(second).accept(f2);
+        System.out.println("andThen consumer: " + f2.getName()); // first + second
     }
 
     public ConstructorTest testConstruct(int i) {
