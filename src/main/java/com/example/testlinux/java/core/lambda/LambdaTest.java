@@ -102,20 +102,20 @@ public class LambdaTest {
         List<String> listMinimum = List.of("a", "b", "c", "a", "b", "d", "a", "b", "c", "a", "b", "c", "d");
         Map<String, Long> countsMinimum = listMinimum.stream()
                 .collect(Collectors.groupingBy(s -> s, Collectors.counting()));
-        // {"a"=4, "b"=4, "c"=3, "d"=2}
 
         // минимальное количество повторений среди всех элементов
-        long minCount = countsMinimum.values().stream()
-                .mapToLong(Long::longValue)
-                .min()
-                .orElse(0);
+        Collection<Long> longs = countsMinimum.values();
+        for(var l : longs) {
+            System.out.println("Collection<Long> longs l; " + l);
+        }
+        long minCount = longs.stream().mapToLong(Long::longValue).min().orElse(0);
 
         // первый элемент из оригинального списка у которого count == minCount
         firstString = listMinimum.stream()
                 .filter(s -> countsMinimum.get(s) == minCount)
                 .findFirst()
                 .orElse(null);
-        System.out.println("streamTest() minCount=" + minCount + " firstString; " + firstString); // d
+        System.out.println("streamTest() minCount=" + minCount + " firstString; " + firstString);
 
         //String firstString = list.
     }
