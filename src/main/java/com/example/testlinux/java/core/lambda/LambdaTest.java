@@ -111,10 +111,7 @@ public class LambdaTest {
         long minCount = longs.stream().mapToLong(Long::longValue).min().orElse(0);
 
         // первый элемент из оригинального списка у которого count == minCount
-        firstString = listMinimum.stream()
-                .filter(s -> countsMinimum.get(s) == minCount)
-                .findFirst()
-                .orElse(null);
+        firstString = listMinimum.stream().filter(s -> countsMinimum.get(s) == minCount).findFirst().orElse(null);
         System.out.println("streamTest() minCount=" + minCount + " firstString; " + firstString);
 
         List<String> wordsLength = List.of("hi", "hello", "bye", "world");
