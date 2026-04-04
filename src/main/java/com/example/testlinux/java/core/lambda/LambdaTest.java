@@ -159,7 +159,14 @@ public class LambdaTest {
                 -> System.out.println("streamTest() - groupedTreeWordsReversed len=" + len + " -> " + group)
         );
 
+
+        // Найти топ-3 самых больших чисел
         List<Integer> numsMax = List.of(10, 5, 20, 3, 7, 30);
+        List<Integer> top3 = numsMax.stream()
+                .sorted(Comparator.reverseOrder()) // 30, 20, 10, 7, 5, 3
+                .limit(3)                          // 30, 20, 10
+                .toList();
+        System.out.println("streamTest() top3: " + top3);
 
         //String firstString = list.
     }
