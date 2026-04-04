@@ -70,6 +70,8 @@ public class LambdaTest {
         st6_groupByLength();
         st7_top3();*/
         anagrams();
+        anagramsV2();
+        anagramsV3();
     }
 
     // 1. Убрать дубликаты из списка
@@ -194,6 +196,35 @@ public class LambdaTest {
         }
 
         anagramGroup.entrySet().forEach(System.out::println);
+    }
+
+    private static void anagramsV2() {
+        List<String> words = List.of("eat", "tea", "tan", "ate", "nat", "bat");
+        Map<String, List<String>> groups = new LinkedHashMap<>();
+
+        for (String word : words) {
+            char[] chars = word.toCharArray();
+            Arrays.sort(chars);
+            String key = new String(chars); // "eat" -> "aet"
+            groups.computeIfAbsent(key, k -> new ArrayList<>()).add(word);
+        }
+
+        groups.values().forEach(System.out::println);
+        // [eat, tea, ate]
+        // [tan, nat]
+        // [bat]
+    }
+
+    private static void anagramsV3() {
+        List<String> words = List.of("eat", "tea", "tan", "ate", "nat", "bat");
+        words.stream()
+                .collect(Collectors.groupingBy(word -> {
+                    char[] chars = word.toCharArray();
+                    Arrays.sort(chars);
+                    return new String(chars); // ключ — отсортированные символы
+                }))
+                .values()
+                .forEach(System.out::println);
     }
 
     private static boolean IsAnagram(String a, String b) {
