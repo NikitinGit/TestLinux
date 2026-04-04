@@ -117,6 +117,10 @@ public class LambdaTest {
                 .orElse(null);
         System.out.println("streamTest() minCount=" + minCount + " firstString; " + firstString);
 
+        List<String> wordsLength = List.of("hi", "hello", "bye", "world");
+        wordsLength = wordsLength.stream().sorted(Comparator.comparing(String::length)).toList();
+        wordsLength.forEach(System.out::println);
+
         //String firstString = list.
     }
     static void functionInterfaces() {
