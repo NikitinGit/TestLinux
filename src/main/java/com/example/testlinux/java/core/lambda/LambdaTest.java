@@ -99,6 +99,24 @@ public class LambdaTest {
         firstString = list.stream().filter(s -> counts.get(s) == 1).findFirst().orElse(null);
         System.out.println("streamTest() after stream firstString; " + firstString);
 
+        List<String> listMinimum = List.of("a", "b", "c", "a", "b", "d", "a", "b", "c", "a", "b", "c", "d");
+        Map<String, Long> countsMinimum = listMinimum.stream()
+                .collect(Collectors.groupingBy(s -> s, Collectors.counting()));
+        // {"a"=4, "b"=4, "c"=3, "d"=2}
+
+        // минимальное количество повторений среди всех элементов
+        long minCount = countsMinimum.values().stream()
+                .mapToLong(Long::longValue)
+                .min()
+                .orElse(0);
+
+        // первый элемент из оригинального списка у которого count == minCount
+        firstString = listMinimum.stream()
+                .filter(s -> countsMinimum.get(s) == minCount)
+                .findFirst()
+                .orElse(null);
+        System.out.println("streamTest() minCount=" + minCount + " firstString; " + firstString); // d
+
         //String firstString = list.
     }
     static void functionInterfaces() {
