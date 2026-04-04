@@ -9,11 +9,14 @@ public class LambdaTest {
 
     static int b = 2;
     int c = 3;
-    public static void main (String[] test) {
-        streamTest();
-        //functionInterfaces();
 
-/*        Operationable op = Integer::sum;
+    public static void main(String[] test) {
+        streamTest();
+
+/*
+        functionInterfaces();
+
+        Operationable op = Integer::sum;
         int a = op.getIntNumber(3, 5);
         System.out.println("a; " + a);
 
@@ -59,116 +62,147 @@ public class LambdaTest {
     }
 
     static void streamTest() {
+        /*st1_distinct();
+        st2_filter();
+        st3_sumOfSquaresOfEven();
+        st4_firstUnique();
+        st5_firstWithMinCount();
+        st6_groupByLength();
+        st7_top3();*/
+        anagrams();
+    }
+
+    // 1. Убрать дубликаты из списка
+    static void st1_distinct() {
         List<Integer> nums = List.of(5, 3, 1, 2, 3, 5, 4);
-        List<Integer> uniqueNums = nums.stream().distinct().toList();
-        uniqueNums.forEach(s -> System.out.println("streamTest() uniqueNums; " + s));
+        nums.stream().distinct().toList()
+                .forEach(s -> System.out.println("st1_distinct: " + s));
+    }
 
+    // 2. Оставить только строки длиннее 4 символов
+    static void st2_filter() {
         List<String> words = List.of("apple", "banana", "kiwi", "pear", "grape");
-        List<String> filterWords = words.stream().filter(s -> s.length() > 4).toList();
-        filterWords.forEach(s -> System.out.println("streamTest() filterWords; " + s));
+        words.stream().filter(s -> s.length() > 4).toList()
+                .forEach(s -> System.out.println("st2_filter: " + s));
+    }
 
-        nums = List.of(1, 2, 3, 4, 5);
-        // peek — для побочных эффектов (логирование), не для преобразования
-        // map → преобразование, mapToInt → даёт IntStream с .sum()
-        int countSumNums = nums.stream()
-                .mapToInt(f -> {
-                    if (f % 2 == 0){
-                        return f * f;
-                    }
-                    return 0;
-                }).sum();
-        System.out.println("streamTest() countSumNums; " + countSumNums);
+    // 3. Сумма квадратов чётных чисел
+    // peek — для побочных эффектов (логирование), не для преобразования
+    // map → преобразование, mapToInt → даёт IntStream с .sum()
+    static void st3_sumOfSquaresOfEven() {
+        List<Integer> nums = List.of(1, 2, 3, 4, 5);
+        int result = nums.stream()
+                .mapToInt(f -> f % 2 == 0 ? f * f : 0)
+                .sum();
+        System.out.println("st3_sumOfSquaresOfEven: " + result); // 4+16=20
+    }
 
+    // 4. Найти первую неповторяющуюся строку
+    static void st4_firstUnique() {
         List<String> list = List.of("a", "b", "c", "a", "b", "d");
+        // for-вариант: один проход, быстрее
         Set<String> set = new HashSet<>();
         Map<String, String> map = new LinkedHashMap<>();
-        for(String s : list) {
-            if(!set.contains(s)) {
+        for (String s : list) {
+            if (!set.contains(s)) {
                 map.put(s, s);
                 set.add(s);
-            } else {
-                map.remove(s);
+            } else map.remove(s);
+        }
+        System.out.println("st4_firstUnique for: " + map.entrySet().iterator().next().getValue());
+
+        // stream-вариант: два прохода, читаемее
+        Map<String, Long> counts = list.stream()
+                .collect(Collectors.groupingBy(s -> s, Collectors.counting()));
+        String first = list.stream().filter(s -> counts.get(s) == 1).findFirst().orElse(null);
+        System.out.println("st4_firstUnique stream: " + first);
+    }
+
+    // 5. Найти строку с минимальным количеством повторений
+    static void st5_firstWithMinCount() {
+        List<String> list = List.of("a", "b", "c", "a", "b", "d", "a", "b", "c", "a", "b", "c", "d");
+        Map<String, Long> counts = list.stream()
+                .collect(Collectors.groupingBy(s -> s, Collectors.counting()));
+        long minCount = counts.values().stream().mapToLong(Long::longValue).min().orElse(0);
+        String first = list.stream().filter(s -> counts.get(s) == minCount).findFirst().orElse(null);
+        System.out.println("st5_firstWithMinCount minCount=" + minCount + " first=" + first);
+    }
+
+    // 6. Группировка по длине строки
+    // длина 17 → бакет 17 % 16 = 1 → в HashMap выведется ПЕРВОЙ, хотя число 17 > 2, 3, 5
+    static void st6_groupByLength() {
+        List<String> words = List.of("hi", "hello", "bye", "abcdefghijklmnopq");
+
+        // HashMap — порядок непредсказуем
+        Map<Integer, List<String>> grouped = words.stream()
+                .collect(Collectors.groupingBy(String::length));
+        grouped.forEach((len, group) ->
+                System.out.println("st6 HashMap len=" + len + " -> " + group));
+
+        // LinkedHashMap — порядок вставки
+        Map<Integer, List<String>> groupedLinked = words.stream()
+                .collect(Collectors.groupingBy(String::length, LinkedHashMap::new, Collectors.toList()));
+        groupedLinked.forEach((len, group) ->
+                System.out.println("st6 LinkedHashMap len=" + len + " -> " + group));
+
+        // реверс LinkedHashMap
+        Map<Integer, List<String>> groupedLinkedReversed = groupedLinked.entrySet().stream()
+                .sorted(Map.Entry.<Integer, List<String>>comparingByKey().reversed())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
+        groupedLinkedReversed.forEach((len, group) ->
+                System.out.println("st6 LinkedHashMap reversed len=" + len + " -> " + group));
+
+        // TreeMap — сортировка по убыванию ключа
+        Map<Integer, List<String>> groupedTree = words.stream()
+                .collect(Collectors.groupingBy(String::length,
+                        () -> new TreeMap<>(Comparator.reverseOrder()), Collectors.toList()));
+        groupedTree.forEach((len, group) ->
+                System.out.println("st6 TreeMap reversed len=" + len + " -> " + group));
+    }
+
+    // 7. Топ-3 наибольших числа
+    static void st7_top3() {
+        List<Integer> nums = List.of(10, 5, 20, 3, 7, 30);
+        List<Integer> top3 = nums.stream()
+                .sorted(Comparator.reverseOrder())
+                .limit(3)
+                .toList();
+        System.out.println("st7_top3: " + top3); // [30, 20, 10]
+    }
+
+    private static void anagrams() {
+        //7. Найти анаграммы
+        List<String> anagrams = List.of("eat", "tea", "tan", "ate", "nat", "bat");
+
+        Map<Integer, List<String>> anagramGroup = new HashMap<>();
+        Set<String> checkedWord = new HashSet<>();
+        for (int i = 0; i < anagrams.size(); i++) {
+            String word1 = anagrams.get(i);
+
+            List<String> words = new ArrayList<>(List.of(word1));
+            if (!checkedWord.contains(word1)) {
+                anagramGroup.put(i, words);
+            }
+
+            for(int j = i + 1; j < anagrams.size(); j++) {
+                String word2 = anagrams.get(j);
+                if (IsAnagram(word1, word2) && !checkedWord.contains(word2)) {
+                    words.add(word2);
+                    checkedWord.add(word2);
+                }
             }
         }
 
-        String firstString = map.entrySet().iterator().next().getValue();
+        anagramGroup.entrySet().forEach(System.out::println);
+    }
 
-        System.out.println("streamTest() firstString; " + firstString);
+    private static boolean IsAnagram(String a, String b) {
+        char[] x = a.toCharArray();
+        Arrays.sort(x);
+        char[] y = b.toCharArray();
+        Arrays.sort(y);
 
-        Map<String, Long> counts = list.stream().collect(Collectors.groupingBy(s -> s, Collectors.counting()));
-        firstString = list.stream().filter(s -> counts.get(s) == 1).findFirst().orElse(null);
-        System.out.println("streamTest() after stream firstString; " + firstString);
-
-        List<String> listMinimum = List.of("a", "b", "c", "a", "b", "d", "a", "b", "c", "a", "b", "c", "d");
-        Map<String, Long> countsMinimum = listMinimum.stream()
-                .collect(Collectors.groupingBy(s -> s, Collectors.counting()));
-
-        // минимальное количество повторений среди всех элементов
-        Collection<Long> longs = countsMinimum.values();
-        for(var l : longs) {
-            System.out.println("Collection<Long> longs l; " + l);
-        }
-        long minCount = longs.stream().mapToLong(Long::longValue).min().orElse(0);
-
-        // первый элемент из оригинального списка у которого count == minCount
-        firstString = listMinimum.stream().filter(s -> countsMinimum.get(s) == minCount).findFirst().orElse(null);
-        System.out.println("streamTest() minCount=" + minCount + " firstString; " + firstString);
-
-        // длина 17 → бакет 17 % 16 = 1 → выведется ПЕРВОЙ, хотя число 17 > 2, 3, 5
-        List<String> wordsUnordered = List.of(
-                "hi",                  // длина 2  → бакет 2
-                "hello",               // длина 5  → бакет 5
-                "bye",                 // длина 3  → бакет 3
-                "abcdefghijklmnopq"    // длина 17 → бакет 1 (17 % 16 = 1!)
-        );
-        // groupingBy: ключ — длина строки, значение — список строк с такой длиной
-        Map<Integer, List<String>> groupedWords = wordsUnordered.stream()
-                .collect(Collectors.groupingBy(String::length));
-        groupedWords.forEach((len, group) ->
-                System.out.println("streamTest() groupedWords len=" + len + " -> " + group));
-
-        Map<Integer, List<String>> groupedTreeWords = wordsUnordered.stream()
-                .collect(Collectors.groupingBy(String::length, LinkedHashMap::new, Collectors.toList()));
-
-
-        groupedTreeWords.forEach((len, group) ->
-                System.out.println("streamTest() - groupedTreeWords len=" + len + " -> " + group));
-
-        // реверс LinkedHashMap — пересобрать в новый LinkedHashMap с обратным порядком ключей
-        Map<Integer, List<String>> groupedTreeWordsReversedLinked = groupedTreeWords.entrySet().stream()
-                .sorted(Map.Entry.<Integer, List<String>>comparingByKey().reversed())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (a, b) -> a,
-                        LinkedHashMap::new
-                ));
-        groupedTreeWordsReversedLinked.forEach((len, group) ->
-                System.out.println("streamTest() - groupedTreeWordsReversedLinked len=" + len + " -> " + group));
-
-        Map<Integer, List<String>> groupedTreeWordsReversed = wordsUnordered.stream()
-                .collect(
-                        Collectors.groupingBy(
-                                String::length,
-                                () -> new TreeMap<>(Comparator.reverseOrder()),
-                                Collectors.toList()
-                        )
-                );
-        groupedTreeWordsReversed.forEach(
-                (len, group)
-                -> System.out.println("streamTest() - groupedTreeWordsReversed len=" + len + " -> " + group)
-        );
-
-
-        // Найти топ-3 самых больших чисел
-        List<Integer> numsMax = List.of(10, 5, 20, 3, 7, 30);
-        List<Integer> top3 = numsMax.stream()
-                .sorted(Comparator.reverseOrder()) // 30, 20, 10, 7, 5, 3
-                .limit(3)                          // 30, 20, 10
-                .toList();
-        System.out.println("streamTest() top3: " + top3);
-
-        //String firstString = list.
+        return Arrays.equals(x, y);
     }
     static void functionInterfaces() {
         System.out.println("functionInterfaces()------------------------------------------------------");
@@ -240,7 +274,7 @@ public class LambdaTest {
 
     // ЗАДАЧА 8: Supplier<Integer> — напиши лямбду которая возвращает случайное число от 1 до 10
     static void task8_supplier() {
-        Supplier<Integer> randomValue = () -> (int)(Math.random() * 10) + 1;
+        Supplier<Integer> randomValue = () -> (int) (Math.random() * 10) + 1;
         System.out.println("task8_supplier случайное значение: " + randomValue.get());
     }
 
@@ -274,7 +308,7 @@ public class LambdaTest {
     // первый меняет name на "first", второй добавляет " + second"
     static void task12_consumerAndThen() {
         Function2 f2 = new Function2("initial");
-        Consumer<Function2> first  = x -> x.setName("first");
+        Consumer<Function2> first = x -> x.setName("first");
         Consumer<Function2> second = x -> x.setName(x.getName() + " + second");
         first.andThen(second).accept(f2);
         System.out.println("task12_consumerAndThen andThen consumer: " + f2.getName()); // first + second
