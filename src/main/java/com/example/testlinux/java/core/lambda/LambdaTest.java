@@ -129,8 +129,35 @@ public class LambdaTest {
 
         Map<Integer, List<String>> groupedTreeWords = wordsUnordered.stream()
                 .collect(Collectors.groupingBy(String::length, LinkedHashMap::new, Collectors.toList()));
+
+
         groupedTreeWords.forEach((len, group) ->
                 System.out.println("streamTest() - groupedTreeWords len=" + len + " -> " + group));
+
+        // реверс LinkedHashMap — пересобрать в новый LinkedHashMap с обратным порядком ключей
+        Map<Integer, List<String>> groupedTreeWordsReversedLinked = groupedTreeWords.entrySet().stream()
+                .sorted(Map.Entry.<Integer, List<String>>comparingByKey().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (a, b) -> a,
+                        LinkedHashMap::new
+                ));
+        groupedTreeWordsReversedLinked.forEach((len, group) ->
+                System.out.println("streamTest() - groupedTreeWordsReversedLinked len=" + len + " -> " + group));
+
+        Map<Integer, List<String>> groupedTreeWordsReversed = wordsUnordered.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                String::length,
+                                () -> new TreeMap<>(Comparator.reverseOrder()),
+                                Collectors.toList()
+                        )
+                );
+        groupedTreeWordsReversed.forEach(
+                (len, group)
+                -> System.out.println("streamTest() - groupedTreeWordsReversed len=" + len + " -> " + group)
+        );
 
         List<Integer> numsMax = List.of(10, 5, 20, 3, 7, 30);
 
