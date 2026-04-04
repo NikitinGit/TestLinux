@@ -114,9 +114,25 @@ public class LambdaTest {
         firstString = listMinimum.stream().filter(s -> countsMinimum.get(s) == minCount).findFirst().orElse(null);
         System.out.println("streamTest() minCount=" + minCount + " firstString; " + firstString);
 
-        List<String> wordsLength = List.of("hi", "hello", "bye", "world");
-        wordsLength = wordsLength.stream().sorted(Comparator.comparing(String::length)).toList();
-        wordsLength.forEach(System.out::println);
+        // длина 17 → бакет 17 % 16 = 1 → выведется ПЕРВОЙ, хотя число 17 > 2, 3, 5
+        List<String> wordsUnordered = List.of(
+                "hi",                  // длина 2  → бакет 2
+                "hello",               // длина 5  → бакет 5
+                "bye",                 // длина 3  → бакет 3
+                "abcdefghijklmnopq"    // длина 17 → бакет 1 (17 % 16 = 1!)
+        );
+        // groupingBy: ключ — длина строки, значение — список строк с такой длиной
+        Map<Integer, List<String>> groupedWords = wordsUnordered.stream()
+                .collect(Collectors.groupingBy(String::length));
+        groupedWords.forEach((len, group) ->
+                System.out.println("streamTest() groupedWords len=" + len + " -> " + group));
+
+        Map<Integer, List<String>> groupedTreeWords = wordsUnordered.stream()
+                .collect(Collectors.groupingBy(String::length, LinkedHashMap::new, Collectors.toList()));
+        groupedTreeWords.forEach((len, group) ->
+                System.out.println("streamTest() - groupedTreeWords len=" + len + " -> " + group));
+
+        List<Integer> numsMax = List.of(10, 5, 20, 3, 7, 30);
 
         //String firstString = list.
     }
