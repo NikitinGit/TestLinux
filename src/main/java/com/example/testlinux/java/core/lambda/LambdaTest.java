@@ -12,9 +12,7 @@ public class LambdaTest {
 
     public static void main(String[] test) {
         streamTest();
-
-/*
-        functionInterfaces();
+/*      functionInterfaces();
 
         Operationable op = Integer::sum;
         int a = op.getIntNumber(3, 5);
@@ -72,6 +70,11 @@ public class LambdaTest {
         anagrams();
         anagramsV2();
         anagramsV3();
+        List<Integer> task8nums = List.of(1, 2, 2, 3, 3, 3, 4);
+        task8(task8nums);
+        task8v2(task8nums);
+        task8v3(task8nums);
+        task8v4(task8nums);
     }
 
     // 1. Убрать дубликаты из списка
@@ -176,6 +179,13 @@ public class LambdaTest {
         //7. Найти анаграммы
         List<String> anagrams = List.of("eat", "tea", "tan", "ate", "nat", "bat");
 
+        char[] a = anagrams.get(0).toCharArray();
+        Arrays.sort(a);
+        char[] b = anagrams.get(2).toCharArray();
+        Arrays.sort(b);
+        b = null;
+        System.out.println("Arrays.equals(a, b); " + Arrays.equals(a, b));
+
         Map<Integer, List<String>> anagramGroup = new HashMap<>();
         Set<String> checkedWord = new HashSet<>();
         for (int i = 0; i < anagrams.size(); i++) {
@@ -235,6 +245,60 @@ public class LambdaTest {
 
         return Arrays.equals(x, y);
     }
+
+    private static void task8() {
+        task8(List.of(1, 2, 2, 3, 3, 3, 4));
+    }
+
+    private static void task8(List<Integer> nums) {
+        //8. Самый частый элемент
+        Map<Integer, Long> groups = nums.stream()
+                .collect(Collectors.groupingBy(k -> k, Collectors.counting()));
+
+        Optional<Integer> mostFrequent = groups.entrySet().stream()
+                .max(Comparator.comparingLong(Map.Entry::getValue))
+                .map(Map.Entry::getKey);
+
+        mostFrequent.ifPresent(integer -> System.out.println("Stream comparingLong task8 mostFrequent.get(); " + integer));
+    }
+
+    // 8v2. Самый частый элемент — без промежуточной переменной, выводит и элемент и количество
+    private static void task8v2() {
+        task8v2(List.of(1, 2, 2, 3, 3, 3, 4));
+    }
+
+    private static void task8v2(List<Integer> nums) {
+        nums.stream()
+                .collect(Collectors.groupingBy(k -> k, Collectors.counting()))
+                .entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .ifPresent(e -> System.out.println("task8v2 element=" + e.getKey() + " count=" + e.getValue()));
+    }
+
+    private static void task8v3() {
+        task8v3(List.of(1, 2, 2, 3, 3, 3, 4));
+    }
+
+    private static void task8v3(List<Integer> nums) {
+        nums.stream()
+                .distinct()
+                .max(Comparator.comparingInt(n -> Collections.frequency(nums, n)))
+                .ifPresent(e -> System.out.println("frequency element=" + e
+                        + " count=" + Collections.frequency(nums, e)));
+    }
+
+    private static void task8v4() {
+        task8v4(List.of(1, 2, 2, 3, 3, 3, 4));
+    }
+
+    private static void task8v4(List<Integer> nums) {
+        nums.stream()
+                .collect(Collectors.toMap(k -> k, k -> 1L, Long::sum))
+                .entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .ifPresent(e -> System.out.println("toMap element=" + e.getKey() + " count=" + e.getValue()));
+    }
+
     static void functionInterfaces() {
         System.out.println("functionInterfaces()------------------------------------------------------");
         task1_predicate();
