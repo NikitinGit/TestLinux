@@ -123,10 +123,8 @@ public class StreamApi {
     static void streamTest() {
         st1_distinct();
         st2_filter();
-        /*
-
         st3_sumOfSquaresOfEven();
-        st4_firstUnique();
+        /*st4_firstUnique();
         st5_firstWithMinCount();
         st6_groupByLength();
         st7_top3();*/
@@ -281,6 +279,15 @@ public class StreamApi {
                 .mapToInt(f -> f % 2 == 0 ? f * f : 0)
                 .sum();
         System.out.println("st3_sumOfSquaresOfEven: " + result); // 4+16=20
+
+        //Optional<Integer> sum = nums.stream().reduce(Integer::sum);
+        // через map + reduce
+        int sum2 = nums.stream().map(f -> f % 2 == 0 ? f * f : 0).reduce(0, Integer::sum);
+        System.out.println("map+reduce: " + sum2);
+
+        // через обычный map + collect
+        int sum3 = nums.stream().map(f -> f % 2 == 0 ? f * f : 0).reduce(0, (a, b) -> a + b);
+        System.out.println("map+lambda: " + sum3);
     }
 
     // 4. Найти первую неповторяющуюся строку
