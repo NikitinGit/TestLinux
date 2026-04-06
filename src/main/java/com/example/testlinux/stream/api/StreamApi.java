@@ -9,6 +9,10 @@ import java.util.stream.Stream;
 public class StreamApi {
     public static void main(String[] args) {
         streamTest();
+        //helloStream();
+    }
+
+    private static void helloStream() {
         List<Integer> sample = new ArrayList<>();
         sample.stream().forEach(System.out::println);
 
@@ -122,12 +126,12 @@ public class StreamApi {
 
     static void streamTest() {
         st1_distinct();
-        st2_filter();
+        /*st2_filter();
         st3_sumOfSquaresOfEven();
-        /*st4_firstUnique();
+        st4_firstUnique();
         st5_firstWithMinCount();
         st6_groupByLength();
-        st7_top3();*/
+        st7_top3();
         anagrams();
         anagramsV2();
         anagramsV3();
@@ -136,7 +140,7 @@ public class StreamApi {
         task8v2(task8nums);
         task8v3(task8nums);
         task8v4(task8nums);
-        task8v5(task8nums);
+        task8v5(task8nums);*/
     }
 
     private static void anagrams() {
@@ -254,43 +258,52 @@ public class StreamApi {
     /// /////////////////////////////////////////
     // 1. Убрать дубликаты из списка
     static void st1_distinct() {
+        //nums.stream().findFirst().ifPresent(System.out::println);
         List<Integer> nums = List.of(5, 3, 1, 2, 3, 5, 4);
         nums.stream().distinct().toList()
                 .forEach(s -> System.out.println("st1_distinct: " + s));
+        //nums.stream().sorted(Comparator.reverseOrder()).toList().forEach(System.out::println);
     }
 
     // 2. Оставить только строки длиннее 4 символов
     static void st2_filter() {
-        List<String> words = List.of("apple", "banana", "kiwi", "pear", "grape");
+        List<String> words = List.of("apple", "banana", "kiwi", "pear", "grape", "apple", "banana");
         words.stream().filter(s -> s.length() > 4).toList()
                 .forEach(s -> System.out.println("st2_filter: " + s));
 
-        List<Integer> nums = List.of(1, 2, 5);
-        int sum = nums.stream().mapToInt(n -> n * n).sum();
-        System.out.println("sum: " + sum);
+        Map<String, List<String>> map = words.stream().collect(Collectors.groupingBy(
+                w -> w
+        ));
+
+        words.stream().filter(s -> map.get(s).size() == 1).findFirst().ifPresent(System.out::println);
     }
 
     // 3. Сумма квадратов чётных чисел
     // peek — для побочных эффектов (логирование), не для преобразования
     // map → преобразование, mapToInt → даёт IntStream с .sum()
     static void st3_sumOfSquaresOfEven() {
-        List<Integer> nums = List.of(1, 2, 3, 4, 5);
+        Double d = 2.85;
+        Double d2 = 3.25;
+        float c = (float) (d + d2);
+        System.out.println("c; " + c);
+        List<Double> nums = List.of(1.85, 2.0, 3.0, 4.0, 5.2);
         int result = nums.stream()
-                .mapToInt(f -> f % 2 == 0 ? f * f : 0)
+                .mapToInt(Double::intValue)
                 .sum();
         System.out.println("st3_sumOfSquaresOfEven: " + result); // 4+16=20
 
-        //Optional<Integer> sum = nums.stream().reduce(Integer::sum);
+/*        //Optional<Integer> sum = nums.stream().reduce(Integer::sum);
+        List<Integer> nums2 = List.of(1.85, 2, 3, 4, 5);
         // через map + reduce
-        int sum2 = nums.stream().map(f -> f % 2 == 0 ? f * f : 0).reduce(0, Integer::sum);
+        int sum2 = nums2.stream().map(f -> f % 2 == 0 ? f * f : 0).reduce(0, Integer::sum);
         System.out.println("map+reduce: " + sum2);
 
         // через обычный map + collect
         int sum3 = nums.stream().map(f -> f % 2 == 0 ? f * f : 0).reduce(0, (a, b) -> a + b);
-        System.out.println("map+lambda: " + sum3);
+        System.out.println("map+lambda: " + sum3);*/
     }
 
-    // 4. Найти первую неповторяющуюся строку
+    // 4. Найти первую не повторяющуюся строку
     static void st4_firstUnique() {
         List<String> list = List.of("a", "b", "c", "a", "b", "d");
         // for-вариант: один проход, быстрее
