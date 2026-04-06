@@ -126,6 +126,10 @@ public class StreamApi {
 
     static void streamTest() {
         st1_distinct();
+        List<Integer> numsInt = List.of(44444444, 1, 2, 3, 4, 5);
+        intToLong(numsInt);
+        List<Float> numsFloat = List.of(2.5F, 400000000.0F, 3f, 4f, 5f, 8f);
+        floatToDouble(numsFloat);
         /*st2_filter();
         st3_sumOfSquaresOfEven();
         st4_firstUnique();
@@ -259,10 +263,25 @@ public class StreamApi {
     // 1. Убрать дубликаты из списка
     static void st1_distinct() {
         //nums.stream().findFirst().ifPresent(System.out::println);
-        List<Integer> nums = List.of(5, 3, 1, 2, 3, 5, 4);
+        List<Integer> nums = List.of(444444444, 3, 1, 2, 3, 5, 4, 2);
         nums.stream().distinct().toList()
                 .forEach(s -> System.out.println("st1_distinct: " + s));
+    }
+
+    public static void intToLong(List<Integer> nums) {
         //nums.stream().sorted(Comparator.reverseOrder()).toList().forEach(System.out::println);
+        long test = nums.stream().map((i -> i % 2 == 0 ? (long)i * i : 0))
+                .distinct().reduce(Long::sum).orElse(0L);//689916708
+        System.out.println("intToLong() test; " + test);
+    }
+
+    public static void floatToDouble(List<Float> nums) {
+        double test = nums.stream()
+                .map(i -> i % 2 == 0 ? (double)(i * i) : 0D) // явный cast float->double
+                .distinct()
+                .reduce(Double::sum)
+                .orElse(0D);
+        System.out.println("floatToDouble test; " + test);
     }
 
     // 2. Оставить только строки длиннее 4 символов
