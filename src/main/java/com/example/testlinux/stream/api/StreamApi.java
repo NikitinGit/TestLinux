@@ -125,26 +125,27 @@ public class StreamApi {
     }
 
     static void streamTest() {
-        st1_distinct();
-        List<Integer> numsInt = List.of(44444444, 1, 2, 3, 4, 5);
-        intToLong(numsInt);
-        List<Float> numsFloat = List.of(2.5F, 400000000.0F, 3f, 4f, 5f, 8f);
-        floatToDouble(numsFloat);
-        /*st2_filter();
-        st3_sumOfSquaresOfEven();
-        st4_firstUnique();
-        st5_firstWithMinCount();
-        st6_groupByLength();
-        st7_top3();
-        anagrams();
-        anagramsV2();
-        anagramsV3();
-        List<Integer> task8nums = List.of(1, 2, 2, 3, 3, 3, 4);
-        task8(task8nums);
-        task8v2(task8nums);
-        task8v3(task8nums);
-        task8v4(task8nums);
-        task8v5(task8nums);*/
+//        st1_distinct();
+//        List<Integer> numsInt = List.of(44444444, 1, 2, 3, 4, 5);
+//        intToLong(numsInt);
+//        List<Float> numsFloat = List.of(2.5F, 400000000.0F, 3f, 4f, 5f, 8f);
+//        floatToDouble(numsFloat);
+//        st2_filter();
+//        st3_sumOfSquaresOfEven();
+//        st4_firstUnique();
+//        st5_firstWithMinCount();
+//        st6_groupByLength();
+//        st7_top3();
+//        anagrams();
+//        anagramsV2();
+//        anagramsV3();
+//        List<Integer> task8nums = List.of(1, 2, 2, 3, 3, 3, 4);
+//        task8(task8nums);
+//        task8v2(task8nums);
+//        task8v3(task8nums);
+//        task8v4(task8nums);
+//        task8v5(task8nums);
+        st8_mostFrequentElement();
     }
 
     private static void anagrams() {
@@ -294,7 +295,9 @@ public class StreamApi {
                 w -> w
         ));
 
-        words.stream().filter(s -> map.get(s).size() == 1).findFirst().ifPresent(System.out::println);
+        map.values().stream().sorted().forEach(System.out::println);
+
+        //words.stream().filter(s -> map.get(s).size() == 1).findFirst().ifPresent(System.out::println);
     }
 
     // 3. Сумма квадратов чётных чисел
@@ -351,6 +354,24 @@ public class StreamApi {
         long minCount = counts.values().stream().mapToLong(Long::longValue).min().orElse(0);
         String first = list.stream().filter(s -> counts.get(s) == minCount).findFirst().orElse(null);
         System.out.println("st5_firstWithMinCount minCount=" + minCount + " first=" + first);
+
+        Map<String, Integer> countsInt = list.stream()
+                .collect(Collectors.toMap(
+                        k -> k,
+                        v -> 1,//increment
+                        Integer::sum
+                ));
+        int minCountInt = countsInt.values().stream().mapToInt(Integer::intValue).min().orElse(-1);
+        String first2 = list.stream().filter(s -> counts.get(s) == minCount).findFirst().orElse(null);
+        System.out.println("st5_firstWithMinCount 2  minCountInt=" + minCountInt + " first2=" + first2);
+
+        // collectingAndThen — применяет финишную функцию к результату коллектора
+        // если нужэен только int через Collectors
+        /*Map<String, Integer> counts = list.stream()
+                .collect(Collectors.groupingBy(
+                        s -> s,
+                        Collectors.collectingAndThen(Collectors.counting(), Long::intValue)
+                ));*/
     }
 
     // 6. Группировка по длине строки
@@ -393,6 +414,23 @@ public class StreamApi {
                 .limit(3)
                 .toList();
         System.out.println("st7_top3: " + top3); // [30, 20, 10]
+    }
+
+    //8. Самый частый элемент
+    static void st8_mostFrequentElement() {
+        List<Integer> nums = List.of(1, 2, 2, 2, 3, 3, 4);
+        var map = nums.stream().collect(
+                Collectors.toMap(
+                        k -> k,
+                        v -> 1,
+                        Integer::sum
+                )
+        );
+        Integer intFrequent = map.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+        System.out.println("intFrequent; " + intFrequent);
     }
 
     static class StaticMethod {
