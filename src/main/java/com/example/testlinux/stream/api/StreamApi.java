@@ -145,7 +145,8 @@ public class StreamApi {
 //        task8v3(task8nums);
 //        task8v4(task8nums);
 //        task8v5(task8nums);
-        st8_mostFrequentElement();
+//        st8_mostFrequentElement();
+        st9_mostFrequentElement();
     }
 
     private static void anagrams() {
@@ -431,6 +432,15 @@ public class StreamApi {
                 .map(Map.Entry::getKey)
                 .orElse(null);
         System.out.println("intFrequent; " + intFrequent);
+    }
+
+    // 9. Перевернуть строки и убрать дубликаты
+    static void st9_mostFrequentElement() {
+        List<String> words = List.of("abc", "cba", "bca", "abc");
+        words.stream()
+                .distinct()                                          // убрать дубликаты
+                .map(v -> new StringBuilder(v).reverse().toString()) // перевернуть
+                .forEach(System.out::println);
     }
 
     static class StaticMethod {
