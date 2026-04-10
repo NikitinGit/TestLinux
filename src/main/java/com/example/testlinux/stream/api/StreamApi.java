@@ -146,7 +146,8 @@ public class StreamApi {
 //        task8v4(task8nums);
 //        task8v5(task8nums);
 //        st8_mostFrequentElement();
-        st9_mostFrequentElement();
+//        st9_mostFrequentElement();
+        st9_flattenTask();
     }
 
     private static void anagrams() {
@@ -441,6 +442,26 @@ public class StreamApi {
                 .distinct()                                          // убрать дубликаты
                 .map(v -> new StringBuilder(v).reverse().toString()) // перевернуть
                 .forEach(System.out::println);
+    }
+
+    // 10. Flatten + фильтрация Получить список всех чисел > 4
+    static void st9_flattenTask() {
+        List<List<Integer>> list = List.of(
+                List.of(1, 2, 3),
+                List.of(4, 5),
+                List.of(6, 7, 8)
+        );
+
+        List<Integer> listOf4 = list.stream().flatMap(Collection::stream)
+                .filter(i -> i > 4)
+                .toList();
+        listOf4.forEach(System.out::println);
+    }
+
+    //11. Найти longest string Найти самую длинную строку
+    static void st10_longestString() {
+        List<String> words = List.of("a", "abcd", "abc", "ab");
+
     }
 
     static class StaticMethod {
