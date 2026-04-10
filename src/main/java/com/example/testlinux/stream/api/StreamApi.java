@@ -147,7 +147,8 @@ public class StreamApi {
 //        task8v5(task8nums);
 //        st8_mostFrequentElement();
 //        st9_mostFrequentElement();
-        st9_flattenTask();
+//        st9_flattenTask();
+        st10_longestString();
     }
 
     private static void anagrams() {
@@ -460,8 +461,18 @@ public class StreamApi {
 
     //11. Найти longest string Найти самую длинную строку
     static void st10_longestString() {
-        List<String> words = List.of("a", "abcd", "abc", "ab");
-
+        List<String> words = List.of("a", "abcd", "abс", "ab");
+//        words.stream().collect(
+//                Collectors.toMap(
+//                        String::length,
+//                        v -> v,
+//                        (f, l) -> f
+//                )
+//        ).entrySet().stream().max(Map.Entry.comparingByKey())
+//                .ifPresent(s -> System.out.println("s.getValue(); " + s.getValue()));
+        words.stream()
+                .max(Comparator.comparingInt(String::length))
+                .ifPresent(System.out::println);
     }
 
     static class StaticMethod {
