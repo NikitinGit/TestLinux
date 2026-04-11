@@ -150,7 +150,9 @@ public class StreamApi {
 //        st9_mostFrequentElement();
 //        st10_flattenTask();
 //        st11_longestString();
-        st12_palindrom();
+//        st12_palindrom();
+//        st14_twoMax();
+        st15_evenAndNotEven();
     }
 
     private static void anagrams() {
@@ -497,6 +499,63 @@ public class StreamApi {
 
     }
 
+    //13. Найти "второй максимум" без сортировки - Используй только Stream API (без .sorted())
+    static void st14_twoMax() {
+        List<Integer> nums = List.of(10, 5, 20, 8, 20, 15);
+        /*int max1 = nums.stream().max(Comparator.comparingInt(Integer::intValue)).get();
+        nums.stream().filter(v -> v != max1).max(Comparator.comparingInt(Integer::intValue))
+                .ifPresent(System.out::println);*/
+        int[] twoNums = nums.stream().reduce(
+                new int[]{Integer.MIN_VALUE, Integer.MIN_VALUE},
+                (acc, val) -> {
+                    int max1 = acc[0];
+                    int max2 = acc[1];
+
+                    if (val > max1) {
+                        max2 = max1;
+                        max1 = val;
+                    } else if (val > max2 && val != max1) {
+                        max2 = val;
+                    }
+
+                    return new int[]{max1, max2};
+                },
+                (a, b) -> a // для parallel не ок, но для собеса сойдёт
+        );
+        System.out.println("twoNums[1]; " + twoNums[1]);
+
+        int[] result = nums.parallelStream().collect(
+                () -> new int[]{Integer.MIN_VALUE, Integer.MIN_VALUE},
+                (acc, val) -> {
+                    if (val > acc[0]) {
+                        acc[1] = acc[0];
+                        acc[0] = val;
+                    } else if (val > acc[1] && val != acc[0]) {
+                        acc[1] = val;
+                    }
+                },
+                (a, b) -> {
+                    for (int v : new int[]{b[0], b[1]}) {
+                        if (v > a[0]) {
+                            a[1] = a[0];
+                            a[0] = v;
+                        } else if (v > a[1] && v != a[0]) {
+                            a[1] = v;
+                        }
+                    }
+                }
+        );
+        System.out.println("result[1]; " + result[1]);
+
+    }
+
+    //14. Разбить числа на чётные и нечётные - Вернуть Map<Boolean, List<Integer>>
+    static void st15_evenAndNotEven() {
+        List<Integer> nums = List.of(1,3,2,4,5,6, 8, 7, 7, 5);
+        nums.stream().sorted().collect(Collectors.groupingBy(k -> k % 2 == 0))
+                .entrySet()
+                .forEach(System.out::println);
+    }
     static class StaticMethod {
 
         static int test1(int x, int y) {
