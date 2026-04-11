@@ -4,6 +4,7 @@ import com.example.testlinux.java.core.lambda.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class StreamApi {
@@ -147,8 +148,9 @@ public class StreamApi {
 //        task8v5(task8nums);
 //        st8_mostFrequentElement();
 //        st9_mostFrequentElement();
-//        st9_flattenTask();
-        st10_longestString();
+//        st10_flattenTask();
+//        st11_longestString();
+        st12_palindrom();
     }
 
     private static void anagrams() {
@@ -446,7 +448,7 @@ public class StreamApi {
     }
 
     // 10. Flatten + фильтрация Получить список всех чисел > 4
-    static void st9_flattenTask() {
+    static void st10_flattenTask() {
         List<List<Integer>> list = List.of(
                 List.of(1, 2, 3),
                 List.of(4, 5),
@@ -460,11 +462,39 @@ public class StreamApi {
     }
 
     //11. Найти longest string Найти самую длинную строку
-    static void st10_longestString() {
+    static void st11_longestString() {
         List<String> words = List.of("a", "abcd", "abс", "ab");
 //        words.stream().collect(Collectors.toMap(String::length, v -> v, (f, l) -> f)
 //        ).entrySet().stream().max(Map.Entry.comparingByKey()).ifPresent(s -> System.out.println("s.getValue(); " + s.getValue()));
         words.stream().max(Comparator.comparingInt(String::length)).ifPresent(System.out::println);
+    }
+
+    //12. Проверка палиндромов - Вернуть только палиндромы
+    static void st12_palindrom() {
+        List<String> words = List.of("level", "test", "radar", "java");
+       /* words.stream().filter(
+                word -> {
+                    char[] wordChars = word.toCharArray();
+                    int wordLength = wordChars.length;
+                    for(int i = 0; i < wordLength; i++) {
+                        if(wordChars[i] != wordChars[wordLength - i - 1]) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+        ).forEach(System.out::println);*/
+
+        //краткость
+        words.stream().filter(word -> word.contentEquals(new StringBuilder(word).reverse()))
+                .forEach(System.out::println);
+
+        System.out.println("Производительный вариант ----------------------------------------------------------------");
+        //производительность
+        words.stream().filter(word -> IntStream.range(0, word.length() / 2)
+                        .allMatch(i -> word.charAt(i) == word.charAt(word.length() - i - 1)))
+                .forEach(System.out::println);
+
     }
 
     static class StaticMethod {
