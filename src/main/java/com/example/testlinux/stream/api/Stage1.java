@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 public class Stage1 {
     public List<String> names = new ArrayList<>(List.of("name1;", "name2;"));
     public String name;
+    public double d;
     public List<Stage2> stages = new ArrayList<>();
     private Stage2[][] array2d = new Stage2[][] {
             {new Stage2("1bn"), new Stage2("12bn"), new Stage2("13bn")},
@@ -21,6 +22,10 @@ public class Stage1 {
         }
 
         names.replaceAll(nam -> nam + name);
+    }
+
+    public Stage1(double d) {
+        this.d = d;
     }
 
     public Stream<Stage2> getStagesStream() {

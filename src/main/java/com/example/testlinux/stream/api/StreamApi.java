@@ -1,8 +1,7 @@
 package com.example.testlinux.stream.api;
 
-import com.example.testlinux.java.core.lambda.*;
-
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -152,7 +151,8 @@ public class StreamApi {
 //        st11_longestString();
 //        st12_palindrom();
 //        st14_twoMax();
-        st15_evenAndNotEven();
+//        st15_evenAndOdd();
+        st16_averageNumber();
     }
 
     private static void anagrams() {
@@ -550,12 +550,67 @@ public class StreamApi {
     }
 
     //14. Разбить числа на чётные и нечётные - Вернуть Map<Boolean, List<Integer>>
-    static void st15_evenAndNotEven() {
+    static void st15_evenAndOdd() {
         List<Integer> nums = List.of(1,3,2,4,5,6, 8, 7, 7, 5);
         nums.stream().sorted().collect(Collectors.groupingBy(k -> k % 2 == 0))
                 .entrySet()
                 .forEach(System.out::println);
     }
+
+    //15. Найти среднее значение из списка
+    static void st16_averageNumber() {
+        /*int[] sumAndValue = Stream.of(2, 4, 6, 7).collect(
+                () -> new int[]{0, 0},
+                (acc, val) -> {
+                    acc[0]++;
+                    acc[1] += val;
+                },
+                (acc, val) -> {
+
+                }
+        );
+        double average = (double)sumAndValue[1] / sumAndValue[0];
+        System.out.println("average; " + average);*/
+
+        var nums = List.of(2, 4, 6, 7);
+        int[] acc = nums.stream().collect(
+                () -> new int[2],
+                (a, v) -> {
+                    a[0] += v; // sum
+                    a[1]++;    // count
+                },
+                (a, b) -> {
+                    a[0] += b[0];
+                    a[1] += b[1];
+                }
+        );
+
+        double avg = (double) acc[0] / acc[1];
+
+        System.out.println("avg; " + avg);
+
+        double avg2 = nums.stream().collect(
+                Collector.of(
+                        () -> new int[2],          // [sum, count]
+                        (acc2, val) -> {
+                            acc2[0] += val;
+                            acc2[1]++;
+                        },     // обновление
+                        (a, b) -> {
+                            System.out.println("обновление; ");
+                            a[0] += b[0];
+                            a[1] += b[1];
+                            return a;
+                        },         // объединение
+                        acc2 -> {
+                            System.out.println("(double)acc2[0]; " + (double)acc2[0]);
+                            return (double)acc2[0] / acc2[1];
+                        }
+                )
+        );
+        System.out.println("avg2; " + avg2);
+    }
+
     static class StaticMethod {
 
         static int test1(int x, int y) {
