@@ -589,9 +589,11 @@ public class StreamApi {
 
         System.out.println("avg; " + avg);
 
-        double avg2 = nums.stream().collect(
+        int[] test = {0, 0};
+
+        double avg2 = nums.parallelStream().collect(
                 Collector.of(
-                        () -> new int[2],          // [sum, count]
+                        () -> new int[2], // test - ERROR - может выдать не верные результаты потому что объект один на все контейнеры в потоках
                         (acc2, val) -> {
                             acc2[0] += val;
                             acc2[1]++;
@@ -609,6 +611,21 @@ public class StreamApi {
                 )
         );
         System.out.println("avg2; " + avg2);
+
+        List<Integer> result = Stream.of(1, 2, 3, 4, 5)
+                .parallel()
+                .collect(
+                        ArrayList::new,
+                        (list, val) -> {
+                            list.add(val);
+                            list.add(val);
+                        },
+                        ArrayList::addAll
+                );
+
+        System.out.println(result);
+
+        System.out.println(Runtime.getRuntime().availableProcessors());
     }
 
     static class StaticMethod {
