@@ -8,8 +8,33 @@ import java.util.stream.Stream;
 
 public class StreamApi {
     public static void main(String[] args) {
-        streamTest();
+        //streamTest();
         //helloStream();
+        List<Stage1> stage1s = List.of(
+                new Stage1("Nikitin"),
+                new Stage1("Ton"),
+                new Stage1("Bon"),
+                new Stage1("Son"),
+                new Stage1("Gon")
+        );
+
+        int[] stageIntegers = stage1s.stream().mapToInt(Stage1::getRandom1).distinct().toArray();
+        stage1s.forEach(s -> System.out.println(
+                "s.getStage2().getRandom1(); " + s.getStage2().getRandom1() + " ,randomN1; " + s.getRandom1()
+                        + ", randomN2; " + s.getRandom2() + ", randomN3; " + s.getRandom3()
+                )
+        );
+
+        stage1s.stream().sorted(
+                Comparator.comparing((Stage1 s) -> s.getStage2().getRandom1())  // сначала по Stage2
+                        .thenComparing(Stage1::getRandom1)                       // потом по полям Stage1
+                        .thenComparing(Stage1::getRandom2)
+                        .thenComparing(Stage1::getRandom3)
+        ).forEach(s -> System.out.println(
+                "Sorted s.getStage2().getRandom1(); " + s.getStage2().getRandom1() + " ,randomN1; " + s.getRandom1()
+                        + ", randomN2; " + s.getRandom2() + ", randomN3; " + s.getRandom3()
+                )
+        );
     }
 
     private static void helloStream() {
