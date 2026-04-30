@@ -1,6 +1,9 @@
 package com.example.testlinux.stream.api;
 
+import java.io.BufferedReader;
+import java.io.Reader;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -35,6 +38,20 @@ public class StreamApi {
                         + ", randomN2; " + s.getRandom2() + ", randomN3; " + s.getRandom3()
                 )
         );
+
+        List<Double> ints = Stream.of(1d, 2.0, 3.0, 5.2).toList();
+        ints.forEach(System.out::println);
+        BufferedReader bufferedReader = new BufferedReader(Reader.nullReader());
+        bufferedReader.lines().toList();
+        Random random = new Random();
+        int[] ints2 = random.ints().limit(5).toArray();
+        for (int i : ints2) {
+            System.out.println("i: " + i);
+        }
+    }
+
+    public static Predicate<Stage1> isAdult() {
+        return p -> p.getRandom1() > 25;
     }
 
     private static void helloStream() {
