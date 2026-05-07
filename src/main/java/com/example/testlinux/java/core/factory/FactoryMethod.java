@@ -2,10 +2,10 @@ package com.example.testlinux.java.core.factory;
 
 public class FactoryMethod {
     public static void main(String[] stn) {
-        Logistics test = new RoadLogistics();
+        Logistics test = new RoadLogistics("Москва");
         test.deliver("test RoadLogistics");
 
-        Logistics test2 = new SeaLogistics();
+        Logistics test2 = new SeaLogistics("Владивосток");
         test2.deliver("test SeaLogistics");
     }
 }
