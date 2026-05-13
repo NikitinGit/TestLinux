@@ -1,4 +1,4 @@
-package com.example.testlinux.java.core.factory;
+package com.example.testlinux.java.core.patterns.factory;
 
 public class RoadLogistics extends Logistics {
 
