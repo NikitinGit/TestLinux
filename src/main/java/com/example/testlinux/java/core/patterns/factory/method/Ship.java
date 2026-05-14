@@ -1,4 +1,4 @@
-package com.example.testlinux.java.core.patterns.factory;
+package com.example.testlinux.java.core.patterns.factory.method;
 
 public class Ship implements Transport {
     public void move() { System.out.println("Ship sailing on sea"); }

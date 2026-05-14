@@ -1,4 +1,4 @@
-package com.example.testlinux.java.core.patterns.factory;
+package com.example.testlinux.java.core.patterns.factory.method;
 
 public class RoadLogistics extends Logistics {
 
@@ -6,7 +6,7 @@ public class RoadLogistics extends Logistics {
         super(region);
     }
 
-    Transport createTransport() {
+    public Transport createTransport() {
         System.out.println("createTransport Truck RoadLogistics");
         return new Truck();
     }

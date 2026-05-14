@@ -1,16 +1,16 @@
-package com.example.testlinux.java.core.patterns.factory;
+package com.example.testlinux.java.core.patterns.factory.method;
 
 public abstract class Logistics {
 
     // состояние — интерфейс не может хранить поля с реальными значениями
     private final String region;
 
-    protected Logistics(String region) {
+    public Logistics(String region) {
         System.out.println("Logistics(String region): " + region);
         this.region = region;
     }
 
-    abstract Transport createTransport(); // фабричный метод — подкласс обязан реализовать
+    public abstract Transport createTransport(); // фабричный метод — подкласс обязан реализовать
 
     // общая логика: оба подкласса используют этот метод БЕЗ переопределения
     public void deliver(String name) {

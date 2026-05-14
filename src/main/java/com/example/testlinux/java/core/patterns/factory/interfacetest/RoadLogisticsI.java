@@ -1,4 +1,7 @@
-package com.example.testlinux.java.core.patterns.factory;
+package com.example.testlinux.java.core.patterns.factory.interfacetest;
+
+import com.example.testlinux.java.core.patterns.factory.method.Transport;
+import com.example.testlinux.java.core.patterns.factory.method.Truck;
 
 public class RoadLogisticsI implements LogisticsInterface {
 
