@@ -1,6 +1,9 @@
 package com.example.testlinux.stream;
 
+import com.example.testlinux.interfaces.Animal;
+import com.example.testlinux.interfaces.Dog;
 import com.example.testlinux.stream.api.Stage1;
+import org.hibernate.proxy.HibernateProxy;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -9,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import static org.junit.Assert.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 public class StreamTest {
@@ -31,6 +36,29 @@ public class StreamTest {
                 }
             }
         }).toList();
+    }
+
+    @Test
+    public void equalsTest() {
+        //Animal an = new Animal();
+        // Dog dog = (Dog) an; - error
+        Animal an = new Dog();
+        //an.methodOfDog();  -- ERROR
+        ((Dog) an).methodOfDog();
+        Dog dog = (Dog) an;   // OK, реальный тип — Dog
+        Object o = new Object();
+        assertTrue(dog.equals(o));
+
+//        Dog dog = new Dog();
+//        Animal a = dog;              // неявный upcast
+//        Animal a2 = (Animal) dog;    // явный upcast, то же самое
+//        if (this == o) return true;
+//        if (o == null) return false;
+//        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+//        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+//        if (thisEffectiveClass != oEffectiveClass) return false;
+//        Event event = (Event) o;
+//        return getEventId() != null && Objects.equals(getEventId(), event.getEventId());
     }
 
     @Test

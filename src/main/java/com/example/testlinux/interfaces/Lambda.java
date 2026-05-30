@@ -1,9 +1,12 @@
 package com.example.testlinux.interfaces;
 
+import com.example.testlinux.domain.Event;
 import lombok.Data;
 import lombok.Getter;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Lambda {
@@ -49,6 +52,7 @@ public class Lambda {
         };
 
         myDog.execute();
+
     }
 
     private static void anonymityInterface() throws IOException {

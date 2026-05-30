@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * DDD-сущность Battle с паттерном Factory.
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
  * гарантирует, что сущность рождается в валидном состоянии (инварианты).
  */
 @Getter
+@Setter
 @Entity
 @Table(name = "battles")
 // JPA требует конструктор без аргументов, но снаружи он не нужен —
