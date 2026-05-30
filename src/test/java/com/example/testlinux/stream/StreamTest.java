@@ -1,7 +1,7 @@
 package com.example.testlinux.stream;
 
-import com.example.testlinux.interfaces.Animal;
-import com.example.testlinux.interfaces.Dog;
+import com.example.testlinux.interfaces.*;
+import com.example.testlinux.java.core.thread.exchanger.MainThread;
 import com.example.testlinux.stream.api.Stage1;
 import org.hibernate.proxy.HibernateProxy;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class StreamTest {
         List<Stage1> stage1s = List.of(new Stage1("Nikitin"), new Stage1("Ton"));
 
         stage1s.stream().peek(u -> {
-            if(Objects.equals(u.name, "Nikitin")) {
+            if (Objects.equals(u.name, "Nikitin")) {
                 System.out.println("name: " + u.name);
             } else {
                 try {
@@ -62,6 +62,21 @@ public class StreamTest {
     }
 
     @Test
+    public void testCast() {
+        List<Animal> animals = List.of(new Dog(), new Cat(), new Snake());
+        for (Animal an : animals) {
+            an.execute();                    // полиморфизм — у каждого свой
+            if (an instanceof Dog) {
+                ((Dog) an).methodOfDog();         // bark() есть только у Dog
+            } else if (an instanceof Cat) {
+                ((Cat) an).methodOfCat();
+            } else {
+                ((Snake) an).methodOfSnake();
+            }
+        }
+    }
+
+    @Test
     public void st16_averageNumber() {
         int[] sumAndValue = Stream.of(2, 4, 6, 7).reduce(
                 new int[]{0, 0},
@@ -76,7 +91,7 @@ public class StreamTest {
                     return acc;
                 }
         );
-        double average = (double)sumAndValue[1] / sumAndValue[0];
+        double average = (double) sumAndValue[1] / sumAndValue[0];
         System.out.println("average; " + average);
 
         var nums = List.of(2, 4, 6, 7);
