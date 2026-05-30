@@ -63,15 +63,40 @@ public class StreamTest {
 
     @Test
     public void testCast() {
-        List<Animal> animals = List.of(new Dog(), new Cat(), new Snake());
+        List<Animal> animals = List.of(new Animal(), new Dog(), new Cat(), new Snake());
         for (Animal an : animals) {
-            an.execute();                    // полиморфизм — у каждого свой
+            an.execute();     // полиморфизм — у каждого свой
+            an.animalMethod();// полиморфизм есть только у Animal
             if (an instanceof Dog) {
-                ((Dog) an).methodOfDog();         // bark() есть только у Dog
+                ((Dog) an).methodOfDog();
             } else if (an instanceof Cat) {
                 ((Cat) an).methodOfCat();
-            } else {
+            } else if (an instanceof Snake) {
                 ((Snake) an).methodOfSnake();
+            } else {
+                an.execute();
+            }
+        }
+
+        // только в 21 версии
+        for (Animal an : animals) {
+            an.execute();
+            switch (an) {
+                case Dog d -> d.methodOfDog();
+                case Cat c -> c.methodOfCat();
+                case Snake s -> s.methodOfSnake();
+                default -> {}
+            }
+        }
+
+        //java 17
+        System.out.println("switch 17");
+        for (Animal an : animals){
+            an.execute();
+            switch (an.getClass().getSimpleName()) {
+                case "Dog" -> ((Dog) an).methodOfDog();
+                case "Cat" -> ((Cat) an).methodOfCat();
+                case "Snake" -> ((Snake) an).methodOfSnake();
             }
         }
     }

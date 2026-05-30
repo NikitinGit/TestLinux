@@ -17,4 +17,8 @@ public class Animal implements MyFunction{
     public void execute(){
         System.out.println("Animal execute");
     }
+
+    public void animalMethod() {
+        System.out.println("animalMethod()");
+    }
 }
