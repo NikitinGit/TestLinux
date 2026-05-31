@@ -16,8 +16,14 @@ public class EventBidFighter {
     @Column(name="id")
     private Long id;
 
-    @Column(name = "idEvent")
+    @Column(name = "idEvent", insertable = false, updatable = false)
     private Integer eventId;
+
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idEvent")
+    private Event event;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

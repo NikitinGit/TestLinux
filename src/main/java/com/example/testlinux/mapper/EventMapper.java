@@ -14,9 +14,6 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface EventMapper {
 
-    @Mapping(source = "sportId", target = "n1")
-    EventDto toDto(Event event);
-
     @InheritInverseConfiguration
     Event toEntity(EventDto dto);
 

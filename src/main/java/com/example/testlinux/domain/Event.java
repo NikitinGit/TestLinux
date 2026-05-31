@@ -31,15 +31,12 @@ public class Event {
     @Column(name="event_id")
     private Integer eventId;
 
-    //    @Version
-/*    @Column(name="version")
-    private Integer version = 0;*/
-
     @Column(name="organizer_login")
     private Integer organizerLogin;
 
-    @Column(name="sport_id")
-    private Integer sportId;
+    @ToString.Exclude
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<EventBidFighter> eventBidFighters = new ArrayList<>();
 
     @Column(name="name")
     private String nameEvent;
