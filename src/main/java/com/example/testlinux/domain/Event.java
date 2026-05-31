@@ -31,12 +31,6 @@ public class Event {
     @Column(name="event_id")
     private Integer eventId;
 
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "version", referencedColumnName = "id")
-    private UserNew user;
-
     //    @Version
 /*    @Column(name="version")
     private Integer version = 0;*/
@@ -60,20 +54,11 @@ public class Event {
     @Column(name="performance_place")
     private String performancePlace;
 
-    @Column(name="performance_time")
-    private LocalTime performanceTime;
-
     @Column(name="date")
     private LocalDate eventDate;
 
     @Column(name="rings_count")
     private Integer ringsCount;
-
-    @Column(name="number_created_fighters")
-    private Integer numberCreatedFighters = 0;
-
-    @Column(name="pay_by_site")
-    private Boolean payBySite;
 
     @Column(name="sortition_auto")
     private Boolean sortitionAuto;
