@@ -240,8 +240,9 @@ public class EventServiceTest {
     }
 
     public void getData(int eventId) {
-        Event event = eventRepository.findEventByEventId(eventId)
-                .orElseThrow(RuntimeException::new);
+        //Event event = eventRepository.findEventByEventId(eventId).orElseThrow(RuntimeException::new);
+        Event event = eventRepository.findEventWithBidsAndFighters(eventId).orElseThrow(RuntimeException::new);
+        //Event event = eventRepository.findEventByEventIdGraph(eventId).orElseThrow(RuntimeException::new);
         List<EventBidFighter> bids = event.getEventBidFighters();
         for (EventBidFighter bid : bids) {
             log.info("bid.getFighter().getFirstName(): {}", bid.getFighter().getFirstName());
