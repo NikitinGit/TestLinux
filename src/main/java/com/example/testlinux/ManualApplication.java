@@ -9,10 +9,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@Configuration
+/*@Configuration
 @ComponentScan("com.example.testlinux")
 @EnableJpaRepositories(basePackages = "com.example.testlinux.repository")
-@Import({JpaConfig.class, WebConfig.class})
+@Import({JpaConfig.class, WebConfig.class})*/
 public class ManualApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
