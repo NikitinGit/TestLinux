@@ -19,7 +19,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = "eventId")
+//@EqualsAndHashCode(of = "eventId")
 @NoArgsConstructor
 @DynamicUpdate
 @Entity

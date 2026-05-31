@@ -16,6 +16,7 @@ public class EventController {
     @GetMapping
     public ResponseEntity<Void> test() {
         eventServiceTest.getData(175);
+        eventServiceTest.demonstrateEqualsHashCodeProblem();
         return ResponseEntity.ok().build();
     }
 }
