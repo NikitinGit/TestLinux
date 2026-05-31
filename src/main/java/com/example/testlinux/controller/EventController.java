@@ -15,8 +15,9 @@ public class EventController {
     private final EventServiceTest eventServiceTest;
     @GetMapping
     public ResponseEntity<Void> test() {
-        eventServiceTest.getData(175);
-        eventServiceTest.demonstrateEqualsHashCodeProblem();
+        //eventServiceTest.getData(175);
+        //eventServiceTest.demonstrateEqualsHashCodeProblem();
+        eventServiceTest.demonstrateLazyAssociationProxyProblem();
         return ResponseEntity.ok().build();
     }
 }

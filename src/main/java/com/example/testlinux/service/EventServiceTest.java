@@ -173,59 +173,70 @@ public class EventServiceTest {
 
     /**
      * Пример 4: lazy-связь @ManyToOne(fetch = LAZY).
-     * У EventBidFighter поле event помечено LAZY — значит bid.getEvent() возвращает
-     * НЕ настоящий Event, а HibernateProxy. Класс прокси отличается от Event.class,
-     * и без разворачивания HibernateProxy в equals — сравнение с любым реальным
-     * Event-объектом из другой сессии ломается.
+     * У EventBidFighter поле event помечено LAZY — bid.getEvent() возвращает HibernateProxy.
+     *
+     * ВАЖНО: прокси создаётся ТОЛЬКО если целевой entity ещё НЕ в persistence context.
+     * Если Event уже загружен в PC (например, мы уже делали findById), Hibernate
+     * вернёт ту же managed-ссылку, а не прокси (identity map). Поэтому здесь
+     * мы тщательно контролируем порядок и явно очищаем PC через entityManager.clear().
+     *
+     * Spring Boot по умолчанию держит OpenSessionInView → одну сессию на весь HTTP-запрос,
+     * поэтому раздельные транзакции тут не спасают: PC общий. Чистим вручную.
      */
+    @Transactional
     public void demonstrateLazyAssociationProxyProblem() {
-        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        // 1) Сохраняем event и связанный с ним bid
+        Event e = new Event();
+        e.setNameEvent("Турнир с lazy");
+        e.setRingsCount(2);
+        Event savedEvent = eventRepository.save(e);
 
-        // Транзакция 1: создаём event и bid, связанный с этим event
-        Long bidId = tx.execute(status -> {
-            Event e = new Event();
-            e.setNameEvent("Турнир с lazy");
-            e.setRingsCount(2);
-            Event savedEvent = eventRepository.save(e);
+        EventBidFighter bid = new EventBidFighter();
+        bid.setEvent(savedEvent);
+        bid.setApproved(1);
+        EventBidFighter savedBid = bidRepository.save(bid);
 
-            EventBidFighter bid = new EventBidFighter();
-            bid.setEvent(savedEvent);
-            bid.setApproved(1);
-            return bidRepository.save(bid).getId();
-        });
+        Integer eventId = savedEvent.getEventId();
+        Long bidId = savedBid.getId();
 
-        // Транзакция 2: загружаем "свежий" Event напрямую из репозитория —
-        // это обычный класс Event, не прокси
-        Event freshEvent = tx.execute(status -> {
-            EventBidFighter bid = bidRepository.findById(bidId).orElseThrow(RuntimeException::new);
-            return eventRepository.findEventByEventId(bid.getEventId())
-                    .orElseThrow(RuntimeException::new);
-        });
+        // 2) Очищаем PC — иначе ниже Hibernate отдал бы те же managed-ссылки
+        entityManager.flush();
+        entityManager.clear();
+
+        // 3) Грузим bid. Event ещё не в PC → bid.getEvent() возвращает HibernateProxy.
+        EventBidFighter loadedBid = bidRepository.findById(bidId)
+                .orElseThrow(RuntimeException::new);
+        Event lazyEvent = loadedBid.getEvent();
+
+        log.warn("lazyEvent.getClass()                  : {}", lazyEvent.getClass().getName());
+        log.warn("lazyEvent instanceof HibernateProxy   : {}  (true — прокси lazy-связи)",
+                lazyEvent instanceof HibernateProxy);
+        log.warn("lazyEvent.getClass() == Event.class   : {}  (false — прокси-класс отличается от Event)",
+                lazyEvent.getClass() == Event.class);
+
+        // 4) Принудительно инициализируем прокси (подтянет данные из БД).
+        //    Без этого после clear() любое обращение к полю прокси бросило бы LazyInitializationException.
+        org.hibernate.Hibernate.initialize(lazyEvent);
+
+        // 5) Очищаем PC ещё раз — иначе следующий findEventByEventId вернёт ТОТ ЖЕ прокси
+        //    (Hibernate его уже инициализировал и держит в identity map).
+        entityManager.clear();
+
+        // 6) Теперь грузим "настоящий" Event напрямую — это обычный класс Event, не прокси.
+        Event freshEvent = eventRepository.findEventByEventId(eventId)
+                .orElseThrow(RuntimeException::new);
 
         log.warn("freshEvent.getClass()                 : {}", freshEvent.getClass().getName());
         log.warn("freshEvent instanceof HibernateProxy  : {}  (false — обычный Event)",
                 freshEvent instanceof HibernateProxy);
 
-        // Транзакция 3: грузим bid, не трогая bid.getEvent() → event внутри bid'а
-        // остаётся неинициализированным прокси. Сравниваем прокси с freshEvent
-        // из другой сессии — это два разных Java-объекта/класса для одной записи БД.
-        tx.executeWithoutResult(status -> {
-            EventBidFighter bid = bidRepository.findById(bidId).orElseThrow(RuntimeException::new);
-            Event lazyEvent = bid.getEvent();   // HibernateProxy
+        log.warn("lazyEvent.getClass() == freshEvent.getClass() : {}  (false — proxy vs Event)",
+                lazyEvent.getClass() == freshEvent.getClass());
 
-            log.warn("lazyEvent.getClass()                  : {}", lazyEvent.getClass().getName());
-            log.warn("lazyEvent instanceof HibernateProxy   : {}  (true — это прокси lazy-связи)",
-                    lazyEvent instanceof HibernateProxy);
-            log.warn("lazyEvent.getClass() == Event.class   : {}  (false — прокси-класс отличается)",
-                    lazyEvent.getClass() == Event.class);
-            log.warn("lazyEvent.getClass() == freshEvent.getClass() : {}  (false — proxy vs Event)",
-                    lazyEvent.getClass() == freshEvent.getClass());
-
-            // Object.equals по ссылке → false. С раскомментированным ручным equals
-            // в Event.java прокси разворачивается через HibernateProxy → equals станет true.
-            log.warn("lazyEvent.equals(freshEvent)          : {}  (ПРОБЛЕМА с Object.equals: false, хотя в БД одна запись)",
-                    lazyEvent.equals(freshEvent));
-        });
+        // Object.equals = сравнение по ссылке → false.
+        // С раскомментированным ручным equals в Event.java прокси разворачивается → станет true.
+        log.warn("lazyEvent.equals(freshEvent)          : {}  (ПРОБЛЕМА с Object.equals: false, хотя в БД одна запись)",
+                lazyEvent.equals(freshEvent));
     }
 
     public void getData(int eventId) {
