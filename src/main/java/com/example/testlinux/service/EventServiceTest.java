@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -208,6 +209,8 @@ public class EventServiceTest {
                 .orElseThrow(RuntimeException::new);
         Event lazyEvent = loadedBid.getEvent();
 
+        log.warn("e.getClass(): {}", e.getClass().getName());
+        log.warn("e instanceof HibernateProxy: {}", e instanceof HibernateProxy);
         log.warn("lazyEvent.getClass()                  : {}", lazyEvent.getClass().getName());
         log.warn("lazyEvent instanceof HibernateProxy   : {}  (true — прокси lazy-связи)",
                 lazyEvent instanceof HibernateProxy);
@@ -216,7 +219,7 @@ public class EventServiceTest {
 
         // 4) Принудительно инициализируем прокси (подтянет данные из БД).
         //    Без этого после clear() любое обращение к полю прокси бросило бы LazyInitializationException.
-        org.hibernate.Hibernate.initialize(lazyEvent);
+        Hibernate.initialize(lazyEvent);
 
         // 5) Очищаем PC ещё раз — иначе следующий findEventByEventId вернёт ТОТ ЖЕ прокси
         //    (Hibernate его уже инициализировал и держит в identity map).
@@ -237,6 +240,63 @@ public class EventServiceTest {
         // С раскомментированным ручным equals в Event.java прокси разворачивается → станет true.
         log.warn("lazyEvent.equals(freshEvent)          : {}  (ПРОБЛЕМА с Object.equals: false, хотя в БД одна запись)",
                 lazyEvent.equals(freshEvent));
+    }
+
+    /**
+     * Пример 5: entityManager.getReference() — единственный обычный случай,
+     * когда repository.findById() возвращает ПРОКСИ, а не реальный entity.
+     *
+     * По умолчанию findById() даёт реальный entity (выполнил SELECT или достал managed-объект из PC).
+     * Но JPA-контракт find() говорит: "если managed-объект для этого id уже в PC — вернуть его".
+     * Если перед findById сделать getReference (создаёт прокси без SELECT'а и кладёт в PC),
+     * то следующий findById для той же записи отдаст ТОТ ЖЕ прокси — это identity map в действии.
+     *
+     * Сценарий редкий: getReference в обычном коде вызывают нечасто. Чаще прокси на entity
+     * попадает в PC через ленивую загрузку связи другого entity. Эффект на findById тот же.
+     */
+    @Transactional
+    public void demonstrateGetReferenceProblem() {
+        // 1) Сохраняем event, чтобы запись реально существовала в БД
+        Event e = new Event();
+        e.setNameEvent("Турнир для getReference");
+        e.setRingsCount(2);
+        Integer id = eventRepository.save(e).getEventId();
+        entityManager.flush();
+        entityManager.clear();   // выкидываем managed-копию из PC, начинаем с чистого листа
+
+        // 2) getReference НЕ идёт в БД — создаёт прокси-заглушку и кладёт в PC.
+        //    В логах НИКАКОГО SELECT'а на этой строке быть не должно.
+        Event ref = entityManager.getReference(Event.class, id);
+
+        log.warn("ref.getClass()                  : {}", ref.getClass().getName());
+        log.warn("ref instanceof HibernateProxy   : {}  (true — getReference ВСЕГДА возвращает прокси)",
+                ref instanceof HibernateProxy);
+        log.warn("ref.getClass() == Event.class   : {}  (false — это сгенерированный подкласс)",
+                ref.getClass() == Event.class);
+
+        // 3) Теперь findById. Можно было бы ожидать реальный Event, НО Hibernate видит,
+        //    что в identity map уже есть managed-объект с этим id (наш прокси) — и отдаёт ЕГО.
+        //    Никакого SELECT'а тут тоже не будет (find проверяет PC первым делом).
+        Event found = eventRepository.findById(id).orElseThrow(RuntimeException::new);
+
+        log.warn("found.getClass()                : {}", found.getClass().getName());
+        log.warn("found instanceof HibernateProxy : {}  (ИСКЛЮЧЕНИЕ: true, хотя findById обычно даёт real entity)",
+                found instanceof HibernateProxy);
+        log.warn("found == ref                    : {}  (true — это ОДИН и тот же Java-объект из identity map)",
+                found == ref);
+
+        // 4) До этой точки SELECT'а на Event так и не было. Дёрнем поле — прокси инициализируется.
+        log.warn("--- сейчас впервые пойдём в БД за данными прокси ---");
+        String name = ref.getNameEvent();
+        log.warn("ref.getNameEvent()              : {}  (данные подтянулись из БД)", name);
+
+        // 5) После инициализации класс прокси НЕ меняется — это всё ещё прокси-обёртка,
+        //    просто её внутреннее состояние теперь заполнено.
+        log.warn("после первого обращения к полю:");
+        log.warn("  ref instanceof HibernateProxy : {}  (true — класс прокси неизменен)",
+                ref instanceof HibernateProxy);
+        log.warn("  org.hibernate.Hibernate.isInitialized(ref) : {}  (true — данные на месте)",
+                org.hibernate.Hibernate.isInitialized(ref));
     }
 
     public void getData(int eventId) {
