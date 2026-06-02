@@ -69,7 +69,7 @@ public class Event {
     @Column(name="organizer_mail")
     private String organizerMail;
 
-/*    @Override
+    @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
@@ -83,5 +83,5 @@ public class Event {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
-    }*/
+    }
 }

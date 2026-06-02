@@ -268,6 +268,8 @@ public class EventServiceTest {
         //    В логах НИКАКОГО SELECT'а на этой строке быть не должно.
         Event ref = entityManager.getReference(Event.class, id);
 
+        log.info("e.equals(ref) {}", e.equals(ref));
+
         log.warn("ref.getClass()                  : {}", ref.getClass().getName());
         log.warn("ref instanceof HibernateProxy   : {}  (true — getReference ВСЕГДА возвращает прокси)",
                 ref instanceof HibernateProxy);
