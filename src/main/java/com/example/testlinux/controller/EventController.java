@@ -3,7 +3,6 @@ package com.example.testlinux.controller;
 import com.example.testlinux.aspect.CheckOrganizerAccess;
 import com.example.testlinux.service.EventServiceTest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
