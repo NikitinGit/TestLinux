@@ -2,6 +2,8 @@ package com.example.testlinux.stream.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class StreamLazyDemo {
@@ -29,6 +31,13 @@ public class StreamLazyDemo {
         System.out.println("=== ДЕМО 1: Stream.findFirst() — ищем первое чётное ===");
         operationCount = 0;
 
+        Optional<Integer> bn = Optional.of(12).filter(i -> i < 5);
+        System.out.println(" bn.isEmpty(); " + bn.isEmpty());
+
+        int[] test = IntStream.iterate(2, i -> i < 20, i -> i + 2).toArray();
+        for (int i : test) {
+            System.out.println("test[i]: " + i);
+        }
         var result = data.stream()
                 .filter(StreamLazyDemo::filterEven)
                 .map(StreamLazyDemo::multiply)
