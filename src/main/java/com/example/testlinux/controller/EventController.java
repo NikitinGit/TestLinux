@@ -29,4 +29,11 @@ public class EventController {
         eventServiceTest.setEventId(eventId);
         return ResponseEntity.ok().build();
     }
+
+    @CheckOrganizerAccess
+    @RequestMapping(value = "/aspect2", method = RequestMethod.GET)
+    public ResponseEntity<Void> aspect2(@RequestParam("eventId") Integer eventId) {
+        eventServiceTest.setEventId(eventId * 2);
+        return ResponseEntity.ok().build();
+    }
 }

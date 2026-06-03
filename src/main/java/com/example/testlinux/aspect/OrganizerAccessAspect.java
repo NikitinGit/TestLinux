@@ -5,6 +5,7 @@ import net.bytebuddy.dynamic.DynamicType;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 //import org.springframework.security.core.Authentication;
@@ -23,7 +24,7 @@ public class OrganizerAccessAspect {
     @Autowired
     private AccessService accessService;
 
-    @Before("@annotation(checkOrganizerAccess)")
+ /*   @Before("@annotation(checkOrganizerAccess)")
     public void checkOrganizerAccess(JoinPoint joinPoint, CheckOrganizerAccess checkOrganizerAccess) {
         Integer eventId = null;
 
@@ -87,7 +88,7 @@ public class OrganizerAccessAspect {
         return null;
     }
 
-/*    protected Auth getAuth(){
+    protected Auth getAuth(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null) return null;
         try {
@@ -100,4 +101,21 @@ public class OrganizerAccessAspect {
     protected Integer getLoginId(){
         return getAuth().getLoginId();
     }*/
+
+    @Before("@annotation(checkOrganizerAccess)")
+    public void check2(JoinPoint joinPoint, CheckOrganizerAccess checkOrganizerAccess) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        String[] paramNames = signature.getParameterNames();
+        Object[] args = joinPoint.getArgs();
+
+        Integer eventId = null;
+        for (int i = 0; i < paramNames.length; i++) {
+            if ("eventId".equals(paramNames[i]) && args[i] instanceof Integer e) {
+                eventId = e;
+                break;
+            }
+        }
+
+        log.info("eventId; {}", eventId);
+    }
 }
