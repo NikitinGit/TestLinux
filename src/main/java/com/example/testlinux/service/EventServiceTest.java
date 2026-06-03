@@ -301,6 +301,11 @@ public class EventServiceTest {
                 org.hibernate.Hibernate.isInitialized(ref));
     }
 
+    @Transactional
+    public void setEventId(Integer eventId) {
+        log.info("eventId {}", eventId);
+    }
+
     public void getData(int eventId) {
         //Event event = eventRepository.findEventByEventId(eventId).orElseThrow(RuntimeException::new);
         Event event = eventRepository.findEventWithBidsAndFighters(eventId).orElseThrow(RuntimeException::new);

@@ -1,11 +1,11 @@
 package com.example.testlinux.controller;
 
+import com.example.testlinux.aspect.CheckOrganizerAccess;
 import com.example.testlinux.service.EventServiceTest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/event")
@@ -13,12 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class EventController {
 
     private final EventServiceTest eventServiceTest;
+
     @GetMapping
     public ResponseEntity<Void> test() {
         //eventServiceTest.getData(175);
         //eventServiceTest.demonstrateEqualsHashCodeProblem();
         //eventServiceTest.demonstrateLazyAssociationProxyProblem();
         eventServiceTest.demonstrateGetReferenceProblem();
+        return ResponseEntity.ok().build();
+    }
+
+    //@CheckOrganizerAccess(eventIdFieldName = "eventId")
+    @CheckOrganizerAccess(eventIdParamIndex = 0)
+    @RequestMapping(value = "/aspect", method = RequestMethod.GET)
+    public ResponseEntity<Void> aspect(@RequestParam("eventId") Integer eventId) {
+        eventServiceTest.setEventId(eventId);
         return ResponseEntity.ok().build();
     }
 }

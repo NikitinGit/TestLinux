@@ -41,6 +41,10 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     @Query("SELECT e FROM Event e WHERE e.eventId = :eventId")
     Optional<Event> findEventByEventIdGraph(@Param("eventId") Integer eventId);
 
+    @Query("SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END FROM Event t " +
+            "WHERE t.eventId = :eventId AND t.organizerLogin = :organizerLoginId ")
+    boolean doesEventBelongToOrganizer(@Param("organizerLoginId") Integer organizerLoginId, @Param("eventId") Integer eventId);
+
     /*@Query("SELECT new com.strikerstat.webapp.dto.open_events.EventVersionDto(e.version) FROM Event e WHERE e.eventId = :eventId")
     Optional<Event> getEventVersionDto(@Param("eventId") Integer eventId);*/
 
