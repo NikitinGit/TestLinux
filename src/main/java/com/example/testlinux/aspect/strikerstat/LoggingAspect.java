@@ -1,4 +1,4 @@
-package com.example.testlinux.aspect;
+package com.example.testlinux.aspect.strikerstat;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,6 @@ import java.util.Arrays;
 @Component
 @Slf4j
 public class LoggingAspect {
-
 
     @Pointcut("execution(public * com.example.testlinux..*(..))")
     public void appPublicMethods() {}

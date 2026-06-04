@@ -1,4 +1,4 @@
-package com.example.testlinux.aspect;
+package com.example.testlinux.aspect.strikerstat;
 
 
 import com.example.testlinux.repository.EventRepository;

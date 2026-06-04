@@ -1,4 +1,4 @@
-package com.example.testlinux.aspect;
+package com.example.testlinux.aspect.strikerstat;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

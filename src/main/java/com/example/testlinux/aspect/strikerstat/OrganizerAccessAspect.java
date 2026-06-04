@@ -1,20 +1,14 @@
-package com.example.testlinux.aspect;
+package com.example.testlinux.aspect.strikerstat;
 
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.dynamic.DynamicType;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 //import org.springframework.security.core.Authentication;
 //import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
 
 @Slf4j
 @Aspect
