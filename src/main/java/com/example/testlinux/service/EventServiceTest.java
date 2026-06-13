@@ -316,10 +316,10 @@ public class EventServiceTest {
         }
     }
 
-    public void testAspect() {
-        log.info("testAspect()");
-        eventRepository.findEventByEventId(175)
-                .ifPresent(b -> System.out.println("b.getNameEvent(175); " + b.getNameEvent()));
+    public void testAspect(Integer eventId) {
+        log.info("testAspect() eventId; {}", eventId);
+        eventRepository.findEventByEventId(eventId)
+                .ifPresent(b -> System.out.println("b.getNameEvent(eventId); " + b.getNameEvent()));
     }
 
 }
