@@ -8,11 +8,10 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 @Slf4j
 @Aspect
-@Component
+@Component("spelOrganizerAccessAspect")
 public class OrganizerAccessAspect {
 
     private final SpelExpressionParser parser = new SpelExpressionParser();

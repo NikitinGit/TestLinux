@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Aspect
-@Component
+@Component("strikerstatOrganizerAccessAspect")
 public class OrganizerAccessAspect {
 
     @Autowired
