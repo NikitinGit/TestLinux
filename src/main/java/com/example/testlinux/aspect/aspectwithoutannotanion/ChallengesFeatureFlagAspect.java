@@ -19,7 +19,7 @@ public class ChallengesFeatureFlagAspect {
 
     private final EventServiceTest eventServiceTest;
 
-    @Before("execution(* com.example.testlinux.controller.AspectController.*(..)) ")
+/*    @Before("execution(* com.example.testlinux.controller.AspectController.*(..)) ")
     public void check(JoinPoint joinPoint) {
         log.info("ChallengesFeatureFlagAspect check(); ");
         Object[] args = joinPoint.getArgs();
@@ -31,17 +31,28 @@ public class ChallengesFeatureFlagAspect {
         String[] paramNames = signature.getParameterNames();            // имена параметров
         Class<?>[] paramTypes = signature.getParameterTypes();          // типы
         Object target = joinPoint.getTarget();                          // целевой объект (AspectController)
-
         log.info("Перехвачен {} с аргументами {}", methodName, Arrays.toString(args));
         Object arg = args[args.length - 1];
-        Integer eventId = arg instanceof Integer ? (Integer) arg : null;
+        Integer eventId = arg instanceof Integer ? (Integer) arg : null;eventServiceTest.testAspect(eventId);
+    }*/
 
-/*        String eventId = Arrays.stream(paramNames)
-                .filter(n -> n.equals("eventId"))
-                .findFirst()
-                        .ifPresent(
-                               args.
-                        );*/
-        eventServiceTest.testAspect(eventId);
+    @Before("execution(* com.example.testlinux.controller.AspectController.*(..))")
+    public void check(JoinPoint joinPoint) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        String[] paramNames = signature.getParameterNames();   // требует -parameters (Spring Boot включает по умолчанию)
+        Object[] args = joinPoint.getArgs();
+
+        log.info("Перехвачен {} с аргументами {}", signature.getName(), Arrays.toString(args));
+
+        Integer eventId = null;
+        for (int i = 0; i < paramNames.length; i++) {
+            if ("eventId".equals(paramNames[i]) && args[i] instanceof Integer e) {
+                eventId = e;
+                break;
+            }
+        }
+
+        eventServiceTest.testAspect(eventId);   // придёт null для endPointN2/N3 — это ок
     }
+
 }
