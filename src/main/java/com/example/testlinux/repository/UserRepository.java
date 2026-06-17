@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import com.example.testlinux.dto.UserDto;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,9 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     @Query("SELECT new com.example.testlinux.dto.UserDto(t.fighter.firstName) FROM User t WHERE t.id = :id")
     Optional<UserDto> getUserFast(Long id);
+
+    @Query("SELECT t FROM User t WHERE t.login = :login OR t.telefon = :login")
+    List<User> findUserByEmailOrPhone(@Param("login") String login);
 
     /*@Query("SELECT new com.example.testlinux.dto.UserEntityDto(u.fighter, u.judge, u.trainer) FROM User u " +
      *//*"LEFT JOIN fetch Fighter f ON u.id = f.user.id " +

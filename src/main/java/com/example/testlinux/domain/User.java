@@ -26,10 +26,28 @@ public class User {
     @Column(name="telefon")
     private String telefon;
 
+    @Column(name="login")
+    private String login;
+
+    @Column(name="acstatus")
+    private String acstatus;
+
+    @Column(name="hash")
+    private String hash;
+
     public User() {}
 
     public User(String telefon, String pass) {
        this.telefon = telefon;
        this.pass = pass;
+    }
+
+    public String getHashForPasswordChange(String iv) {
+        String passwordHash = getPass();
+        int pos = passwordHash == null ? -1 : passwordHash.lastIndexOf('$');
+        String passwordSalt = pos >= 0 && passwordHash.length() >= pos + 21
+                ? passwordHash.substring(pos, pos + 21)
+                : hash;
+        return org.apache.commons.codec.digest.DigestUtils.sha1Hex(getId() + " - " + iv + " - " + passwordSalt);
     }
 }
