@@ -1,8 +1,8 @@
 package com.example.testlinux;
 
-import com.example.testlinux.domain.UserNew;
+import com.example.testlinux.domain.User;
 import com.example.testlinux.dto.UserDto;
-import com.example.testlinux.repository.UserNewRepository;
+import com.example.testlinux.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import java.util.List;
 @TestPropertySource("classpath:application.properties")
 public class TestMysql {
     @Mock
-    private UserNewRepository userNewRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private DataSource dataSource;
@@ -29,11 +29,11 @@ public class TestMysql {
     @Test
     @Sql("/test-data.sql")
     void testMySQLConnection() throws SQLException {
-        List<UserNew> userNews = userNewRepository.findAllUsers();
+        List<User> users = userRepository.findAllUsers();
         ArrayList<UserDto> usersDto = new ArrayList<>();
-        for(UserNew userNew : userNews){
-            System.out.println("UserService getUsers() User.getAcstatus(); " + userNew.getPass());
-            usersDto.add(new UserDto(userNew.getPass()));
+        for(User user : users){
+            System.out.println("UserService getUsers() User.getAcstatus(); " + user.getPass());
+            usersDto.add(new UserDto(user.getPass()));
         }
        /* try (Connection connection = dataSource.getConnection()) {
             // Здесь можно выполнять тестовые запросы к базе данных

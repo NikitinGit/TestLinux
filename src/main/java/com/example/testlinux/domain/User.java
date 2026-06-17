@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "users")
-public class UserNew {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
@@ -16,9 +16,6 @@ public class UserNew {
 
     @OneToOne(mappedBy = "user")
     private Fighter fighter;
-
-    @OneToOne(mappedBy = "user")
-    private Judge judge;
 
     @OneToOne(mappedBy = "user")
     private Trainer trainer;
@@ -29,9 +26,9 @@ public class UserNew {
     @Column(name="telefon")
     private String telefon;
 
-    public UserNew() {}
+    public User() {}
 
-    public UserNew(String telefon, String pass) {
+    public User(String telefon, String pass) {
        this.telefon = telefon;
        this.pass = pass;
     }

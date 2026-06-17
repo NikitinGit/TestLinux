@@ -1,8 +1,8 @@
 package com.example.testlinux;
 
-import com.example.testlinux.domain.UserNew;
+import com.example.testlinux.domain.User;
 import com.example.testlinux.dto.UserDto;
-import com.example.testlinux.repository.UserNewRepository;
+import com.example.testlinux.repository.UserRepository;
 import com.example.testlinux.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class UserServiceTest {
     private UserService userService;
 
     @Autowired
-    private UserNewRepository userNewRepository;
+    private UserRepository userRepository;
 
     @Test
     void testGetUsersWithNoUsersInDatabase() {
@@ -36,24 +36,24 @@ public class UserServiceTest {
 
     @Test
     void addUser() {
-        userService.addUser(new UserNew("Nikitin 2","nikitin2.@gmail.com"));
+        userService.addUser(new User("Nikitin 2","nikitin2.@gmail.com"));
         userService.getUsers();
     }
 
     @Test
     void testDataLombok() {
-        UserNew testEntity = new UserNew("Stepan1","ivanov@gmail.com");
+        User testEntity = new User("Stepan1","ivanov@gmail.com");
         testEntity.setPass("setName");
-        Set<UserNew> set = new HashSet<>();
+        Set<User> set = new HashSet<>();
 
         set.add(testEntity);
-        userNewRepository.save(testEntity);
+        userRepository.save(testEntity);
 
         System.out.println("testEntity.getAcstatus(): " + testEntity.getPass() +
                 " hashCode: " + testEntity.hashCode());
-        UserNew userNewTest = set.stream().findFirst().get();
-        System.out.println("userTest.getAcstatus(): " + userNewTest.getPass() +
-                " hashCode: " + userNewTest.hashCode());
+        User userTest = set.stream().findFirst().get();
+        System.out.println("userTest.getAcstatus(): " + userTest.getPass() +
+                " hashCode: " + userTest.hashCode());
 
         Assert.isTrue(set.contains(testEntity), "Entity not found in the set");
     }

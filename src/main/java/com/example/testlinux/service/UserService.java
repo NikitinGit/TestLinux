@@ -1,12 +1,12 @@
 package com.example.testlinux.service;
 
 import com.example.testlinux.domain.Event;
-import com.example.testlinux.domain.UserNew;
+import com.example.testlinux.domain.User;
 import com.example.testlinux.dto.*;
 import com.example.testlinux.repository.EventBidFighterRepository;
 import com.example.testlinux.repository.EventRepository;
 import com.example.testlinux.repository.FighterRepository;
-import com.example.testlinux.repository.UserNewRepository;
+import com.example.testlinux.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import java.util.*;
 public class UserService {
 
     @Autowired
-    private UserNewRepository userNewRepository;
+    private UserRepository userRepository;
     @Autowired
     private FighterRepository fighterRepository;
     private final EventBidFighterRepository eventBidFighterRepository;
@@ -31,17 +31,17 @@ public class UserService {
         this.eventRepository = eventRepository;
     }
 
-    public String addUser(UserNew userNew) {
-        userNewRepository.save(userNew);
+    public String addUser(User user) {
+        userRepository.save(user);
         return "User added successfully";
     }
 
     public ResponseEntity<List<UserDto>> getUsers() {
-        List<UserNew> userNews = userNewRepository.findAllUsers();
+        List<User> users = userRepository.findAllUsers();
         ArrayList<UserDto> usersDto = new ArrayList<>();
-        for (UserNew userNew : userNews) {
-            System.out.println("UserService getUsers() User.getAcstatus(); " + userNew.getPass());
-            usersDto.add(new UserDto(userNew.getPass()));
+        for (User user : users) {
+            System.out.println("UserService getUsers() User.getAcstatus(); " + user.getPass());
+            usersDto.add(new UserDto(user.getPass()));
         }
 
         return ResponseEntity.ok(usersDto);
@@ -96,19 +96,19 @@ public class UserService {
     }
 
     public String getUserById(Integer id) {
-        //List<UserFighterDto> userOpt = userNewRepository.findUserById(id);
+        //List<UserFighterDto> userOpt = userRepository.findUserById(id);
         //Optional<Event> eventOpt = eventRepository.findEventByEventId(id);
 
-        Optional<UserNew> userOpt = userNewRepository.findUserById(id);
-        //UserDto user = userNewRepository.getUserFast(1L).get();
-        //Optional<UserEntityDto> userOpt = userNewRepository.getRole(id);
+        Optional<User> userOpt = userRepository.findUserById(id);
+        //UserDto user = userRepository.getUserFast(1L).get();
+        //Optional<UserEntityDto> userOpt = userRepository.getRole(id);
         if (userOpt.isEmpty()) {
             return "empty";
         }
-        UserNew user = userOpt.get();
+        User user = userOpt.get();
 
         //UserEntityDto user = optUser.get();
-        /*Optional<UserEntityFighterDto> optUser = userNewRepository.getFighter(1L);
+        /*Optional<UserEntityFighterDto> optUser = userRepository.getFighter(1L);
         if (!optUser.isPresent()) {
             return ResponseEntity.ok("empty");
         }

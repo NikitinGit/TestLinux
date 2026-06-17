@@ -1,6 +1,6 @@
 package com.example.testlinux.unit.test;
 
-import com.example.testlinux.domain.UserNew;
+import com.example.testlinux.domain.User;
 import com.example.testlinux.service.UserService;
 
 import com.example.testlinux.service.YooKassaService;
@@ -58,7 +58,7 @@ public class UnitTest {
 
     @Test
     void addUser() {
-        userService.addUser(new UserNew("Nikitin 2","nikitin2.@gmail.com"));
+        userService.addUser(new User("Nikitin 2","nikitin2.@gmail.com"));
         userService.getUsers();
     }
 

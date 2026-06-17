@@ -1,8 +1,8 @@
 package com.example.testlinux.jpa.test;
 
-import com.example.testlinux.domain.UserNew;
+import com.example.testlinux.domain.User;
 import com.example.testlinux.dto.UserDto;
-import com.example.testlinux.repository.UserNewRepository;
+import com.example.testlinux.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import java.util.List;
 @AutoConfigureTestDatabase (replace = AutoConfigureTestDatabase.Replace.NONE)
 public class JpaTest {
     @Autowired
-    private UserNewRepository userNewRepository;
+    private UserRepository userRepository;
 
     @BeforeEach
     //@Sql("/test-data.sql")
@@ -26,25 +26,25 @@ public class JpaTest {
         for (int n = 0; n < 100; n++){
             String name = "Test #" + n;
             String email = "Emil #" + n;
-            userNewRepository.save(new UserNew(name, email));
+            userRepository.save(new User(name, email));
         }
         // Можно добавить дополнительные настройки, если необходимо
     }
 
     @Test
     void addUserFromThis() {
-        userNewRepository.save(new UserNew("Test Nikitin","test.@gmail.com"));
+        userRepository.save(new User("Test Nikitin","test.@gmail.com"));
         getUser();
     }
 
     @Test
     void getUser(){
         System.out.println("getUser()");
-        List<UserNew> userNews = userNewRepository.findAllUsers();
+        List<User> users = userRepository.findAllUsers();
         ArrayList<UserDto> usersDto = new ArrayList<>();
-        for(UserNew userNew : userNews){
-            log.info("UserService getUsers() User.getAcstatus() {}; ", userNew.getPass());
-            usersDto.add(new UserDto(userNew.getPass()));
+        for(User user : users){
+            log.info("UserService getUsers() User.getAcstatus() {}; ", user.getPass());
+            usersDto.add(new UserDto(user.getPass()));
         }
     }
 }

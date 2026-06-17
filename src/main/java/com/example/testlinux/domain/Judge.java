@@ -28,7 +28,7 @@ public class Judge {
     @ToString.Exclude
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "login", referencedColumnName = "id")
-    private UserNew user;
+    private User user;
 
     @Column(name="fullName")
     private String fullName;
