@@ -9,7 +9,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) {
 
-            System.out.println("➡️ MyBeanPostProcessor: BEFORE initialization of " + beanName);
+        //System.out.println("➡️ MyBeanPostProcessor: BEFORE initialization of " + beanName);
 
         return bean;
     }
@@ -17,7 +17,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
 
-            System.out.println("➡️ MyBeanPostProcessor: AFTER initialization of " + beanName);
+        //System.out.println("➡️ MyBeanPostProcessor: AFTER initialization of " + beanName);
 
         return bean;
     }
