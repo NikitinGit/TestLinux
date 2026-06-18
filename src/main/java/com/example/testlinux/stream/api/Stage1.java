@@ -42,6 +42,9 @@ public class Stage1 {
             {new Stage2("14bn"), new Stage2("51bn")}
     };
 
+    public Stage1() {
+        System.out.println("Stage1 hashCode(); " + hashCode());
+    }
     public Stage1(String name) {
         randomInt1 = random1.nextInt(5);
         randomInt2 = random2.nextInt(8);

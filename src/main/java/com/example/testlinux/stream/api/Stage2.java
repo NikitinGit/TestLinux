@@ -9,7 +9,6 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 @Data
-@NoArgsConstructor
 public class Stage2 {
     private String name;
     private String name2;
@@ -20,6 +19,10 @@ public class Stage2 {
 
     public int getRandom1() {
         return randomInt1;
+    }
+
+    public Stage2() {
+        System.out.println("Stage2 hashCode(); " + hashCode());
     }
 
     public Stage2(String name) {
