@@ -10,8 +10,8 @@ public class Main {
         HashSet<Person> set = new HashSet<>();
         set.add(new Person("Alice"));
         System.out.println(set.contains(new Person("Alice"))); // true, теперь работает правильно
-//        var stageN3 = new Stage2();
-//        System.out.println("hashCode After stageN3 created: " + stageN3.hashCode());
+        var stageN3 = new Stage2();
+        System.out.println("hashCode After stageN3 created: " + stageN3.hashCode());
 
         var stageN125 = new Stage1();
         System.out.println("hashCode After stageN125 created: " + stageN125.hashCode());
