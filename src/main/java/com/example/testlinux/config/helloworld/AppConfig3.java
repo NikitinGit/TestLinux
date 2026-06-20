@@ -3,10 +3,10 @@ package com.example.testlinux.config.helloworld;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 public class AppConfig3 {
 
-    @Bean(name = "bean15")
+    //@Bean(name = "bean15")
     public MyBean myBean() {
         return new MyBean(852);
     }

@@ -3,7 +3,7 @@ package com.example.testlinux.bean.order.life.circle;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class MyBean1 {
 
     public MyBean1() {

@@ -3,7 +3,7 @@ package com.example.testlinux.bean.order.life.circle;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 public class BeanTest {
 
     int number = 25;

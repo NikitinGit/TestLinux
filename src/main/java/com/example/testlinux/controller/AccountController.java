@@ -16,14 +16,14 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @Autowired
-    @Qualifier("bean2")
+    //@Autowired
+    //@Qualifier("bean2")
     private MyBean myBean;
 
     // Читаем баланс (может вернуть грязные данные)
     @GetMapping("/{id}/balance")
     public ResponseEntity<BigDecimal> getBalance(@PathVariable Long id) {
-        myBean.sayHello();
+        //myBean.sayHello();
         BigDecimal balance = accountService.getBalance(id);
         return ResponseEntity.ok(balance);
     }

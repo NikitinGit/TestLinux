@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import static java.lang.System.out;
 
-@Component
+//@Component
 public class ComponentObjBean {
 
     public ComponentObjBean() {

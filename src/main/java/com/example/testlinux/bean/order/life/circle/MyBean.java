@@ -4,19 +4,19 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class MyBean implements InitializingBean {
 
     public MyBean() {
         System.out.println("➡️ MyBean: constructor");
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void postConstruct() {
         System.out.println("➡️ MyBean: @PostConstruct");
     }
 
-    @Override
+    //@Override
     public void afterPropertiesSet() {
         System.out.println("➡️ MyBean: InitializingBean.afterPropertiesSet");
     }
