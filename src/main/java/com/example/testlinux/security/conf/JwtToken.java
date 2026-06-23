@@ -217,7 +217,7 @@ public class JwtToken {
     }
 
     private static String generateBase64UrlEncodedSignature(String message, String secret) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
-        log.debug("Token-Salt (secret): " + secret);
+        log.debug("HMAC (secret): " + secret);
         if (secret == null || secret.isEmpty()) {
             log.debug("Token-Salt secret is empty. Ignoring secret");
             return "";
