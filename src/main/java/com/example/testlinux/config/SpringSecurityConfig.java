@@ -6,22 +6,15 @@ import com.example.testlinux.security.conf.TokenAuthenticationFilter;
 import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationEventPublisher;
-import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -107,20 +100,22 @@ public class SpringSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.frameOptions(Customizer.withDefaults()).disable())
                 .authorizeHttpRequests(authz -> authz
-                                .requestMatchers("/").permitAll()
-                                .requestMatchers("/event/**").hasAuthority(Auth.Role.Organizer.name())
-                                // Websockets
-                                .requestMatchers("/ws/**").permitAll()
-                                .requestMatchers("/ws-public/**").permitAll()
-                                .requestMatchers("/api/login").permitAll()
-                                .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/event/method**").permitAll()
+                        //.requestMatchers("/event/**").hasAuthority(Auth.Role.Organizer.name())
+                        // Websockets
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/ws-public/**").permitAll()
+                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
 
-                                .requestMatchers(HttpMethod.GET, "/api/organizers/access-list").authenticated()
-                                .requestMatchers(HttpMethod.PUT, "/api/organizers/*/access").authenticated()
-                                .requestMatchers("/api/events/**").permitAll()
-                                .requestMatchers("/api/organizer-judge/**").hasAuthority(Auth.Role.Judge.name())
-                                // Управление банами комментаторов: доступно аутентифицированным с разрешением comment_ban_manage
-                                .requestMatchers("/api/comment-bans/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/organizers/access-list").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/organizers/*/access").authenticated()
+
+                        .requestMatchers("/api/events/**").permitAll()
+                        .requestMatchers("/api/organizer-judge/**").hasAuthority(Auth.Role.Judge.name())
+                        // Управление банами комментаторов: доступно аутентифицированным с разрешением comment_ban_manage
+                        .requestMatchers("/api/comment-bans/**").authenticated()
                 );
 
         return http.build();

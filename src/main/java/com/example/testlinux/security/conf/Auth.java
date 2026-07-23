@@ -32,21 +32,6 @@ public class Auth {
         return role.isFighter();
     }
 
-    public boolean isJudge(){
-        return role.isJudge();
-    }
-
-    public boolean isOrganizer(){
-        return role.isOrganizer();
-    }
-
-    public boolean isTrainer(){
-        return role.isTrainer();
-    }
-
-    public boolean isOrgAdmin(){
-        return "orgAdmin".equalsIgnoreCase(rawRole);
-    }
 
     public enum Role {
         Fighter(List.of("Fighter", "member")),
@@ -63,18 +48,6 @@ public class Auth {
 
         public boolean isFighter(){
             return this.name().equals(Fighter.name());
-        }
-
-        public boolean isJudge(){
-            return this.name().equals(Judge.name());
-        }
-
-        public boolean isTrainer(){
-            return this.name().equals(Trainer.name());
-        }
-
-        public boolean isOrganizer(){
-            return this.name().equals(Organizer.name());
         }
 
         public static Role getRole(String value){

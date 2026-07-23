@@ -74,20 +74,16 @@ public class EventServiceTest {
         Event reloadedA = eventRepository.findEventByEventId(savedA.getEventId())
                 .orElseThrow(RuntimeException::new);
 
-        log.warn("savedA == reloadedA      : {}  (false — ожидаемо, разные ссылки)",
-                savedA == reloadedA);
+        log.warn("savedA == reloadedA      : {}  (false — ожидаемо, разные ссылки)", savedA == reloadedA);
 
-        log.warn("savedA.equals(reloadedA) : {}  (ПРОБЛЕМА: false, хотя это ОДНА И ТА ЖЕ запись в БД)",
-                savedA.equals(reloadedA));
+        log.warn("savedA.equals(reloadedA) : {}  (ПРОБЛЕМА: false, хотя это ОДНА И ТА ЖЕ запись в БД)", savedA.equals(reloadedA));
 
-        log.warn("set.contains(reloadedA)  : {}  (ПРОБЛЕМА: false, HashSet не узнаёт сущность из БД)",
-                set.contains(reloadedA));
+        log.warn("set.contains(reloadedA)  : {}  (ПРОБЛЕМА: false, HashSet не узнаёт сущность из БД)", set.contains(reloadedA));
 
         // 5) То же самое в HashMap — типичный сценарий "положили по сущности → потом не найти"
         Map<Event, String> map = new HashMap<>();
         map.put(savedA, "значение A");
-        log.warn("map.get(reloadedA)       : {}  (ПРОБЛЕМА: null, хотя ключ — та же сущность)",
-                map.get(reloadedA));
+        log.warn("map.get(reloadedA)       : {}  (ПРОБЛЕМА: null, хотя ключ — та же сущность)", map.get(reloadedA));
     }
 
     /**

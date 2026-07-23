@@ -70,9 +70,9 @@ public class EventController {
     @GetMapping("/method")
     public ResponseEntity<Void> method() {
         //eventServiceTest.getData(175);
-        //eventServiceTest.demonstrateEqualsHashCodeProblem();
+        eventServiceTest.demonstrateEqualsHashCodeProblem();
         //eventServiceTest.demonstrateLazyAssociationProxyProblem();
-        eventServiceTest.demonstrateGetReferenceProblem();
+        //eventServiceTest.demonstrateGetReferenceProblem();
         return ResponseEntity.ok().build();
     }
 
