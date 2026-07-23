@@ -2,12 +2,16 @@ package com.example.testlinux.controller;
 
 import com.example.testlinux.aspect.acpectonclass.CheckAuthorization;
 import com.example.testlinux.dto.AuthorizeEventDto;
+import com.example.testlinux.dto.FighterDto;
 import com.example.testlinux.service.EventServiceTest;
+import com.example.testlinux.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -17,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 public class EventController {
 
     private final EventServiceTest eventServiceTest;
+
+    private final UserService userService;
 
     /**
      * Пример Spring-native method-security (аналог самописного @CheckOrganizerAccess).
@@ -74,6 +80,11 @@ public class EventController {
         //eventServiceTest.demonstrateLazyAssociationProxyProblem();
         //eventServiceTest.demonstrateGetReferenceProblem();
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/fighters")
+    public ResponseEntity <List<FighterDto>> getFighters() {
+        return userService.getFighters();
     }
 
     //@CheckOrganizerAccess(eventIdFieldName = "eventId") - не работает потому что не в дто

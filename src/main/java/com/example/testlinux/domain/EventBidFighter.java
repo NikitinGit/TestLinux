@@ -16,8 +16,8 @@ public class EventBidFighter {
     @Column(name="id")
     private Long id;
 
-    @Column(name = "idEvent", insertable = false, updatable = false)
-    private Integer eventId;
+/*    @Column(name = "idEvent", insertable = false, updatable = false)
+    private Integer eventId;*/
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

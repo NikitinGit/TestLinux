@@ -1,6 +1,7 @@
 package com.example.testlinux.service;
 
 import com.example.testlinux.domain.Event;
+import com.example.testlinux.domain.EventBidFighter;
 import com.example.testlinux.domain.User;
 import com.example.testlinux.dto.*;
 import com.example.testlinux.repository.EventBidFighterRepository;
@@ -89,8 +90,30 @@ public class UserService {
         for (FighterDto fighterDto : fighterDtoList) {
             System.out.println("fighterDto.getFirstName(): " + fighterDto.getFighterName() +
                     ", phoneByFighter(): " + fighterDto.getPhoneByFighter());
-            if (++n > 5) break;
+            if (++n > 15) break;
         }
+
+        List<EventBidFighter> bids = eventBidFighterRepository.getFightersFromBids(17);
+        for (var bid : bids) {
+            String name = bid.getEvent().getEventId().toString();
+            name = bid.getEvent().getNameEvent();
+            //System.out.println("event.name: " + bid.getEvent().getNameEvent());
+            if (++n > 825) break;
+        }
+
+        /*2026-07-23T20:31:26.645+05:00  INFO 18109 --- [TestLinux] [nio-6300-exec-1] i.StatisticalLoggingSessionEventListener : Session Metrics {
+            505123 nanoseconds spent acquiring 1 JDBC connections;
+            0 nanoseconds spent releasing 0 JDBC connections;
+            3931556 nanoseconds spent preparing 12 JDBC statements;
+            64761274 nanoseconds spent executing 12 JDBC statements;
+            0 nanoseconds spent executing 0 JDBC batches;
+            0 nanoseconds spent performing 0 L2C puts;
+            0 nanoseconds spent performing 0 L2C hits;
+            0 nanoseconds spent performing 0 L2C misses;
+            0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+            0 nanoseconds spent executing 0 pre-partial-flushes;
+            0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+        }*/
 
         return ResponseEntity.ok(fighterDtoList);
     }

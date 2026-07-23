@@ -102,6 +102,7 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/event/method**").permitAll()
+                        .requestMatchers("/event/fighters**").permitAll()
                         //.requestMatchers("/event/**").hasAuthority(Auth.Role.Organizer.name())
                         // Websockets
                         .requestMatchers("/ws/**").permitAll()
