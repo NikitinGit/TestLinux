@@ -140,7 +140,6 @@ public class TransactionalTestService {
                 .orElseThrow(() -> new ValidationException("lostUpdate error"));
         log.info("lostUpdateWithMyTransaction() battle.sectionNumber{}; ", battle.getSectionNumber());
         battlesRepository.updateBattle(battleId);
-
         //throw new Exception("пробрасываем исключение Exception"); //- откатывает транзакция
         //TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//  - откатывает транзакция
     }
