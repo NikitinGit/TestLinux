@@ -101,19 +101,19 @@ public class UserService {
             if (++n > 825) break;
         }
 
-        /*2026-07-23T20:31:26.645+05:00  INFO 18109 --- [TestLinux] [nio-6300-exec-1] i.StatisticalLoggingSessionEventListener : Session Metrics {
-            505123 nanoseconds spent acquiring 1 JDBC connections;
-            0 nanoseconds spent releasing 0 JDBC connections;
-            3931556 nanoseconds spent preparing 12 JDBC statements;
-            64761274 nanoseconds spent executing 12 JDBC statements;
-            0 nanoseconds spent executing 0 JDBC batches;
-            0 nanoseconds spent performing 0 L2C puts;
-            0 nanoseconds spent performing 0 L2C hits;
-            0 nanoseconds spent performing 0 L2C misses;
-            0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
-            0 nanoseconds spent executing 0 pre-partial-flushes;
-            0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
-        }*/
+        /*2026-07-23T20:40:54.067+05:00  INFO 18749 --- [TestLinux] [nio-6300-exec-1] i.StatisticalLoggingSessionEventListener : Session Metrics {
+    442387 nanoseconds spent acquiring 1 JDBC connections;
+    0 nanoseconds spent releasing 0 JDBC connections;
+    24871581 nanoseconds spent preparing 544 JDBC statements;
+    206330949 nanoseconds spent executing 544 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 pre-partial-flushes;
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+    */
 
         return ResponseEntity.ok(fighterDtoList);
     }
