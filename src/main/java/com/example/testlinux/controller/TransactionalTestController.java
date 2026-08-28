@@ -62,7 +62,7 @@ public class TransactionalTestController {
         try {
             transactionalTestService.lostUpdateWithMyTransaction();
         } catch (Exception ignored) {
-            log.info("lostUpdate3() catch (Exception ignored)");
+            log.info("lostUpdate3() 2 catch (Exception ignored)");
         }
         log.info("lostUpdate3() Controller End");
         return ResponseEntity.ok().build();
