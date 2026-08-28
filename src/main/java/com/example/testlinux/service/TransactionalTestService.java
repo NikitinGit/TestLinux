@@ -134,7 +134,7 @@ public class TransactionalTestService {
     }
 
     @TransactionalRollbackAll()
-    public void lostUpdateWithMyTransaction() throws Exception{
+    public void lostUpdateWithMyTransaction() {
         final long battleId = 2L;
         Battle battle = battlesRepository.getOpenEventBattleByBattleId(battleId)
                 .orElseThrow(() -> new ValidationException("lostUpdate error"));
