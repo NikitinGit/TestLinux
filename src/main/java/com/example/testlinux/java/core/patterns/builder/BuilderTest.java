@@ -7,7 +7,7 @@ public class BuilderTest {
 
         printSeparator();
 
-        System.out.println("BASE log: v3");
+        System.out.println("BASE log: v0");
     }
 
     private static void printSeparator() {
