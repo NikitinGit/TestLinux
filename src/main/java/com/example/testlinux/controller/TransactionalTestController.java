@@ -61,8 +61,7 @@ public class TransactionalTestController {
     public ResponseEntity<Void> lostUpdate3() {
         try {
             transactionalTestService.lostUpdateWithMyTransaction();
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
         log.info("lostUpdate3() Controller End");
         return ResponseEntity.ok().build();
     }
