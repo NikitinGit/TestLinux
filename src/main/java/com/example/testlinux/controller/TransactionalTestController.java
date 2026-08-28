@@ -42,5 +42,30 @@ public class TransactionalTestController {
         log.info("changeData() Controller End battleId: {}", battleId);
         return ResponseEntity.ok().build();
     }
+
+    @RequestMapping(value = "/lost-update", method = RequestMethod.GET)
+    public ResponseEntity<Void> lostUpdate() {
+        transactionalTestService.lostUpdateWithoutTransaction();
+        log.info("lostUpdate() Controller End");
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/lost-update2", method = RequestMethod.GET)
+    public ResponseEntity<Void> lostUpdate2() throws Exception {
+        transactionalTestService.lostUpdateWithTransaction();
+        log.info("lostUpdate2() Controller End");
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/lost-update3", method = RequestMethod.GET)
+    public ResponseEntity<Void> lostUpdate3() {
+        try {
+            transactionalTestService.lostUpdateWithMyTransaction();
+        } catch (Exception e) {
+            //throw new RuntimeException(e);
+        }
+        log.info("lostUpdate3() Controller End");
+        return ResponseEntity.ok().build();
+    }
 }
 

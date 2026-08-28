@@ -1,7 +1,9 @@
 package com.example.testlinux.service;
 
+import com.example.testlinux.aspect.acpectonclass.TransactionalRollbackAll;
 import com.example.testlinux.domain.Battle;
 import com.example.testlinux.domain.EventBidFighter;
+import com.example.testlinux.exceptions.ValidationException;
 import com.example.testlinux.repository.BattlesRepository;
 import com.example.testlinux.repository.EventBidFighterRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 @Slf4j
 @Service
@@ -20,8 +23,6 @@ public class TransactionalTestService {
 
     @Autowired
     private EventBidFighterRepository eventBidFighterRepository;
-
-    private static int count;
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED)
     public void updateBattle(Long battleId) {
@@ -82,5 +83,65 @@ public class TransactionalTestService {
             log.info("changeData() - ThreadName: {}, eventBidFighter.getApproved(): {}",
                     Thread.currentThread().getName(), eventBidFighter.getApproved());
         }
+    }
+
+    public void lostUpdateWithoutTransaction() {
+        final long battleId = 1L;
+        Battle battle = battlesRepository.getOpenEventBattleByBattleId(battleId)
+                .orElseThrow(() -> new ValidationException("lostUpdate error"));
+        log.info("lostUpdateWithoutTransaction() battle.sectionNumber{}; ", battle.getSectionNumber());
+
+        try {
+            Thread.sleep(2555L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        //battlesRepository.removeByIdBattle(1L);
+        battle.setSectionNumber(battle.getSectionNumber() + 1);
+        battlesRepository.save(battle);
+        //battlesRepository.flush();// не откатывается
+        throw new ValidationException("error lostUpdateWithoutTransaction()");
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void lostUpdateWithTransaction() throws Exception {
+        final long battleId = 2L;
+        Battle battle = battlesRepository.getOpenEventBattleByBattleId(battleId)
+                .orElseThrow(() -> new ValidationException("lostUpdate error"));
+        log.info("lostUpdateWithTransaction() battle.sectionNumber{}; ", battle.getSectionNumber());
+
+        try {
+            Thread.sleep(2555L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        battlesRepository.updateBattle(battleId);
+        //battlesRepository.flush(); - откатывается если до конца метода не дойдет выполнение
+        //throw new ValidationException("error"); //- RuntimeException (unchecked) → транзакция ОТКАТЫВАЕТСЯ
+
+        // checked-исключение (наследник Exception, НЕ RuntimeException): Spring по умолчанию
+        // НЕ откатывает на него транзакцию → updateBattle останется закоммиченным в БД.
+        // (чтобы всё-таки откатывалось, нужно @Transactional(rollbackFor = Exception.class))
+        try {
+            log.info("lostUpdateWithTransaction() try, sectionNumber={}", battle.getSectionNumber());
+            throw new RuntimeException("ошибка внутри try — БЕЗ catch она откатила бы транзакцию");
+        } catch (Exception e) {
+            log.warn("поймали и проглотили: {} → транзакция НЕ откатится:", e.getMessage());
+            //throw new Exception("пробрасываем исключение Exception"); - откатывает транзакция
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//  - откатывает транзакция
+        }
+        //throw new Exception("checked exception -> транзакция НЕ откатывается, updateBattle сохранён");
+    }
+
+    @TransactionalRollbackAll()
+    public void lostUpdateWithMyTransaction() throws Exception{
+        final long battleId = 2L;
+        Battle battle = battlesRepository.getOpenEventBattleByBattleId(battleId)
+                .orElseThrow(() -> new ValidationException("lostUpdate error"));
+        log.info("lostUpdateWithMyTransaction() battle.sectionNumber{}; ", battle.getSectionNumber());
+        battlesRepository.updateBattle(battleId);
+
+        //throw new Exception("пробрасываем исключение Exception"); //- откатывает транзакция
+        //TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//  - откатывает транзакция
     }
 }

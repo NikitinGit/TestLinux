@@ -13,7 +13,10 @@ public interface BattlesRepository extends JpaRepository<Battle, Long> {
     @Query("SELECT t FROM Battle t WHERE t.idBattle = :battleId")
     Optional<Battle> getOpenEventBattleByBattleId(Long battleId);
 
+    //bulk operation
     @Modifying
     @Query("UPDATE Battle b SET b.sectionNumber = b.sectionNumber + 1 WHERE b.idBattle = :battleId")
     void updateBattle(Long battleId);
+
+    void removeByIdBattle(Long idBattle);
 }
