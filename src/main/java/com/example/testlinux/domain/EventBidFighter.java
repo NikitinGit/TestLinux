@@ -21,7 +21,7 @@ public class EventBidFighter {
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idEvent")
     private Event event;
 
