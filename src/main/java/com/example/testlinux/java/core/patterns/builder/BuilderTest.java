@@ -3,7 +3,7 @@ package com.example.testlinux.java.core.patterns.builder;
 public class BuilderTest {
 
     public static void main(String[] args) {
-        System.out.println("FEATURE log: v0");
+        System.out.println("FEATURE log: v1");
 
         printSeparator();
 
