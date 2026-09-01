@@ -151,6 +151,6 @@ public class TransactionalTestService {
         Battle battle = battlesRepository.getOpenEventBattleByBattleId(battleId)
                 .orElseThrow(() -> new ValidationException("testTransactionReadOnly error"));
         battle.setSectionNumber(25);// не чего не сохраняет
-        battlesRepository.updateBattle(battleId);// вызывает исключение
+        //battlesRepository.updateBattle(battleId);// вызывает исключение
     }
 }
