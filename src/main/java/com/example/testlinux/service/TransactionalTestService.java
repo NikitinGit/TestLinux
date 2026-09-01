@@ -156,6 +156,32 @@ public class TransactionalTestService {
         //battlesRepository.updateBattle(battleId);// вызывает исключение
     }
 
+    // === ДЕМО пункт 2: readOnly=true vs readOnly=false vs БЕЗ @Transactional ===
+    // Каждый метод: findById(1) ДВАЖДЫ (для L1-кеша) + модификация. Смотрите SQL-лог + b1==b2.
+    @Transactional(readOnly = true)
+    public void multiReadReadOnly() {
+        multiReadBody("readOnly=true ");
+    }
+
+    @Transactional // readOnly=false по умолчанию
+    public void multiReadReadWrite() {
+        multiReadBody("readOnly=false");
+    }
+
+    public void multiReadNoTx() { // вообще без @Transactional
+        multiReadBody("без @Transact");
+    }
+
+    private void multiReadBody(String label) {
+        log.info("=== [{}] START ===", label);
+        Battle b1 = battlesRepository.findById(1L).orElseThrow();
+        log.info("[{}] после ПЕРВОГО findById(1)", label);
+        Battle b2 = battlesRepository.findById(1L).orElseThrow(); // тот же id
+        log.info("[{}] после ВТОРОГО findById(1): тот же инстанс (b1==b2)? {}", label, b1 == b2);
+        b1.setSectionNumber(b1.getSectionNumber() + 1);          // модификация (инкремент, чтобы UPDATE точно сработал)
+        log.info("=== [{}] END (setSectionNumber выполнен, дальше commit) ===", label);
+    }
+
     // === Замер производительности readOnly vs read-write на массовой загрузке ===
     // read-write: Hibernate держит snapshot на КАЖДУЮ сущность (для dirty checking) + на коммите
     //             делает проход dirty checking по всем N. Больше памяти и CPU.

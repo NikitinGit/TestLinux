@@ -76,6 +76,25 @@ public class TransactionalTestController {
         return ResponseEntity.ok().build();
     }
 
+    // ДЕМО пункт 2: сравнение readOnly=true / readOnly=false / без @Transactional
+    @RequestMapping(value = "/multi-read-ro", method = RequestMethod.GET)
+    public ResponseEntity<Void> multiReadReadOnly() {
+        transactionalTestService.multiReadReadOnly();
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/multi-read-rw", method = RequestMethod.GET)
+    public ResponseEntity<Void> multiReadReadWrite() {
+        transactionalTestService.multiReadReadWrite();
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/multi-read-notx", method = RequestMethod.GET)
+    public ResponseEntity<Void> multiReadNoTx() {
+        transactionalTestService.multiReadNoTx();
+        return ResponseEntity.ok().build();
+    }
+
     // Таймер вокруг вызова — чтобы захватить и commit (dirty-check проход у read-write)
     @RequestMapping(value = "/perf-read-write", method = RequestMethod.GET)
     public ResponseEntity<Void> perfReadWrite() {
