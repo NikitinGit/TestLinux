@@ -144,4 +144,13 @@ public class TransactionalTestService {
         //throw new Exception("пробрасываем исключение Exception"); //- откатывает транзакция
         //TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//  - откатывает транзакция
     }
+
+    @Transactional(readOnly = true)
+    public void testTransactionReadOnly() {
+        final long battleId = 1L;
+        Battle battle = battlesRepository.getOpenEventBattleByBattleId(battleId)
+                .orElseThrow(() -> new ValidationException("testTransactionReadOnly error"));
+        battle.setSectionNumber(25);// не чего не сохраняет
+        battlesRepository.updateBattle(battleId);// вызывает исключение
+    }
 }

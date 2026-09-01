@@ -68,5 +68,12 @@ public class TransactionalTestController {
         log.info("lostUpdate3() Controller End");
         return ResponseEntity.ok().build();
     }
+
+    @RequestMapping(value = "/read-only-test", method = RequestMethod.GET)
+    public ResponseEntity<Void> testTransactionReadOnly() {
+        transactionalTestService.testTransactionReadOnly();
+        log.info("testTransactionReadOnly() Controller End");
+        return ResponseEntity.ok().build();
+    }
 }
 

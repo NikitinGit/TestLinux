@@ -103,7 +103,7 @@ public class SpringSecurityConfig {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/event/method**").permitAll()
                         .requestMatchers("/event/fighters**").permitAll()
-                        .requestMatchers("/transaction/lost-update**").permitAll()
+                        .requestMatchers("/transaction/**").permitAll()
                         //.requestMatchers("/event/**").hasAuthority(Auth.Role.Organizer.name())
                         // Websockets
                         .requestMatchers("/ws/**").permitAll()
