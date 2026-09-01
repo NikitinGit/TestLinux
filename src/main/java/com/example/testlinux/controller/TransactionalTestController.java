@@ -75,5 +75,22 @@ public class TransactionalTestController {
         log.info("testTransactionReadOnly() Controller End");
         return ResponseEntity.ok().build();
     }
+
+    // Таймер вокруг вызова — чтобы захватить и commit (dirty-check проход у read-write)
+    @RequestMapping(value = "/perf-read-write", method = RequestMethod.GET)
+    public ResponseEntity<Void> perfReadWrite() {
+        long t0 = System.nanoTime();
+        transactionalTestService.perfReadWrite();
+        log.info("[READ-WRITE] ВСЕГО вкл. commit (dirty-check по всем N): {} ms", (System.nanoTime() - t0) / 1_000_000);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/perf-read-only", method = RequestMethod.GET)
+    public ResponseEntity<Void> perfReadOnly() {
+        long t0 = System.nanoTime();
+        transactionalTestService.perfReadOnly();
+        log.info("[READ-ONLY ] ВСЕГО, flush пропущен (нет dirty-check): {} ms", (System.nanoTime() - t0) / 1_000_000);
+        return ResponseEntity.ok().build();
+    }
 }
 

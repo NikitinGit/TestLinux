@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 @Slf4j
@@ -152,5 +154,45 @@ public class TransactionalTestService {
                 .orElseThrow(() -> new ValidationException("testTransactionReadOnly error"));
         battle.setSectionNumber(25);// не чего не сохраняет
         //battlesRepository.updateBattle(battleId);// вызывает исключение
+    }
+
+    // === Замер производительности readOnly vs read-write на массовой загрузке ===
+    // read-write: Hibernate держит snapshot на КАЖДУЮ сущность (для dirty checking) + на коммите
+    //             делает проход dirty checking по всем N. Больше памяти и CPU.
+    @Transactional(readOnly = false)
+    public long perfReadWrite() {
+        return loadAndSum("READ-WRITE");
+    }
+
+    // readOnly: snapshot'ы НЕ создаются, dirty checking и flush пропускаются. Меньше памяти и CPU.
+    @Transactional(readOnly = true)
+    public long perfReadOnly() {
+        return loadAndSum("READ-ONLY");
+    }
+
+    private long loadAndSum(String label) {
+        System.gc(); // индикативно: попросить GC до замера (не гарантия, но сглаживает картину)
+        long heapBefore = usedHeapMb();
+        long t0 = System.nanoTime();
+
+        List<Battle> all = battlesRepository.findAll(); // грузим ВСЕ сущности в persistence context
+        long loadMs = (System.nanoTime() - t0) / 1_000_000;
+
+        long sum = 0;                                   // просто читаем, ничего не меняем
+        for (Battle b : all) {
+            if (b.getSectionNumber() != null) sum += b.getSectionNumber();
+        }
+        long heapUsedByLoad = usedHeapMb() - heapBefore;
+
+        log.info("[{}] N={}, загрузка+обход={} ms, heap на набор≈{} MB, sum={}",
+                label, all.size(), loadMs, heapUsedByLoad, sum);
+        return sum;
+        // ↑ ПОСЛЕ возврата из метода TransactionInterceptor делает commit:
+        //   read-write → проход dirty checking по всем N сущностям; readOnly → пропуск (FlushMode.MANUAL)
+    }
+
+    private long usedHeapMb() {
+        Runtime r = Runtime.getRuntime();
+        return (r.totalMemory() - r.freeMemory()) / 1024 / 1024;
     }
 }
