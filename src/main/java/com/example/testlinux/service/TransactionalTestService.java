@@ -168,6 +168,13 @@ public class TransactionalTestService {
         multiReadBody("readOnly=false");
     }
 
+    @Transactional
+    public void newEntityWithoutSave() {
+        Battle b = Battle.create(5);        // TRANSIENT — Hibernate её не знает
+        battlesRepository.flush();          // ← INSERT НЕ произойдёт (b нет в PC)
+        log.info("id после flush = {}", b.getIdBattle());  // null — не сохранилась!
+    }
+
     public void multiReadNoTx() { // вообще без @Transactional
         multiReadBody("без @Transact");
     }
@@ -175,11 +182,39 @@ public class TransactionalTestService {
     private void multiReadBody(String label) {
         log.info("=== [{}] START ===", label);
         Battle b1 = battlesRepository.findById(1L).orElseThrow();
-        log.info("[{}] после ПЕРВОГО findById(1)", label);
-        Battle b2 = battlesRepository.findById(1L).orElseThrow(); // тот же id
+        b1.setSectionNumber(b1.getSectionNumber() + 1);
+        log.info("[{}] после ПЕРВОГО findById(1), b1.getSectionNumber(): {}", label, b1.getSectionNumber());
+        //battlesRepository.flush();
+        Battle b2 = battlesRepository.getOpenEventBattleByBattleId(1L).orElseThrow(); // тот же id
         log.info("[{}] после ВТОРОГО findById(1): тот же инстанс (b1==b2)? {}", label, b1 == b2);
+        log.info("b1.getSectionNumber(): {}, b2.getSectionNumber(): {}",
+                b1.getSectionNumber(), b2.getSectionNumber());
         b1.setSectionNumber(b1.getSectionNumber() + 1);          // модификация (инкремент, чтобы UPDATE точно сработал)
         log.info("=== [{}] END (setSectionNumber выполнен, дальше commit) ===", label);
+        throw new ValidationException("rollBack");
+    }
+
+    // === ДЕМО save() vs flush(): видно ТОЛЬКО внутри @Transactional (без tx save() коммитит сразу) ===
+    // UPDATE: save() ПЛАНИРУЕТ, flush() ВЫПОЛНЯЕТ. Смотрите, ГДЕ в логе появится строка 'update'.
+    @Transactional
+    public void saveVsFlushUpdate() {
+        Battle b = battlesRepository.findById(1L).orElseThrow();   // select
+        b.setSectionNumber(b.getSectionNumber() + 1);
+        log.info(">>> ПЕРЕД save()");
+        battlesRepository.save(b);                                 // UPDATE отложен — 'update' в логе ещё НЕ появится
+        log.info(">>> ПОСЛЕ save() — UPDATE в БД ещё НЕ ушёл");
+        battlesRepository.flush();                                 // <-- 'update' появится ИМЕННО ЗДЕСЬ
+        log.info(">>> ПОСЛЕ flush() — UPDATE только что ушёл в БД (строка 'update' выше)");
+    }
+
+    // ИСКЛЮЧЕНИЕ: @GeneratedValue(IDENTITY) → save() новой сущности делает INSERT СРАЗУ (нужен id из БД).
+    // ВНИМАНИЕ: добавляет строку в таблицу battles.
+    @Transactional
+    public void saveInsertIdentity() {
+        Battle b = Battle.create(5);
+        log.info(">>> ПЕРЕД save() новой сущности (IDENTITY), id пока = {}", b.getIdBattle());
+        battlesRepository.save(b);                                 // 'insert' появится ПРЯМО ЗДЕСЬ (не откладывается)
+        log.info(">>> ПОСЛЕ save() — INSERT уже ушёл, БД сгенерировала id = {} (flush НЕ нужен)", b.getIdBattle());
     }
 
     // === Замер производительности readOnly vs read-write на массовой загрузке ===

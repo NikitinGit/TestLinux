@@ -95,6 +95,19 @@ public class TransactionalTestController {
         return ResponseEntity.ok().build();
     }
 
+    // ДЕМО save() vs flush() (внутри @Transactional): смотрите, ГДЕ в логе появится 'update'/'insert'
+    @RequestMapping(value = "/save-vs-flush", method = RequestMethod.GET)
+    public ResponseEntity<Void> saveVsFlushUpdate() {
+        transactionalTestService.saveVsFlushUpdate();
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/save-insert-identity", method = RequestMethod.GET)
+    public ResponseEntity<Void> saveInsertIdentity() {
+        transactionalTestService.saveInsertIdentity();
+        return ResponseEntity.ok().build();
+    }
+
     // Таймер вокруг вызова — чтобы захватить и commit (dirty-check проход у read-write)
     @RequestMapping(value = "/perf-read-write", method = RequestMethod.GET)
     public ResponseEntity<Void> perfReadWrite() {
