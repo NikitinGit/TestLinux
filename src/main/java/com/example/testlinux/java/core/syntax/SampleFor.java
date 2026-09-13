@@ -1,9 +1,11 @@
 package com.example.testlinux.java.core.syntax;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SampleFor {
 
@@ -94,5 +96,46 @@ public class SampleFor {
                 System.out.println("i=" + i + ", j=" + j);
             }
         }
+
+        // 11) отдельным методом — та самая идиома for (int c = ctl.get();;)
+        casRetryLoop();
+    }
+
+    // 11) CAS retry-loop — идиома for (int c = ctl.get();;) из java.util.concurrent (ThreadPoolExecutor).
+    // Бесконечный for + break, когда удалась атомарная замена. Lock-free инкремент из многих потоков.
+    static void casRetryLoop() {
+        AtomicInteger ctl = new AtomicInteger(0);      // ctl — AtomicInteger; ctl.get() читает БЕЗ индекса
+        int threads = 10;
+        int incrementsPerThread = 100_000;
+
+        Runnable task = () -> {
+            for (int t = 0; t < incrementsPerThread; t++) {
+                // ВОТ ОНА: читаем текущее значение в c, цикл бесконечный, выход по успешному CAS
+                for (int c = ctl.get(); ; ) {
+                    if (ctl.compareAndSet(c, c + 1)) // атомарно: "если всё ещё c → стало c+1"
+                        break;                        // CAS удался → выходим
+                    c = ctl.get();                    // не удался (другой поток успел) → перечитали, повтор
+                }
+                //int c = ctl.get();ctl.compareAndSet(c, c + 1);// - будет потерянное обновление
+            }
+        };
+
+        List<Thread> pool = new ArrayList<>();
+        for (int i = 0; i < threads; i++) {
+            Thread th = new Thread(task);
+            pool.add(th);
+            th.start();
+        }
+        for (Thread th : pool) {
+            try {
+                th.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        int expected = threads * incrementsPerThread;
+        System.out.println("--- 11) CAS retry-loop: ожидали=" + expected + ", получили=" + ctl.get()
+                + " -> " + (ctl.get() == expected ? "OK (без потерь, lock-free)" : "ПОТЕРЯ!"));
     }
 }
