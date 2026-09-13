@@ -99,6 +99,83 @@ public class SampleFor {
 
         // 11) отдельным методом — та самая идиома for (int c = ctl.get();;)
         casRetryLoop();
+
+        // 12) отдельным методом — volatile как ФЛАГ остановки
+        stopFlagDemo();
+
+        // 13) barrier-free: тот же флаг БЕЗ volatile + тугой цикл → воркер может ЗАВИСНУТЬ
+        stopFlagNoVolatileDemo();
+    }
+
+    // volatile-флаг: один поток пишет running=false, воркер это ВИДИТ на следующей итерации и завершается.
+    // Здесь volatile уместен: это ПРОСТАЯ запись (не read-modify-write), нужна только видимость.
+    static volatile boolean running = true;
+
+    static void stopFlagDemo() {
+        running = true;
+
+        Thread worker = new Thread(() -> {
+            int i = 0;
+            while (running) {                    // читаем volatile-флаг КАЖДУЮ итерацию
+                System.out.println("worker: работаю, итерация " + (++i) + " (running=" + running + ")");
+                sleep(300);                      // sleep + лог — чтобы видеть работу в реалтайме
+            }
+            System.out.println("worker: увидел running=false → ОСТАНОВИЛСЯ на итерации " + i);
+        }, "worker");
+
+        worker.start();
+        sleep(2000);                             // даём воркеру поработать ~2 сек
+        System.out.println("main: ставлю running=false");
+        running = false;                         // одна простая запись — воркер её увидит (volatile)
+        try {
+            worker.join();                       // ждём завершения воркера
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        System.out.println("main: воркер завершён");
+    }
+
+    static void sleep(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    // 13) ТОТ ЖЕ флаг, но БЕЗ volatile + тугой цикл (без sleep/println внутри — нет барьеров памяти).
+    // JIT может "поднять" чтение флага из цикла (закешировать в регистр) → воркер НЕ увидит false → ЗАВИСНЕТ.
+    // Воркер — daemon, чтобы при зависании JVM всё равно смог завершиться (daemon не держит JVM).
+    static boolean runningPlain = true;   // ← БЕЗ volatile
+
+    static void stopFlagNoVolatileDemo() {
+        runningPlain = true;
+
+        Thread worker = new Thread(() -> {
+            long i = 0;
+            while (runningPlain) {          // ТУГОЙ цикл, БЕЗ sleep/println → JIT может закешировать флаг
+                i++;
+            }
+            System.out.println("worker(no-volatile): увидел false → остановился, итераций=" + i);
+        }, "worker-plain");
+        worker.setDaemon(true);             // daemon: если зависнет, JVM всё равно завершится
+        worker.start();
+
+        sleep(1000);                        // даём JIT скомпилировать и соптимизировать тугой цикл
+        System.out.println("main: ставлю runningPlain=false");
+        runningPlain = false;               // БЕЗ volatile — воркер может это НЕ увидеть
+
+        try {
+            worker.join(3000);              // ждём ОГРАНИЧЕННО (иначе висели бы вечно)
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        if (worker.isAlive()) {
+            System.out.println("main: воркер НЕ остановился за 3 сек → ЗАВИС (флаг без volatile не увиден JIT'ом)");
+        } else {
+            System.out.println("main: воркер остановился (в этот раз JIT не закешировал — поведение JIT/платформо-зависимо)");
+        }
     }
 
     //static volatile int test = 0;
