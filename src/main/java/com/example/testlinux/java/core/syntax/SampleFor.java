@@ -101,6 +101,7 @@ public class SampleFor {
         casRetryLoop();
     }
 
+    //static volatile int test = 0;
     // 11) CAS retry-loop — идиома for (int c = ctl.get();;) из java.util.concurrent (ThreadPoolExecutor).
     // Бесконечный for + break, когда удалась атомарная замена. Lock-free инкремент из многих потоков.
     static void casRetryLoop() {
@@ -117,6 +118,7 @@ public class SampleFor {
                     c = ctl.get();                    // не удался (другой поток успел) → перечитали, повтор
                 }
                 //int c = ctl.get();ctl.compareAndSet(c, c + 1);// - будет потерянное обновление
+                //test++;// lost update
             }
         };
 
@@ -135,7 +137,7 @@ public class SampleFor {
         }
 
         int expected = threads * incrementsPerThread;
-        System.out.println("--- 11) CAS retry-loop: ожидали=" + expected + ", получили=" + ctl.get()
-                + " -> " + (ctl.get() == expected ? "OK (без потерь, lock-free)" : "ПОТЕРЯ!"));
+       /* System.out.println("--- 11) CAS retry-loop: ожидали=" + expected + ", получили=" + ctl.get()
+                + " -> " + (ctl.get() == expected ? "OK (без потерь, lock-free)" : "ПОТЕРЯ!"));*/
     }
 }
