@@ -22,7 +22,7 @@ public class EventBidFighter {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "idEvent")
+    @JoinColumn(name = "event_id")   // реальная FK-колонка в events_bids_fighters (было ошибочно "idEvent")
     private Event event;
 
     @EqualsAndHashCode.Exclude

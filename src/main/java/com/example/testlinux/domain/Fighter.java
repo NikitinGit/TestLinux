@@ -72,9 +72,6 @@ public class Fighter {
     @Column(name="count_wins_on_site")
     private Integer countWinsOnSite = 0;
 
-    @Column(name="fromSortition")
-    private String fromSortition;
-
     /*@EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
