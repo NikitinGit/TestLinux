@@ -76,6 +76,33 @@ public class TransactionalTestController {
         return ResponseEntity.ok().build();
     }
 
+    // ДЕМО: PLAIN LEFT JOIN — коллекция LAZY → 2 SELECT (N+1). Session Metrics: executing 2 JDBC statements.
+    @RequestMapping(value = "/join-plain", method = RequestMethod.GET)
+    public ResponseEntity<Void> joinPlain() {
+        transactionalTestService.joinPlainDemo();
+        return ResponseEntity.ok().build();
+    }
+
+    // ДЕМО: LEFT JOIN FETCH — коллекция одним запросом → 1 SELECT. Session Metrics: executing 1 JDBC statements.
+    @RequestMapping(value = "/join-fetch", method = RequestMethod.GET)
+    public ResponseEntity<Void> joinFetch() {
+        transactionalTestService.joinFetchDemo();
+        return ResponseEntity.ok().build();
+    }
+
+    // ДЕМО дублей: без DISTINCT list.size() == числу заявок, с DISTINCT == 1
+    @RequestMapping(value = "/join-distinct", method = RequestMethod.GET)
+    public ResponseEntity<Void> joinDistinct() {
+        transactionalTestService.distinctDemo();
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/join-exist", method = RequestMethod.GET)
+    public ResponseEntity<Void> joinExist() {
+        transactionalTestService.existDemo();
+        return ResponseEntity.ok().build();
+    }
+
     // ДЕМО пункт 2: сравнение readOnly=true / readOnly=false / без @Transactional
     @RequestMapping(value = "/multi-read-ro", method = RequestMethod.GET)
     public ResponseEntity<Void> multiReadReadOnly() {

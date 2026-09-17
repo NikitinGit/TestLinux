@@ -2,10 +2,12 @@ package com.example.testlinux.service;
 
 import com.example.testlinux.aspect.acpectonclass.TransactionalRollbackAll;
 import com.example.testlinux.domain.Battle;
+import com.example.testlinux.domain.Event;
 import com.example.testlinux.domain.EventBidFighter;
 import com.example.testlinux.exceptions.ValidationException;
 import com.example.testlinux.repository.BattlesRepository;
 import com.example.testlinux.repository.EventBidFighterRepository;
+import com.example.testlinux.repository.EventRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,77 @@ public class TransactionalTestService {
 
     @Autowired
     private EventBidFighterRepository eventBidFighterRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
+
+    // PLAIN LEFT JOIN: коллекция остаётся LAZY → обращение к ней даёт ВТОРОЙ SELECT (N+1)
+    @Transactional(readOnly = true)
+    public void joinPlainDemo() {
+        final int eventId = 175;
+        log.info("=== PLAIN LEFT JOIN (без FETCH), eventId={} ===", eventId);
+        Event e = eventRepository.findEventPlainJoin(eventId).orElseThrow();
+        //Event e2 = eventRepository.findEventsWithApprovedBids(eventId).getFirst();
+        log.info("[plain] Event загружен (это был запрос №1). Обращаюсь к ленивой коллекции...");
+        var eventBidFighters = e.getEventBidFighters();
+        int n = testNand1(eventBidFighters);
+        log.info("[plain] eventBidFighters.size() {}; ", n);
+    }
+
+    // LEFT JOIN FETCH: коллекция уже загружена тем же запросом → доп. SELECT НЕ нужен
+    @Transactional(readOnly = true)
+    public void joinFetchDemo() {
+        final int eventId = 175;
+        log.info("=== LEFT JOIN FETCH, eventId={} ===", eventId);
+        Event e = eventRepository.findEventFetchJoin(eventId).orElseThrow();
+        log.info("[fetch] Event + коллекция загружены ОДНИМ запросом. Обращаюсь к коллекции...");
+        var eventBidFighters = e.getEventBidFighters();
+        int n = testNand1(eventBidFighters);   // ← уже в памяти → доп. SELECT НЕ будет
+        log.info("[fetch] eventBidFighters={} (доп. SELECT НЕ понадобился)", n);
+    }
+
+    // Демо дублей корня. ВАЖНО: на Hibernate 6 (у нас 6.5) дубли Event убираются АВТОМАТИЧЕСКИ,
+    // поэтому list.size()==1 и БЕЗ, и С distinct. (На Hibernate 5 без distinct было бы == числу заявок.)
+    @Transactional(readOnly = true)
+    public void distinctDemo() {
+        final int eventId = 175;
+        log.info("=== DISTINCT demo, eventId={} ===", eventId);
+
+        List<Event> noDistinct = eventRepository.findEventFetchJoinNoDistinct(eventId);
+        boolean allSame = noDistinct.stream().allMatch(x -> x == noDistinct.get(0));
+        log.info("[NO DISTINCT] list.size()={} (Hibernate 6 сам убирает  дубли корня, будет 1; на Hibernate 5 было бы == числу заявок)", noDistinct.size());
+        log.info("[NO DISTINCT] все элементы списка == ОДИН объект? {} (identity map)", allSame);
+        log.info("[NO DISTINCT] заявок в коллекции Event: {}", noDistinct.get(0).getEventBidFighters().size());
+
+        List<Event> distinct = eventRepository.findEventFetchJoinDistinct(eventId);
+        log.info("[DISTINCT]    list.size()={} (то же самое; distinct лишь добавил 'select distinct' в SQL)", distinct.size());
+        log.info("[DISTINCT]    заявок в коллекции Event: {} (коллекция полная)", distinct.get(0).getEventBidFighters().size());
+    }
+
+    @Transactional(readOnly = true)
+    public void existDemo() {
+        final int eventId = 5;
+        log.info("=== EXIST demo, eventId={} ===", eventId);
+
+        List<Event> exist = eventRepository.findEventsWithApprovedBids(eventId);
+        boolean allSame = exist.stream().allMatch(x -> x == exist.get(0));
+        log.info("[EXIST] list.size()={}", exist.size());
+        log.info("[EXIST] все элементы списка == ОДИН объект? {}", allSame);
+        log.info("[EXIST] заявок в коллекции Event: {}", exist.get(0).getEventBidFighters().size());
+    }
+
+    private int testNand1(List<EventBidFighter> eventBidFighters) {
+        for(var bid : eventBidFighters) {
+            long bidId = bid.getId(); // ← уже в памяти → доп. SELECT НЕ будет
+            int approved = bid.getApproved();
+//            var fighterName = bid.getFighter().getFirstName();
+//            System.out.println("bidId = " + bidId + ", approved = " + approved + ", fighterName; " + fighterName);
+            int fighterId = bid.getFighter().getId();// ← подзапрос не происходит
+            System.out.println("bidId = " + bidId + ", approved = " + approved + ", fighterId; " + fighterId);
+        }
+
+        return eventBidFighters.size();
+    }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED)
     public void updateBattle(Long battleId) {
